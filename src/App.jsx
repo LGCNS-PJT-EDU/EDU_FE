@@ -4,6 +4,7 @@ import Report from "./pages/Report";
 import Personal from "./pages/Personal";
 import Rewards from "./pages/Rewards";
 import Settings from "./pages/Settings";
+import Hello from "./pages/Hello";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/rewards" element={<Personal />}/>
         <Route path="/personal" element={<Rewards />}/>
         <Route path="/settinds" element={<Settings />}/>
+        <Route path="/hello" element={<Hello/>}/>
       </Routes>
     </Router>
     </>
