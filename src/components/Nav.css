@@ -1,4 +1,25 @@
+/* 전체 적용 버튼 */
+button{
+    background-color: transparent;
+    border: none;
+  }
+
 .nav_header{
     display: flex;
     justify-content: space-between;
+    background-color: aquamarine;
+    padding: 0 100px;
 }
+.nav_header img{
+    width: 100px;
+}
+.header-center {
+    display: flex;
+    gap: 20px; /* 버튼 간 간격 조절 */
+    align-items: center; /* 세로 가운데 정렬 */
+  }
+  .login {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }

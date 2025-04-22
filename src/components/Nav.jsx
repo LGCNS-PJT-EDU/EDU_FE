@@ -5,21 +5,19 @@ function Nav(){
     return (
         <header className="nav_header">
           <div className="logo">
-            <img src="../asset/takeit.png" alt="takeit" />
+            <img src="public/asset/takeit.png" alt="takeit" />
           </div>
     
           <div className="header-center">
-            <nav className="nav-toggle">
               <Link to="/">
                 <button className={location.pathname === "/" ? "active" : ""}>HOME</button>
               </Link>
               <Link to="/About">
-                <button className={location.pathname === "/About" ? "active" : ""}>About</button>
+                <button className={location.pathname === "/About" ? "active" : ""}>ABOUT</button>
               </Link>
               <Link to="/Contact">
-                <button className={location.pathname === "/Contact" ? "active" : ""}>Contact</button>
+                <button className={location.pathname === "/Contact" ? "active" : ""}>CONTACT</button>
               </Link>
-            </nav>
           </div>
           <div className="login">
             <button className="login-btn">Login</button>
