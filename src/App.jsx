@@ -4,22 +4,28 @@ import Report from "./pages/Report";
 import Personal from "./pages/Personal";
 import Rewards from "./pages/Rewards";
 import Settings from "./pages/Settings";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
 import Hello from "./pages/Hello";
+import Nav from "./components/Nav";
+import Footer from "./components/Footer";
 
 function App() {
   return (
-    <>
     <Router>
+      <Nav />
       <Routes>
         <Route path="/" element={<Main />}/>
         <Route path="/report" element={<Report />}/>
         <Route path="/rewards" element={<Personal />}/>
         <Route path="/personal" element={<Rewards />}/>
         <Route path="/settinds" element={<Settings />}/>
+        <Route path="/about" element={<Contact />}/>
+        <Route path="/contact" element={<About />}/>
         <Route path="/hello" element={<Hello/>}/>
       </Routes>
+      <Footer />
     </Router>
-    </>
   )
 }
 export default App
