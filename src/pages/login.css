@@ -1,0 +1,27 @@
+.loginMain{
+    width: 500px;
+    margin: 0 auto;
+    background-color:bisque;
+}
+.loginMain img{
+    width: 100px;
+}
+.subtitle {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+.sociallogin img{
+    width: 40px; height: 40px;
+}
+.naver img{
+    border-radius: 50%;
+}
+.links {
+  font-size: 14px;
+}
+
+.links a {
+  text-decoration: none;
+  color: black;
+  margin: 0 5px;
+}

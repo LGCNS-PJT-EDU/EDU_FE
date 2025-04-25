@@ -20,8 +20,12 @@ function Nav(){
               </Link>
           </div>
           <div className="login">
-            <button className="login-btn">Login</button>
-            <button className="login-btn">SignIn</button>
+            <Link to='/login'>
+              <button className={location.pathname === "/login" ? "active" : ""}>Login</button>
+            </Link>
+            <Link to='/signup'>
+              <button className={location.pathname === "/signup" ? "active" : ""}>Signup</button>
+            </Link>
           </div>
         </header>
       );
