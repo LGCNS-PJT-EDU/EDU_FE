@@ -57,7 +57,7 @@ export default function Login() {
         </button>
       </div>
       <div className="links">
-        <a href="#">회원가입</a>
+        <a href="signup">회원가입</a>
         <span>|</span>
         <a href="#">문항보기</a>
       </div>
