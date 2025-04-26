@@ -26,18 +26,19 @@
 ## 📂 디렉토리 구조
 
 src/
-│
-├── api/              # Axios, react-query 요청 정리
-├── components/       # 재사용 가능한 UI 컴포넌트 (Button, Card 등)
-├── constants/        # 상수 파일 (API URL, 에러 메시지, OAuth 설정 값 등)
-├── layouts/          # 페이지 레이아웃 (MainLayout, AuthLayout)
-├── models/           # 데이터 타입, 인터페이스 정의 (User, Post, AuthResponse)
-├── pages/            # 페이지 컴포넌트 (Home, Login, Profile 등)
-├── routes/           # 라우터 설정 파일 (react-router-dom v6 기준)
-├── store/            # Zustand/Redux 전역 상태 관리
-├── styles/           # 전역 CSS (shadcn 확장도 여기)
-├── mocks/            # Mock Service Worker 관련 파일 (mock 데이터, 핸들러 등)
-└── index.tsx         # 진입 파일
+├── api/                # Axios + React Query API 호출 정리
+├── assets/             # 이미지, 폰트, 글로벌 스타일
+├── components/         # 재사용 가능한 UI 컴포넌트
+├── constants/          # 상수 값 (API URL, 에러 메시지 등)
+├── hooks/              # 커스텀 훅 모음
+├── layouts/            # 공통 레이아웃 컴포넌트
+├── models/             # 타입, 인터페이스 정의
+├── pages/              # 페이지 컴포넌트
+├── routes/             # 라우터 설정
+├── store/              # Zustand, Redux 상태 관리
+├── styles/             # Tailwind 설정, 글로벌 스타일
+├── mocks/              # Mock 데이터 및 MSW 핸들러
+└── utils/              # 유틸 함수
 
 # ✨ 커밋 메시지 컨벤션
 
