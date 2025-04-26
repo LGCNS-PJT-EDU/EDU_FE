@@ -10,18 +10,16 @@
 
 ## 🛠 메인 라이브러리
 
-- React 18 + Vite
-- TailwindCSS
+역할 | 라이브러리
+UI + 개발환경 | React 18, Vite
+스타일링 | TailwindCSS, shadcn/ui
+상태관리 | Redux Toolkit, Zustand
+데이터 통신 | React Query, Axios
+Mock API | Mock Service Worker (MSW)
+차트/시각화 | Chart.js
+라우팅 | React Router DOM
+OAuth 인증 | Google, Kakao, Naver (직접 연동)
 
-- shadcn/ui
-- Redux Toolkit
-- Zustand
-- React Query
-- Axios
-- Mock Service Worker (MSW)
-- Chart.js
-- React Router DOM
-- OAuth (Google, Kakao, Naver)
 
 ## 📂 디렉토리 구조
 ```
