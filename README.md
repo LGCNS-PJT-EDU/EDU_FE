@@ -65,6 +65,7 @@ src/
 ├── main.jsx
 ```
 ## ✨ 커밋 메시지 컨벤션
+git commit -m "✨feat(jira이슈번호): 커밋내용"
 
 | 타입 | 설명 |
 | :- | - |
