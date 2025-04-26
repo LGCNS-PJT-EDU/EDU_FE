@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./login.css";
 import axios from '../api/axios';
 
@@ -45,6 +45,23 @@ function goOAuthLogin(provider) {
 
 export default function Login() {
   useEffect(() => window.scrollTo(0, 0), []);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post('/api/user/signin', {
+        email,
+        password,
+      });
+      console.log('서버 응답:', res.data);      
+      alert('로그인이 완료되었습니다.');
+      }
+      catch (err) {
+      console.error(err);
+      alert('로그인 중 오류가 발생했습니다.');
+    }
+  };
 
   return (
     <div className="loginMain">
@@ -55,15 +72,19 @@ export default function Login() {
         <input
           type="text"
           placeholder="이메일을 입력해주세요."
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <label>비밀번호</label>
         <input
           type="password"
           placeholder="비밀번호를 입력해주세요."
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <button type="submit" className="loginSubmit">Login</button>
+      <button type="submit" className="loginSubmit" onClick={handleLogin}>Login</button>
       <div className="start">
         <p>3초만에 시작하기🎉</p>
       </div>
