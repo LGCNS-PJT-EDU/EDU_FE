@@ -2,39 +2,46 @@ import { useEffect } from "react";
 import "./login.css";
 import axios from '../api/axios';
 
+/* 1) 공급자별 고정 파라미터 */
 const OAUTH = {
   naver: {
-    authUrl: "https://nid.naver.com/oauth2.0/authorize",
-    clientId: "YOUR_NAVER_CLIENT_ID",
-    redirect: "https://api.example.com/login/oauth2/code/naver",
-    extra: "&state=naver",                 // CSRF 대비용
+    authUrl   : "https://nid.naver.com/oauth2.0/authorize",
+    clientId  : "bG5y9c7SsXkdkxq2I14X",
+    redirect  : "http://localhost:5173/login/oauth2/code/naver",
+    scope     : "name email",
   },
   kakao: {
-    authUrl: "https://kauth.kakao.com/oauth/authorize",
-    clientId: "YOUR_KAKAO_REST_API_KEY",
-    redirect: "https://api.example.com/login/oauth2/code/kakao",
+    authUrl   : "https://kauth.kakao.com/oauth/authorize",
+    clientId  : "0257e0d9342333ce55ef60c412d20c5f",
+    redirect  : "http://localhost:5173/login/oauth2/code/kakao",
   },
   google: {
-    authUrl: "https://accounts.google.com/o/oauth2/v2/auth",
-    clientId: "YOUR_GOOGLE_CLIENT_ID",
-    redirect: "https://api.example.com/login/oauth2/code/google",
-    scope: "openid email profile",
+    authUrl   : "https://accounts.google.com/o/oauth2/v2/auth",
+    clientId  : "478095454422-f3q1th169ltqv6i6bq5g92oaa7e2l6h8.apps.googleusercontent.com",
+    redirect  : "http://localhost:5173/login/oauth2/code/google",
+    scope     : "openid email profile",
   },
 };
 
-const goOAuthLogin = (provider) => {
+/* 2) 버튼 클릭 → authorize URL 생성 & 이동 */
+function goOAuthLogin(provider) {
   const cfg = OAUTH[provider];
-  if (!cfg) return console.error("Unknown provider:", provider);
+  if (!cfg) return alert("알 수 없는 provider");
 
-  const query = new URLSearchParams({
-    response_type: "code",
-    client_id: cfg.clientId,
-    redirect_uri: cfg.redirect,
-    scope: cfg.scope,          // 없으면 자동으로 undefined 제외
-  }).toString();
+  /* CSRF state */
+  const state = crypto.randomUUID();
+  sessionStorage.setItem(`oauth_state_${provider}`, state);
 
-  window.location.href = `${cfg.authUrl}?${query}${cfg.extra ?? ""}`;
-};
+  /* 필요한 파라미터만 동적으로 추가 */
+  const params = new URLSearchParams();
+  params.append("response_type", "code");
+  params.append("client_id", cfg.clientId);
+  params.append("redirect_uri", cfg.redirect);
+  params.append("state", state);
+  if (cfg.scope) params.append("scope", cfg.scope);    // 있을 때만!
+
+  window.location.href = `${cfg.authUrl}?${params.toString()}`;
+}
 
 export default function Login() {
   useEffect(() => window.scrollTo(0, 0), []);
@@ -72,7 +79,7 @@ export default function Login() {
         </button>
       </div>
       <div className="links">
-        <a href="signup">회원가입</a>
+        <a href="/signup">회원가입</a>
         <span>|</span>
         <a href="#">문항보기</a>
       </div>
