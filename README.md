@@ -24,7 +24,7 @@
 - OAuth (Google, Kakao, Naver)
 
 ## 📂 디렉토리 구조
-
+```
 src/
 ├── api/                # Axios + React Query API 호출 정리
 ├── assets/             # 이미지, 폰트, 글로벌 스타일
@@ -39,7 +39,7 @@ src/
 ├── styles/             # Tailwind 설정, 글로벌 스타일
 ├── mocks/              # Mock 데이터 및 MSW 핸들러
 └── utils/              # 유틸 함수
-
+```
 # ✨ 커밋 메시지 컨벤션
 
 | 타입 | 설명 |
