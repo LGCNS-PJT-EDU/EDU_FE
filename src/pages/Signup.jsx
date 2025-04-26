@@ -10,13 +10,29 @@ function Signup() {
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   
+
+  //이메일 유효성 검사
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   //이메일 중복확인
   const handleCheckEmail = async () => {
+    if (!email) {
+      alert('이메일을 입력해주세요.');
+      return;
+    }
+    if (!isValidEmail(email)) {
+      alert('올바른 이메일 형식으로 입력해주세요.');
+      return;
+    }
     try {
-      const res = await axios.get(`/users/email-check`, {
+      const res = await axios.get(`/api/user/check-email`, {
         params: { email }
       });
-      if (res.data.available) {
+      console.log('서버 응답:', res.data); 
+      if (res.data) {
         alert('사용 가능한 이메일입니다.');
         setIsEmailAvailable(true);
       } else {
@@ -28,7 +44,7 @@ function Signup() {
       alert('이메일 중복 확인 중 오류가 발생했습니다.');
     }
   };
-
+  
   //비밀번호 유효성 검사
   const isPasswordValid = (pw) => {
     if (pw.length < 6 || pw.length > 20) return false;
@@ -42,13 +58,14 @@ function Signup() {
   
     return count >= 2;
   };
+  
   //회원가입 
   const handleSignup = async () => {
     if (!isEmailAvailable) {
       alert('이메일 중복 확인을 해주세요.');
       return;
     }
-    
+
     if (!isPasswordValid(password)) {
       alert('비밀번호는 6-20자이며, 영문 대/소문자, 숫자, 특수문자 중 2가지 이상 조합이어야 합니다.');
       return;
@@ -60,7 +77,7 @@ function Signup() {
     }
 
     try {
-      const res = await axios.post('/users/signup', {
+      const res = await axios.post('/api/user/signup', {
         email,
         nickname,
         password,

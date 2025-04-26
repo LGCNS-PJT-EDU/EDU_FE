@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import "./login.css";
+import axios from '../api/axios';
 
 const OAUTH = {
   naver: {
@@ -42,6 +43,20 @@ export default function Login() {
     <div className="loginMain">
       <img src="/asset/takeRabbit.png" alt="rabbit" />
       <p className="subtitle">개발자, 지금 TakeIT와 함께 시작해보세요</p>
+      <div className="loginformGroup">
+        <label>이메일</label>
+        <input
+          type="text"
+          placeholder="이메일을 입력해주세요."
+        />
+
+        <label>비밀번호</label>
+        <input
+          type="password"
+          placeholder="비밀번호를 입력해주세요."
+        />
+      </div>
+      <button type="submit" className="loginSubmit">Login</button>
       <div className="start">
         <p>3초만에 시작하기🎉</p>
       </div>
