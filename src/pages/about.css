@@ -1,0 +1,42 @@
+.about-wrapper {
+    height: 100%;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+  }
+  
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  section {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: start;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  
+  /* Hero 등장 애니메이션 */
+  .hero {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  
+  .hero.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* 스타일 추가하면 더 좋을 부분 */
+  .start-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }

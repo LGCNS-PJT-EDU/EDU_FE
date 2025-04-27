@@ -14,8 +14,8 @@ function App() {
       <Nav />
       <Routes>
         <Route path="/" element={<Main />}/>
-        <Route path="/about" element={<Contact />}/>
-        <Route path="/contact" element={<About />}/>
+        <Route path="/contact" element={<Contact />}/>
+        <Route path="/about" element={<About />}/>
         <Route path="/login" element={<Login />}/>
         <Route path="/login/oauth2/code/:provider" element={<OAuthCallback />} />
         <Route path="/signup" element={<Signup />}/>
