@@ -1,7 +1,6 @@
 /* src/pages/auth/OAuthCallback.jsx
  * 모든 공급자(Naver / Kakao / Google)  ➜  POST /api/auth/{provider}/login
  * 요청 Body  { code, loginType:"LOCAL", state }
- * 응답       { stateCode:1073741824, message:"...", data:{ token:<JWT> } }
  */
 import { useEffect, useRef } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -19,7 +18,7 @@ export default function OAuthCallback() {
     /* 0) code / state 추출 */
     const qs    = new URLSearchParams(search);
     const code  = qs.get("code");
-    const state = qs.get("state");           // (Naver만 필요하지만 함께 전송)
+    const state = qs.get("state");           // (Naver만 필수긴한데 다 전송)
     if (!code || !provider) return nav("/login");
 
     (async () => {
@@ -37,10 +36,6 @@ export default function OAuthCallback() {
         if (!res.ok) throw new Error(`status ${res.status}`);
 
         const { stateCode, data } = await res.json();   // ← 통일된 포맷
-        const okCodes = [1073741824, 200];
-        if (!okCodes.includes(stateCode)) {
-          throw new Error(`stateCode ${stateCode}`);
-        }
 
         /* 2) JWT 추출 & 저장 */
         const token =
