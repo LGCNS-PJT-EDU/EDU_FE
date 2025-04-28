@@ -58,7 +58,7 @@ function Signup() {
   
     return count >= 2;
   };
-  
+
   //회원가입 
   const handleSignup = async () => {
     if (!isEmailAvailable) {
