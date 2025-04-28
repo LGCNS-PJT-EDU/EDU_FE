@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import './Nav.css'
+import rabbitImage from '../asset/takeit.png';
 
 function Nav(){
     return (
         <header className="nav_header">
           <div className="logo">
-            <img src="public/asset/takeit.png" alt="takeit" />
+            <img src={rabbitImage} alt="takeit" />
           </div>
     
           <div className="header-center">
