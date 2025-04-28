@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Main from "./pages/Main";
-import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import OAuthCallback  from "./pages/OAuthCallback";
@@ -14,7 +13,6 @@ function App() {
       <Nav />
       <Routes>
         <Route path="/" element={<Main />}/>
-        <Route path="/contact" element={<Contact />}/>
         <Route path="/about" element={<About />}/>
         <Route path="/login" element={<Login />}/>
         <Route path="/login/oauth2/code/:provider" element={<OAuthCallback />} />

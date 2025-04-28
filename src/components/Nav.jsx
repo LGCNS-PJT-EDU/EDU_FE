@@ -15,9 +15,9 @@ function Nav(){
               <Link to="/About">
                 <button className={location.pathname === "/About" ? "active" : ""}>ABOUT</button>
               </Link>
-              <Link to="/Contact">
-                <button className={location.pathname === "/Contact" ? "active" : ""}>CONTACT</button>
-              </Link>
+              <a href="mailto:example@example.com">
+                <button>CONTACT</button>
+              </a>
           </div>
           <div className="login">
             <Link to='/login'>

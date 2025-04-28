@@ -9,6 +9,10 @@
   margin: 0 auto;
 }
 
+.header h1{
+  text-align: center;
+}
+
 .section {
   height: 100vh;
   display: flex;
