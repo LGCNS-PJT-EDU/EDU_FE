@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import api from "../api/axios";
 
 /* loginType에 provider를 대문자로 넣기 */
 const toLoginType = provider =>
@@ -32,19 +33,9 @@ function OAuthCallback() {
 
     const body = buildBody({ code, state, provider });
 
-    const res = await fetch(
-      `http://localhost:8080/api/auth/${provider}/login`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(body),
-      }
-    );
+    const { data: res } = await api.post(`/api/auth/${provider}/login`, body);
 
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const { stateCode, data } = await res.json();
+    const { stateCode, data } = res;
     if (stateCode !== 200) throw new Error(`stateCode ${stateCode}`);
 
     const token = extractToken(data);

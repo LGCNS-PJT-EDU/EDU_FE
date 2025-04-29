@@ -30,7 +30,7 @@ export default function LogoutHandler() {
   /* 로딩 메시지용 간단 UI */
   return (
     <div style={{ textAlign: "center", marginTop: "20%" }}>
-      <h2>로그아웃 중입니다...</h2>
+      <h2>로그아웃 중!</h2>
     </div>
   );
 }

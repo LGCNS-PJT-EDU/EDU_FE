@@ -43,7 +43,7 @@ function goOAuthLogin(provider) {
   window.location.href = `${cfg.authUrl}?${params.toString()}`;
 }
 
-export default function Login() {
+function Login() {
   useEffect(() => window.scrollTo(0, 0), []);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -107,3 +107,4 @@ export default function Login() {
     </div>
   );
 }
+export default Login;
