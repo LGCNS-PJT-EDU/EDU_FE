@@ -28,7 +28,7 @@ function Nav(){
               <button className={location.pathname === "/signup" ? "active" : ""}>Signup</button>
             </Link>
             <Link to='/mypage'>
-              <button className={location.pathname === "/mypage" ? "active" : ""}>Signup</button>
+              <button className={location.pathname === "/mypage" ? "active" : ""}>MyPage</button>
             </Link>
           </div>
         </header>

@@ -1,5 +1,20 @@
 import '../styled/mypage.css';
+import axios from '../api/axios';
+import { useNavigate } from 'react-router-dom';
+
 function MyPage() {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try{
+      await axios.delete('/api/user/signout');
+      alert('로그아웃 되었습니다.')
+      navigate('/')
+    }catch(error) {
+      console.error('로그아웃 실패', error);
+      alert('문제발생')
+    }
+  }
   return (
     <section id="articles">
 
@@ -30,9 +45,9 @@ function MyPage() {
 
       {/* 회원탈퇴, 로그아웃 */}
       <section className="mypage-footer">
-        <a href="#">로그아웃</a>
+        <button onClick={handleLogout} className="logoutBtn">로그아웃</button>
         <span>|</span>
-        <a href="#">회원탈퇴</a>
+        <button className='signout'>회원탈퇴</button>
       </section>
     </section>
   )
