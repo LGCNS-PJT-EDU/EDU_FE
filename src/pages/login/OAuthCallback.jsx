@@ -1,77 +1,62 @@
-/* src/pages/auth/OAuthCallback.jsx
- * naver  : GET  /api/user/oauth/naver?code=...
- * kakao  : POST /api/oauth/kakao/login   { code, loginType:"LOCAL" }
- * google : POST /api/oauth/google/login  { code, loginType:"LOCAL" }
- */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import api from "../../api/axios";
 
-export default function OAuthCallback() {
-  const { provider } = useParams();        // naver | kakao | google
-  const { search }   = useLocation();      // ?code=...
-  const nav          = useNavigate();
-  const handledRef   = useRef(false);      // Strict-mode 중복 실행 방지
+/* loginType에 provider를 대문자로 넣기 */
+const toLoginType = provider =>
+  provider.toLowerCase() === "local" ? "LOCAL" : provider.toUpperCase();
+
+/* 네이버만 POST body에 state 포함하기 */
+const buildBody = ({ code, state, provider }) => ({
+  code,
+  loginType: toLoginType(provider),
+  ...(provider.toLowerCase() === "naver" && { state }),
+});
+
+/* 존왓탱 JWT 추출 (문자 | { token }) */
+const extractToken = data =>
+  typeof data === "string" ? data : data?.token ?? null;
+
+function OAuthCallback() {
+  const { provider = "" } = useParams();         // naver | kakao | google | local
+  const { search } = useLocation();              // ?code=...&state=...
+  const navigate  = useNavigate();
+  const ranOnce   = useRef(false);               // Strict-mode 방지
+
+  /* 실제 요청 */
+  const requestLogin = useCallback(async () => {
+    const qs    = new URLSearchParams(search);
+    const code  = qs.get("code");
+    const state = qs.get("state");
+
+    if (!code || !provider) return navigate("/login");
+
+    const body = buildBody({ code, state, provider });
+
+    const { data: res } = await api.post(`/api/auth/${provider}/login`, body);
+
+    const { stateCode, data } = res;
+    if (stateCode !== 200) throw new Error(`stateCode ${stateCode}`);
+
+    const token = extractToken(data);
+    if (!token) throw new Error("token missing");
+
+    localStorage.setItem("accesstoken", token);
+    alert("로그인 성공!");
+    console.log("존왓탱(JWT) 저장:", token);
+    navigate("/", { replace: true });
+  }, [provider, search, navigate]);
 
   useEffect(() => {
-    if (handledRef.current) return;
-    handledRef.current = true;
+    if (ranOnce.current) return;
+    ranOnce.current = true;
 
-    /* 0) 쿼리에서 code 추출 */
-    const code = new URLSearchParams(search).get("code");
-    if (!code || !provider) return nav("/login");
-
-    (async () => {
-      try {
-        let res, json;
-
-        /* 1) 공급자별 요청 형식 분기 */
-        if (provider === "naver") {
-          /* ── NAVER ---------------------------------------------------------------- */
-          const url = new URL(
-            `http://localhost:8080/api/user/oauth/naver`
-          );
-          url.searchParams.set("code", code);
-
-          res  = await fetch(url, { credentials: "include" });
-          json = await res.json();                       // { stateCode, data: token }
-
-        } else {
-          /* ── KAKAO / GOOGLE ------------------------------------------------------- */
-          const url = `http://localhost:8080/api/auth/${provider}/login`;
-
-          res  = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ code, loginType: "LOCAL" }),
-          });
-          json = await res.json();                       // { stateCode: 1073741824, data: {...} }
-        }
-
-        /* 2) 공통 성공 판정 */
-        if (!res.ok) throw new Error(`status ${res.status}`);
-
-        const okCodes = [200, 1073741824];               // 백엔드 정의된 성공 코드
-        if (!okCodes.includes(json.stateCode))
-          throw new Error(`stateCode ${json.stateCode}`);
-
-        /* 3) 토큰이 있으면 저장 (네이버 방식) */
-        if (json.data && typeof json.data === "string" && json.data.length > 20) {
-          localStorage.setItem("accesstoken", json.data);
-          console.log("존왓탱(JWT) 저장:", json.data);
-        } else {
-          console.log("JWT는 쿠키로 전달되었거나 필요 없는 로그인 방식입니다.");
-        }
-
-        alert("로그인 성공!");
-        nav("/", { replace: true });
-      } catch (err) {
-        console.error("OAuth 처리 실패:", err);
-        alert("로그인 실패");
-        nav("/login");
-      }
-    })();
-  }, [provider, search, nav]);
+    requestLogin().catch(err => {
+      console.error("OAuth 처리 실패:", err);
+      alert("로그인 실패");
+      navigate("/login");
+    });
+  }, [requestLogin, navigate]);
 
   return (
     <p style={{ textAlign: "center", marginTop: "20%" }}>
@@ -79,3 +64,5 @@ export default function OAuthCallback() {
     </p>
   );
 }
+
+export default OAuthCallback;
