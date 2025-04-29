@@ -1,7 +1,7 @@
 // src/components/Signup.jsx
 import React, { useState } from 'react';
-import './Signup.css';
-import axios from '../api/axios';
+import '../../styled/signup.css';
+import axios from '../../api/axios';
 
 function Signup() {
   const [email, setEmail] = useState('');
@@ -95,7 +95,7 @@ function Signup() {
 
 
   return (
-    <div className="signupArticle">
+    <section id="articles">
       <h2 className="title_sign">회원가입</h2>
       <p className="subtitle">회원정보를 입력해주세요</p>
 
@@ -153,7 +153,7 @@ function Signup() {
       <button className="submitBtn" onClick={handleSignup}>
         Join in
       </button>
-    </div>
+    </section>
   );
 }
 

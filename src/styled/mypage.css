@@ -1,0 +1,9 @@
+/* 마이페이지 헤더 */
+.mypage-header {
+    display: flex;
+}
+
+/* 즐겨찾기기 */
+.curriculum{
+    display: flex;
+}

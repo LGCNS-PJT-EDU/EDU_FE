@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import './About.css';
+import '../styled/about.css'
 
 function About() {
   const sectionsRef = useRef([]);
@@ -32,7 +32,7 @@ function About() {
   };
 
   return (
-    <section id="about" className="about-wrapper">
+    <section id="articles">
       <div className="container">
 
         <section className="header">

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import './Nav.css'
+import '../styled/nav.css'
 import rabbitImage from '../asset/takeit.png';
 
 function Nav(){
@@ -16,7 +16,7 @@ function Nav(){
               <Link to="/About">
                 <button className={location.pathname === "/About" ? "active" : ""}>ABOUT</button>
               </Link>
-              <a href="mailto:example@example.com">
+              <a href="mailto:example@example.scom">
                 <button>CONTACT</button>
               </a>
           </div>
@@ -26,6 +26,9 @@ function Nav(){
             </Link>
             <Link to='/signup'>
               <button className={location.pathname === "/signup" ? "active" : ""}>Signup</button>
+            </Link>
+            <Link to='/mypage'>
+              <button className={location.pathname === "/mypage" ? "active" : ""}>Signup</button>
             </Link>
           </div>
         </header>
