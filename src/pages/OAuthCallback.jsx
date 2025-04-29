@@ -1,63 +1,71 @@
-/* src/pages/auth/OAuthCallback.jsx
- * 모든 공급자(Naver / Kakao / Google)  ➜  POST /api/auth/{provider}/login
- * 요청 Body  { code, loginType:"LOCAL", state }
- */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-export default function OAuthCallback() {
-  const { provider } = useParams();          // naver | kakao | google
-  const { search }   = useLocation();        // ?code=...&state=...
-  const nav          = useNavigate();
-  const once         = useRef(false);        // Strict-mode 중복 방지
+/* loginType에 provider를 대문자로 넣기 */
+const toLoginType = provider =>
+  provider.toLowerCase() === "local" ? "LOCAL" : provider.toUpperCase();
 
-  useEffect(() => {
-    if (once.current) return;
-    once.current = true;
+/* 네이버만 POST body에 state 포함하기 */
+const buildBody = ({ code, state, provider }) => ({
+  code,
+  loginType: toLoginType(provider),
+  ...(provider.toLowerCase() === "naver" && { state }),
+});
 
-    /* 0) code / state 추출 */
+/* 존왓탱 JWT 추출 (문자 | { token }) */
+const extractToken = data =>
+  typeof data === "string" ? data : data?.token ?? null;
+
+function OAuthCallback() {
+  const { provider = "" } = useParams();         // naver | kakao | google | local
+  const { search } = useLocation();              // ?code=...&state=...
+  const navigate  = useNavigate();
+  const ranOnce   = useRef(false);               // Strict-mode 방지
+
+  /* 실제 요청 */
+  const requestLogin = useCallback(async () => {
     const qs    = new URLSearchParams(search);
     const code  = qs.get("code");
-    const state = qs.get("state");           // (Naver만 필수긴한데 다 전송)
-    if (!code || !provider) return nav("/login");
+    const state = qs.get("state");
 
-    (async () => {
-      try {
-        /* 1) 백엔드로 code 전달 */
-        const res  = await fetch(
-          `http://localhost:8080/api/auth/${provider}/login`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ code, loginType: "LOCAL", state }),
-          }
-        );
-        if (!res.ok) throw new Error(`status ${res.status}`);
+    if (!code || !provider) return navigate("/login");
 
-        const { stateCode, data } = await res.json();   // ← 통일된 포맷
+    const body = buildBody({ code, state, provider });
 
-        /* 2) JWT 추출 & 저장 */
-        const token =
-          typeof data === "string"
-            ? data
-            : typeof data?.token === "string"
-              ? data.token
-              : null;
-
-        if (!token) throw new Error("token missing");
-        localStorage.setItem("accesstoken", token);
-        console.log("존왓탱(JWT) 저장:", token);
-
-        alert("로그인 성공!");
-        nav("/", { replace: true });
-      } catch (err) {
-        console.error("OAuth 처리 실패:", err);
-        alert("로그인 실패");
-        nav("/login");
+    const res = await fetch(
+      `http://localhost:8080/api/auth/${provider}/login`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(body),
       }
-    })();
-  }, [provider, search, nav]);
+    );
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const { stateCode, data } = await res.json();
+    if (stateCode !== 200) throw new Error(`stateCode ${stateCode}`);
+
+    const token = extractToken(data);
+    if (!token) throw new Error("token missing");
+
+    localStorage.setItem("accesstoken", token);
+    alert("로그인 성공!");
+    console.log("존왓탱(JWT) 저장:", token);
+    navigate("/", { replace: true });
+  }, [provider, search, navigate]);
+
+  useEffect(() => {
+    if (ranOnce.current) return;
+    ranOnce.current = true;
+
+    requestLogin().catch(err => {
+      console.error("OAuth 처리 실패:", err);
+      alert("로그인 실패");
+      navigate("/login");
+    });
+  }, [requestLogin, navigate]);
 
   return (
     <p style={{ textAlign: "center", marginTop: "20%" }}>
@@ -65,3 +73,5 @@ export default function OAuthCallback() {
     </p>
   );
 }
+
+export default OAuthCallback;
