@@ -7,6 +7,7 @@ import MyPage from "./pages/MyPage";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import OAuthCallback  from "./pages/login/OAuthCallback";
+import LogoutHandler from "./pages/login/LogoutHandler";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/signup" element={<Signup />}/>
         <Route path="/mypage" element={<MyPage />}/>
         <Route path="/login/oauth2/code/:provider" element={<OAuthCallback />} />
+        <Route path="/logout" element={<LogoutHandler />} />
       </Routes>
       <Footer />
     </Router>
