@@ -9,7 +9,7 @@ function Signup() {
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
-  
+
 
   //이메일 유효성 검사
   const isValidEmail = (email) => {
@@ -31,7 +31,7 @@ function Signup() {
       const res = await axios.get(`/api/user/check-email`, {
         params: { email }
       });
-      console.log('서버 응답:', res.data); 
+      console.log('서버 응답:', res.data);
       if (res.data) {
         alert('사용 가능한 이메일입니다.');
         setIsEmailAvailable(true);
@@ -44,18 +44,18 @@ function Signup() {
       alert('이메일 중복 확인 중 오류가 발생했습니다.');
     }
   };
-  
+
   //비밀번호 유효성 검사
   const isPasswordValid = (pw) => {
     if (pw.length < 6 || pw.length > 20) return false;
-  
+
     const upper = /[A-Z]/.test(pw);
     const lower = /[a-z]/.test(pw);
     const number = /[0-9]/.test(pw);
     const special = /[^A-Za-z0-9]/.test(pw);
-  
+
     const count = [upper, lower, number, special].filter(Boolean).length;
-  
+
     return count >= 2;
   };
 
@@ -70,7 +70,7 @@ function Signup() {
       alert('비밀번호는 6-20자이며, 영문 대/소문자, 숫자, 특수문자 중 2가지 이상 조합이어야 합니다.');
       return;
     }
-  
+
     if (password !== passwordCheck) {
       alert('비밀번호가 일치하지 않습니다.');
       return;
@@ -141,12 +141,12 @@ function Signup() {
           style={{
             display: passwordCheck.length > 0 ? 'block' : 'none',
             color: password === passwordCheck ? 'green' : 'red',
-            fontSize : 13
-        }}
+            fontSize: 13
+          }}
         >
-        {password === passwordCheck ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'}
+          {password === passwordCheck ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'}
         </p>
-        
+
         <p className="passwordconfirm">6-20자 / 영문 대문자, 소문자, 숫자, 특수문자 중 2가지 조합</p>
       </div>
 
