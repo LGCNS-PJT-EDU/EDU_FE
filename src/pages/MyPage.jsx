@@ -23,10 +23,9 @@ function MyPage() {
         <button className="feedbackBtn">피드백 보기</button>
       </section>
 
-
       {/* 상태 툴바 */}
       <section class="mypage-container">
-        <div class="mypage-header">
+        <div class="mypage-progress">
           어디까지 완료했나요?
           <span class="mypage-count">2/10</span>
         </div>
