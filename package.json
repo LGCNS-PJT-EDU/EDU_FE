@@ -34,7 +34,7 @@
     "husky": "^9.1.7",
     "playwright": "^1.51.1",
     "prop-types": "^15.8.1",
-    "vite": "^6.2.0",
+    "vite": "^6.3.3",
     "vitest": "^3.1.1"
   },
   "jira-prepare-commit-msg": {

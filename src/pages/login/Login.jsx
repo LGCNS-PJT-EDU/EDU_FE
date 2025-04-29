@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
-import "./login.css";
-import axios from '../api/axios';
+import '../../styled/login.css';
+import axios from '../../api/axios';
+import google from '../../asset/btn_google.svg';
+import kakao from '../../asset/btn_kakao.svg';
+import naver from '../../asset/btn_naver.svg';
+import takeRabbit from '../../asset/takeRabbit.png';
 
 /* 1) 공급자별 고정 파라미터 */
 const OAUTH = {
@@ -65,7 +69,7 @@ export default function Login() {
 
   return (
     <div className="loginMain">
-      <img src="/asset/takeRabbit.png" alt="rabbit" />
+      <img src={takeRabbit} alt="rabbit" />
       <p className="subtitle">개발자, 지금 TakeIT와 함께 시작해보세요</p>
       <div className="loginformGroup">
         <label>이메일</label>
@@ -90,13 +94,13 @@ export default function Login() {
       </div>
       <div className="sociallogin">
         <button className="kakao" onClick={() => goOAuthLogin("kakao")}>
-          <img src="/asset/btn_kakao.svg"  alt="카카오 로그인" />
+          <img src={kakao}  alt="카카오 로그인" />
         </button>
         <button className="naver"  onClick={() => goOAuthLogin("naver")}>
-          <img src="/asset/btn_naver.svg"  alt="네이버 로그인" />
+          <img src={naver}  alt="네이버 로그인" />
         </button>
         <button className="google" onClick={() => goOAuthLogin("google")}>
-          <img src="/asset/btn_google.svg" alt="구글 로그인"  />
+          <img src={google} alt="구글 로그인"  />
         </button>
       </div>
       <div className="links">
