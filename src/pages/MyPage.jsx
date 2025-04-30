@@ -1,6 +1,6 @@
 import '../styled/mypage.css';
 import axios from '../api/axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function MyPage() {
   const navigate = useNavigate();
@@ -20,7 +20,9 @@ function MyPage() {
 
       <section className="mypage-header">
         <h1>MyPage</h1>
-        <button className="feedbackBtn">피드백 보기</button>
+        <Link to="/feedback">
+          <button className="feedbackBtn">피드백 보기</button>
+        </Link>
       </section>
 
       {/* 상태 툴바 */}

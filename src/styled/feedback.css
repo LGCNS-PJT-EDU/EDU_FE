@@ -1,0 +1,114 @@
+.section-title {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.subtitle,
+.subtitle-en {
+    text-align: center;
+    font-size: 16px;
+    color: #777;
+    margin-bottom: 6px;
+}
+
+.radar-chart {
+    position: relative;
+    background-color: #f5f8fe;
+    border-radius: 20px;
+    padding: 40px 20px;
+    margin: 40px auto;
+    width: 300px;
+    text-align: center;
+}
+
+.score-center {
+    font-size: 36px;
+    font-weight: bold;
+    color: #307fe2;
+    margin-bottom: 20px;
+}
+
+.score-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.score-list li {
+    font-size: 14px;
+    margin: 6px 0;
+}
+
+.heuristic-table {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    margin-top: 60px;
+    padding: 0 20px;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 60px repeat(5, 1fr);
+    gap: 12px;
+    font-weight: bold;
+    font-size: 16px;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.table-header span {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    color: #777;
+    font-weight: normal;
+}
+
+/* 피드백 행 (장점/단점 모두 공통) */
+.good-feedback,
+.bad-feedback {
+    display: grid;
+    grid-template-columns: 60px repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+    align-items: start;
+}
+
+.good-feedback div,
+.bad-feedback div {
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: left;
+    background-color: #f5faff;
+    border: 1px solid #a5cdf7;
+
+    writing-mode: horizontal-tb !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+}
+
+/* 이모지 셀만 따로 처리 */
+.good-feedback div:first-child,
+.bad-feedback div:first-child {
+    background: none;
+    border: none;
+    font-size: 24px;
+    text-align: center;
+    padding-top: 16px;
+}
+
+.good-feedback div {
+    border: 1px solid #a5cdf7;
+}
+
+.bad-feedback div {
+    background-color: #fff8f8;
+    border: 1px solid #f2a6a6;
+}
