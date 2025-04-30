@@ -82,13 +82,13 @@ git commit -m "✨feat EDU-jira이슈번호 : 커밋내용"
 커밋의 작업 내용 간략히 설명
 
 ### PR 타입(하나 이상의 PR 타입을 선택해주세요)
-feat: 회원가입 기능 추가
-fix: 로그인 오류 수정
-docs: README 오타 수정
-style: 코드 포맷 정리 (세미콜론 등)
-refactor: 로직 개선 (기능 변경 없음)
-test: 테스트 코드 추가
-chore: 빌드 설정 등 기타 수정
+feat: 회원가입 기능 추가<br>
+fix: 로그인 오류 수정<br>
+docs: README 오타 수정<br>
+style: 코드 포맷 정리 (세미콜론 등)<br>
+refactor: 로직 개선 (기능 변경 없음)<br>
+test: 테스트 코드 추가<br>
+chore: 빌드 설정 등 기타 수정<br>
 
 ### 📌 반영 브랜치
 ex) feat/login -> dev
