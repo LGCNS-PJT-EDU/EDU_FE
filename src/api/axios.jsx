@@ -13,6 +13,7 @@ api.interceptors.request.use(config => {
   const token = localStorage.getItem("accesstoken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log("현재 토큰이 헤더에 담긴거에요@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
   } else {
     delete config.headers.Authorization;   // 토큰 없으면 제거
   }
