@@ -81,31 +81,9 @@ git commit -m "✨feat EDU-jira이슈번호 : 커밋내용"
 * Subject: 
 커밋의 작업 내용 간략히 설명
 
-### PR 타입(하나 이상의 PR 타입을 선택해주세요)
-feat: 회원가입 기능 추가<br>
-fix: 로그인 오류 수정<br>
-docs: README 오타 수정<br>
-style: 코드 포맷 정리 (세미콜론 등)<br>
-refactor: 로직 개선 (기능 변경 없음)<br>
-test: 테스트 코드 추가<br>
-chore: 빌드 설정 등 기타 수정<br>
-
-### 📌 반영 브랜치
-ex) feat/login -> dev
-
-### 🛠️ 변경 사항
-ex) 로그인 시, 구글 소셜 로그인 기능을 추가했습니다.
-
-### ✅ 테스트 결과
-ex) 베이스 브랜치에 포함되기 위한 코드는 모두 정상적으로 동작해야 합니다. 결과물에 대한 스크린샷, GIF, 혹은 라이브 데모가 가능하도록 샘플API를 첨부할 수도 있습니다.
-자동으로 PR 템플릿 지정하는 방법
-
-* Body: 
-길게 설명할 필요가 있을 시 작성
-
-* Footer: 
-Breaking Point 가 있을 때
-특정 이슈에 대한 해결 작업일 때
-
 * [Gitmoji](https://gitmoji.dev/)를 이용하여 Type을 대신하기도 합니다.
+  
+
+
+
 
