@@ -1,7 +1,7 @@
 // src/pages/auth/LogoutHandler.jsx
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import api from "../../api/axios";          // 공통 인스턴스
+import api from "../../api/axios";
 
 export default function LogoutHandler() {
   const navigate = useNavigate();
@@ -12,11 +12,7 @@ export default function LogoutHandler() {
     (async () => {
       try {
         /* api 호출 */
-        await delete("http://localhost:8080/api/user/signout", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        await api.delete("/api/user/signout"); 
       } catch (e) {
         console.warn("서버 로그아웃 요청 실패(무시)", e);
       }
