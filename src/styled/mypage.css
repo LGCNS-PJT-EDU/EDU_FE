@@ -1,5 +1,6 @@
 /* 마이페이지 헤더 */
 .mypage-header {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -12,6 +13,7 @@
 
 /* 상태 툴바 */
 .mypage-container {
+    width: 100%;
     margin-bottom: 15px;
 }
 .mypage-progress{
@@ -22,7 +24,6 @@
     width: 100%;
     border: 1px solid #000;
     border-radius: 7px;
-    padding: 10px;
 }
 
 .curriculum {
