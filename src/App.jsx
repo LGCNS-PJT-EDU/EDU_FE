@@ -4,6 +4,7 @@ import About from "./pages/About";
 import Login from "./pages/login/Login";
 import Signup from "./pages/sign/Signup";
 import MyPage from "./pages/MyPage";
+import Feedback from "./pages/Feedback";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import OAuthCallback  from "./pages/login/OAuthCallback";
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" element={<Login />}/>
         <Route path="/signup" element={<Signup />}/>
         <Route path="/mypage" element={<MyPage />}/>
+        <Route path="/feedback" element={<Feedback />}/>
         <Route path="/login/oauth2/code/:provider" element={<OAuthCallback />} />
       </Routes>
       <Footer />
