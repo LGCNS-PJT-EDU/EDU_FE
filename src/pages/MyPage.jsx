@@ -1,20 +1,12 @@
 import '../styled/mypage.css';
+import { useNavigate } from 'react-router-dom';
 
 function MyPage() {
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try{
-      await axios.delete('/api/user/signout');
-      alert('로그아웃 되었습니다.')
-      navigate('/')
-    }catch(error) {
-      console.error('로그아웃 실패', error);
-      alert('문제발생')
-    }
-  }
+  const handleLogout = () => navigate("/logout");
+  
   return (
-    /* 전체 wrapper */
     <section id="articles">
 
       <section className="mypage-header">
@@ -34,7 +26,6 @@ function MyPage() {
       </section>
 
       {/* 즐겨찾기 */}
-      <div className='Favorites-name'>내 콘텐츠 확인하기</div>
       <section className="Favorites">
         <div className="curriculum">
           <span className="labels">Book</span>
@@ -44,7 +35,7 @@ function MyPage() {
 
       {/* 회원탈퇴, 로그아웃 */}
       <section className="mypage-footer">
-        <button className="logoutBtn">로그아웃</button>
+        <button onClick={handleLogout} className="logoutBtn">로그아웃</button>
         <span>|</span>
         <button className='signout'>회원탈퇴</button>
       </section>
