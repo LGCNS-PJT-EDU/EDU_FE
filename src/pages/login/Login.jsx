@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import '../../styled/login.css';
 import axios from '../../api/axios';
 import google from '../../asset/btn_google.svg';
@@ -51,6 +52,7 @@ export default function Login() {
   useEffect(() => window.scrollTo(0, 0), []);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
@@ -58,8 +60,16 @@ export default function Login() {
         email,
         password,
       });
+
+      const token = res.headers["authorization"]?.split(" ")[1]
+      if (!token) throw new Error("token missing");
+
+      localStorage.setItem("accesstoken", token);
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+
       console.log('서버 응답:', res.data);      
       alert('로그인이 완료되었습니다.');
+      navigate("/");
       }
       catch (err) {
       console.error(err);

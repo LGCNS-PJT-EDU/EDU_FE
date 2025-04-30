@@ -5,16 +5,8 @@ import { useNavigate } from 'react-router-dom';
 function MyPage() {
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try{
-      await axios.delete('/api/user/signout');
-      alert('로그아웃 되었습니다.')
-      navigate('/')
-    }catch(error) {
-      console.error('로그아웃 실패', error);
-      alert('문제발생')
-    }
-  }
+  const handleLogout = () => navigate("/logout");
+  
   return (
     <section id="articles">
 
