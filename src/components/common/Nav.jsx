@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import '../styled/nav.css'
-import rabbitImage from '../asset/takeit.png';
+import '../../styled/components/nav.css'
+import rabbitImage from "../../asset/img/common/main.png"
 
 function Nav(){
     return (

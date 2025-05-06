@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../../styled/login.css';
+import '../../styled/pages/login.css';
 import axios from '../../api/axios';
-import google from '../../asset/btn_google.svg';
-import kakao from '../../asset/btn_kakao.svg';
-import naver from '../../asset/btn_naver.svg';
-import takeRabbit from '../../asset/takeRabbit.png';
+import google from '../../asset/img/login/btn_google.svg';
+import kakao from '../../asset/img/login/btn_kakao.svg';
+import naver from '../../asset/img/login/btn_naver.svg';
+import takeRabbit from '../../asset/img/common/takeRabbit.png';
 
 /* 1) 공급자별 고정 파라미터 */
 const OAUTH = {

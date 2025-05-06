@@ -1,4 +1,4 @@
-import '../styled/mypage.css';
+import '../styled/pages/mypage.css';
 import { useNavigate } from 'react-router-dom';
 
 function MyPage() {
