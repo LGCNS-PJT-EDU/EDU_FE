@@ -9,14 +9,13 @@ const api = axios.create({
 });
 
 /* 로컬 스토리지에 accesstoken 있으면 헤더에 추가 */
-api.interceptors.request.use((config: InternalAxiosRequestConfig ) => {
-  const token = localStorage.getItem('accesstoken');
-  
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accesstoken");
+  console.debug("[interceptor] token:", token);   // 추가
+
   if (token) {
     config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${token}`;
-  } else if(config.headers) {
-    delete config.headers.Authorization;   // 토큰 없으면 제거
   }
   return config;
 });
