@@ -6,7 +6,8 @@ import Signup from "@/pages/sign/Signup";
 import MyPage from "@/pages/MyPage";
 import OAuthCallback from "@/pages/login/OAuthCallback";
 import LogoutHandler from "@/pages/login/LogoutHandler";
-import Layout from "@/components/layout/Layouts"; 
+import Layout from "@/components/layout/Layouts";
+import Roadmap from "@/pages/roadmap/Roadmap";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
       { path: "mypage", element: <MyPage /> },
       { path: "login/oauth2/code/:provider", element: <OAuthCallback /> },
       { path: "logout", element: <LogoutHandler /> },
+      { path: "roadmap", element: <Roadmap /> },
     ],
   },
 ]);
