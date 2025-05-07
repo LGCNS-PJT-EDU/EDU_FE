@@ -33,12 +33,14 @@ function OAuthCallback() {
 
     const body = buildBody({ code, state, provider });
 
-    const { data: res } = await api.post(`/api/auth/${provider}/login`, body);
+    const res = await api.post(`/api/auth/${provider}/login`, body);
 
-    const { stateCode, data } = res;
-    if (stateCode !== 200) throw new Error(`stateCode ${stateCode}`);
-
-    const token = extractToken(data);
+    /* stateCode 200인지 확인. 추후에 에러코드에 따라 에러팝업 출력 예정 */
+    const { stateCode } = res.data ?? {};
+    if (stateCode && stateCode !== 200) throw new Error(`stateCode ${stateCode}`);
+    
+    /* 토큰을 헤더에서 추출하기 */
+    const token = res.headers["authorization"]?.split(" ")[1];
     if (!token) throw new Error("token missing");
 
     localStorage.setItem("accesstoken", token);

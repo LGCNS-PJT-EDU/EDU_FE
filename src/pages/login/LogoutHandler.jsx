@@ -1,36 +1,34 @@
+// src/pages/auth/LogoutHandler.jsx
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axios";
 
 export default function LogoutHandler() {
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    /* 로컬 스토리지에서 토큰 가져오기 */
+    const accessToken = localStorage.getItem("accesstoken");
     (async () => {
       try {
-        /* 1) (선택) 서버 세션 / 리프레시 토큰 무효화 */
-        await axios.post(
-          "https://api.example.com/auth/logout",   // ← 엔드포인트 이름 맞춰서 수정
-          {},
-          { withCredentials: true }
-        );
+        /* api 호출 */
+        await api.delete("/api/user/signout"); 
       } catch (e) {
         console.warn("서버 로그아웃 요청 실패(무시)", e);
       }
 
-      /* 2) 로컬 저장소 토큰 제거 */
+      /* 토큰 삭제 */
       localStorage.removeItem("accesstoken");
-      localStorage.removeItem("refreshtoken");     // 있다면 같이 제거
+      localStorage.removeItem("refreshtoken");   // 있으면 삭제
 
-      /* 3) 홈으로 리다이렉트 (기존 기록 덮어쓰기) */
-      nav("/", { replace: true });
+      /* 3) 홈으로 이동 */
+      navigate("/", { replace: true });
     })();
-  }, [nav]);
+  }, [navigate]);
 
-  /* 로딩 메시지용 간단 UI */
   return (
     <div style={{ textAlign: "center", marginTop: "20%" }}>
-      <h2>로그아웃 중입니다...</h2>
+      <h2>로그아웃 중</h2>
     </div>
   );
 }

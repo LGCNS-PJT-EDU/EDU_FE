@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import '../styled/about.css'
+import '../styled/pages/about.css'
 
 function About() {
   const sectionsRef = useRef([]);

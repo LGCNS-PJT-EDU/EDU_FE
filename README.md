@@ -81,6 +81,13 @@ git commit -m "✨feat EDU-jira이슈번호 : 커밋내용"
 * Subject: 
 커밋의 작업 내용 간략히 설명
 
+* Body: 
+길게 설명할 필요가 있을 시 작성
+
+* Footer: 
+Breaking Point 가 있을 때
+특정 이슈에 대한 해결 작업일 때
+
 * [Gitmoji](https://gitmoji.dev/)를 이용하여 Type을 대신하기도 합니다.
   
 
