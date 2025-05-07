@@ -12,7 +12,10 @@ export default function LogoutHandler() {
     (async () => {
       try {
         /* api 호출 */
-        await api.delete("/api/user/signout"); 
+        await api.delete("/api/user/signout", {
+        params: { accessToken },
+        });
+        console.log("토큰이 담겼다고!@@@@11")
       } catch (e) {
         console.warn("서버 로그아웃 요청 실패(무시)", e);
       }

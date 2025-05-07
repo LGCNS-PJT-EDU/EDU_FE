@@ -1,0 +1,95 @@
+/* 루트(id)로 스코프 고정 */
+#subject-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+  }
+  
+  /* 오버레이 */
+  #subject-modal .overlay {
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* 카드 */
+  #subject-modal .card {
+    position: relative;
+    width: 90%;
+    max-width: 540px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+  }
+  
+  /* 닫기 버튼 */
+  #subject-modal .close {
+    position: absolute;
+    right: 20px;
+    top: 16px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #999;
+    cursor: pointer;
+  }
+  #subject-modal .close:hover {
+    color: #666;
+  }
+  
+  /* 제목 & 본문 */
+  #subject-modal .title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  #subject-modal .overview {
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  #subject-modal .subtitle {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  #subject-modal .video-list {
+    list-style: disc;
+    padding-left: 20px;
+    margin: 0 0 32px 0;
+  }
+  #subject-modal .length {
+    margin-left: 6px;
+    font-size: 12px;
+    color: #777;
+  }
+  #subject-modal .video-link { 
+    color: #878787;
+    text-decoration:underline; 
+  }
+  
+  /* 하단 버튼 */
+  #subject-modal .footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+  #subject-modal .action {
+    background: #16a34a;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  #subject-modal .action:hover {
+    background: #0f8b3c;
+  }
+  
+  /* 로딩 */
+  #subject-modal .loading {
+    color: #555;
+  }
+  
