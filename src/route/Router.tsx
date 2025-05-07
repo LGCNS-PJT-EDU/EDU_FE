@@ -1,12 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
-import Main from "../pages/Main";
-import About from "../pages/About";
-import Login from "../pages/login/Login";
-import Signup from "../pages/sign/Signup";
-import MyPage from "../pages/MyPage";
-import OAuthCallback from "../pages/login/OAuthCallback";
-import LogoutHandler from "../pages/login/LogoutHandler";
-import Layout from "../components/layout/Layouts"; 
+import Main from "@/pages/Main";
+import About from "@/pages/About";
+import Login from "@/pages/login/Login";
+import Signup from "@/pages/sign/Signup";
+import MyPage from "@/pages/MyPage";
+import OAuthCallback from "@/pages/login/OAuthCallback";
+import LogoutHandler from "@/pages/login/LogoutHandler";
+import Layout from "@/components/layout/Layouts";
+import Roadmap from "@/pages/roadmap/Roadmap";
 
 const router = createBrowserRouter([
   {

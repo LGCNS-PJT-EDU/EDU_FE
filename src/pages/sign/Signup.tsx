@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '@/styled/pages/signup.css';
 import axios from '@/api/axios';
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 function Signup() {
   const [email, setEmail] = useState<string>('');
@@ -8,6 +9,7 @@ function Signup() {
   const [nickname, setNickname] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordCheck, setPasswordCheck] = useState<string>('');
+  const navigate: NavigateFunction = useNavigate();
 
   // 이메일 유효성 검사
   const isValidEmail = (email: string): boolean => {
@@ -83,7 +85,7 @@ function Signup() {
 
       if (res.status === 201 || res.status === 200) {
         alert('회원가입이 완료되었습니다!');
-        // 회원가입 성공 시 추가 처리 가능
+        navigate("/", { replace: true });
       }
     } catch (err) {
       console.error(err);
