@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 function MyPage() {
   const navigate = useNavigate();
 
-  const handleLogout = () => navigate("/logout");
+  const handleLogout = (): void => {
+    navigate("/logout");
+  };
   
   return (
     <section id="articles">
@@ -15,13 +17,13 @@ function MyPage() {
       </section>
 
       {/* 상태 툴바 */}
-      <section class="mypage-container">
-        <div class="mypage-progress">
+      <section className="mypage-container">
+        <div className="mypage-progress">
           어디까지 완료했나요?
-          <span class="mypage-count">2/10</span>
+          <span className="mypage-count">2/10</span>
         </div>
-        <div class="mypage-bar">
-          <div class="mypage-fill"></div>
+        <div className="mypage-bar">
+          <div className="mypage-fill"></div>
         </div>
       </section>
 

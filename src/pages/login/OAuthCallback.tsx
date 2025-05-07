@@ -1,24 +1,30 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import api from "../../api/axios";
+import api from "@/api/axios";
+
+type Provider = "naver" | "kakao" | "google" | "local";
 
 /* loginType에 provider를 대문자로 넣기 */
-const toLoginType = provider =>
+const toLoginType = (provider: string): string =>
   provider.toLowerCase() === "local" ? "LOCAL" : provider.toUpperCase();
 
 /* 네이버만 POST body에 state 포함하기 */
-const buildBody = ({ code, state, provider }) => ({
+const buildBody = ({
+  code,
+  state,
+  provider,
+}: {
+  code: string;
+  state: string | null;
+  provider: string;
+}) => ({
   code,
   loginType: toLoginType(provider),
-  ...(provider.toLowerCase() === "naver" && { state }),
+  ...(provider.toLowerCase() === "naver" && {state}),
 });
 
-/* 존왓탱 JWT 추출 (문자 | { token }) */
-const extractToken = data =>
-  typeof data === "string" ? data : data?.token ?? null;
-
 function OAuthCallback() {
-  const { provider = "" } = useParams();         // naver | kakao | google | local
+  const { provider = "" } = useParams<{ provider?: Provider }>();         // naver | kakao | google | local
   const { search } = useLocation();              // ?code=...&state=...
   const navigate  = useNavigate();
   const ranOnce   = useRef(false);               // Strict-mode 방지
@@ -53,7 +59,7 @@ function OAuthCallback() {
     if (ranOnce.current) return;
     ranOnce.current = true;
 
-    requestLogin().catch(err => {
+    requestLogin().catch((err: unknown) => {
       console.error("OAuth 처리 실패:", err);
       alert("로그인 실패");
       navigate("/login");
