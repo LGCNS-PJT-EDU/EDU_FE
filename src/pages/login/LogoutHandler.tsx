@@ -1,20 +1,16 @@
 // src/pages/auth/LogoutHandler.jsx
 import { useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import api from "../../api/axios";
+import api from "@/api/axios";
 
 export default function LogoutHandler() {
   const navigate: NavigateFunction = useNavigate();
 
   useEffect(() => {
-    /* 로컬 스토리지에서 토큰 가져오기 */
-    const accessToken: string | null = localStorage.getItem("accesstoken");
     (async () => {
       try {
         /* api 호출 */
-        await api.delete<void>("/api/user/signout", {
-          params: { accessToken },
-        });
+        await api.delete<void>("/api/user/signout");
       } catch (e) {
         console.warn("서버 로그아웃 요청 실패(무시)", e);
       }

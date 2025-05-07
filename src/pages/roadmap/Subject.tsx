@@ -1,6 +1,6 @@
 // src/components/Subject.jsx
 import { useEffect, useState } from "react";
-import "../../styled/pages/subject.css";
+import "@/styled/pages/subject.css";
 
 export interface SubjectRef {
   subjectId: number;

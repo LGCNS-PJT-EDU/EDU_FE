@@ -1,8 +1,8 @@
 // src/components/Roadmap.jsx
 import { useEffect, useState } from "react";
-import SubjectModal from "./Subject";
-import api from "../../api/axios"
-import "../../styled/pages/roadmap.css";
+import SubjectModal from "@/pages/roadmap/Subject";
+import api from "@/api/axios"
+import "@/styled/pages/roadmap.css";
 
 interface Answer {
   questionId: number;
