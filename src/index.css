@@ -8,19 +8,22 @@
   src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.eot?#iefix) format("embedded-opentype"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.woff) format("woff"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.ttf) format("truetype");
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow: auto; 
+  overflow: auto;
 }
-button{
+
+button {
   cursor: pointer;
 }
 
-@theme{
-  --color-blue01: #f4f9ff; /* 가장 밝은 파란색 */
+@theme {
+  --color-blue01: #f4f9ff;
+  /* 가장 밝은 파란색 */
   --color-blue02: #e6effd;
   --color-blue03: #d3e5ff;
   --color-blue04: #c3dcff;
@@ -28,7 +31,8 @@ button{
   --color-blue06: #a2c9ff;
   --color-blue07: #92bfff;
   --color-blue08: #78b0ff;
-  --color-blue09: #6ca9ff; /* 가장 어두운 파란색 */
+  --color-blue09: #6ca9ff;
+  /* 가장 어두운 파란색 */
 
 
   --color-green01: #f2f9fb;
@@ -51,7 +55,7 @@ button{
   --color-gray10: #1b1a1b;
 }
 
-#articles{
+#articles {
   width: 600px;
   margin: 0 auto;
 }
