@@ -2,22 +2,16 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import '@/styled/components/nav.css'
 import rabbitImage from '@/asset/img/common/main.png'
 import { useAuthStore } from "@/store/authGlobal";
+import useLogout from "@/hooks/useLogout";
 
 
 function Nav() {
 
   // js는 전역객체 ts useLocation으로 불러와야 함
   const location = useLocation();
-  const navigate = useNavigate();
   const accessToken = useAuthStore((state) => state.accessToken);
-  const setLogout = useAuthStore((state) => state.setLogout);
-  console.log("isLogin?", !!accessToken, "| accessToken:", accessToken);
   const isLogin = !!accessToken;
-
-  const handleLogout = () => {
-    setLogout();
-    navigate("/");
-  };
+  const logout = useLogout();
 
   return (
     <header className="nav_header">
@@ -51,7 +45,7 @@ function Nav() {
             <Link to='/mypage'>
               <button className={location.pathname === "/mypage" ? "active" : ""}>MyPage</button>
             </Link>
-            <button onClick={handleLogout}>Logout</button>
+            <button onClick={logout}>Logout</button>
           </>
         }
 

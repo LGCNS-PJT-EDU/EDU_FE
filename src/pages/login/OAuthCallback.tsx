@@ -1,6 +1,8 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import api from "@/api/axios";
+import { useAuthStore } from "@/store/authGlobal";
+import useLogin from "@/hooks/useLogin";
 
 type Provider = "naver" | "kakao" | "google" | "local";
 
@@ -28,17 +30,18 @@ function OAuthCallback() {
   const { search } = useLocation();              // ?code=...&state=...
   const navigate  = useNavigate();
   const ranOnce   = useRef(false);               // Strict-mode 방지
+  const saveAccessToken = useLogin();
 
   /* 실제 요청 */
+  const setLogin = useAuthStore((s) => s.setLogin);
+
   const requestLogin = useCallback(async () => {
     const qs    = new URLSearchParams(search);
     const code  = qs.get("code");
     const state = qs.get("state");
-
     if (!code || !provider) return navigate("/login");
 
     const body = buildBody({ code, state, provider });
-
     const res = await api.post(`/api/auth/${provider}/login`, body);
 
     /* stateCode 200인지 확인. 추후에 에러코드에 따라 에러팝업 출력 예정 */
@@ -49,11 +52,8 @@ function OAuthCallback() {
     const token = res.headers["authorization"]?.split(" ")[1];
     if (!token) throw new Error("token missing");
 
-    localStorage.setItem("accesstoken", token);
-    alert("로그인 성공!");
-    console.log("존왓탱(JWT) 저장:", token);
-    navigate("/", { replace: true });
-  }, [provider, search, navigate]);
+    saveAccessToken(token);
+  }, [provider, search, navigate, setLogin]);
 
   useEffect(() => {
     if (ranOnce.current) return;

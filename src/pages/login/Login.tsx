@@ -2,17 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "@/styled/pages/login.css";
 import axios from "@/api/axios";
-import { useAuthStore } from "@/store/authGlobal"; 
 
 import google from "@/asset/img/login/btn_google.svg";
 import kakao from "@/asset/img/login/btn_kakao.svg";
 import naver from "@/asset/img/login/btn_naver.svg";
 import takeRabbit from "@/asset/img/common/takeRabbit.png";
-
-
-// 공급자 타입 지정
-type OAuthProvider = keyof typeof OAUTH;
-
+import useLogin from "@/hooks/useLogin";
 
 /* 1) 공급자별 고정 파라미터 */
 const OAUTH = {
@@ -34,6 +29,9 @@ const OAUTH = {
     scope: "openid email profile",
   },
 } as const
+
+// 공급자 타입 지정
+type OAuthProvider = keyof typeof OAUTH;
 
 /* 2) 버튼 클릭 → authorize URL 생성 & 이동 */
 function goOAuthLogin(provider: OAuthProvider): void {
@@ -57,11 +55,12 @@ function goOAuthLogin(provider: OAuthProvider): void {
 }
 
 function Login() {
-
   useEffect(() => window.scrollTo(0, 0), []);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const saveAccessToken = useLogin(); 
 
   const handleLogin = async (): Promise<void> => {
     try {
@@ -73,14 +72,9 @@ function Login() {
       const token = res.headers["authorization"]?.split(" ")[1]
       if (!token) throw new Error("token missing");
 
-      useAuthStore.getState().setLogin(token);
+      saveAccessToken(token);
 
-      localStorage.setItem("accesstoken", token);
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-
-      console.log('서버 응답:', res.data);
-      alert('로그인이 완료되었습니다.');
-      navigate("/");
     }
     catch (err: unknown) {
       console.error(err);
