@@ -1,12 +1,8 @@
+import useLogout from '@/hooks/useLogout';
 import '@/styled/pages/mypage.css';
-import { useNavigate } from 'react-router-dom';
 
 function MyPage() {
-  const navigate = useNavigate();
-
-  const handleLogout = (): void => {
-    navigate("/logout");
-  };
+  const logout = useLogout();
   
   return (
     <section id="articles">
@@ -37,7 +33,7 @@ function MyPage() {
 
       {/* 회원탈퇴, 로그아웃 */}
       <section className="mypage-footer">
-        <button onClick={handleLogout} className="logoutBtn">로그아웃</button>
+        <button onClick={logout} className="logoutBtn">로그아웃</button>
         <span>|</span>
         <button className='signout'>회원탈퇴</button>
       </section>
