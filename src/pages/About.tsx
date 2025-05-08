@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import '../styled/pages/about.css'
+import '@/styled/pages/about.css'
 
 function About() {
-  const sectionsRef = useRef([]);
+  const sectionsRef = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -27,7 +27,7 @@ function About() {
     };
   }, []);
 
-  const setRef = (el, index) => {
+  const setRef = (el: HTMLElement | null, index: number) => {
     sectionsRef.current[index] = el;
   };
 

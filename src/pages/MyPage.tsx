@@ -1,10 +1,8 @@
-import '../styled/pages/mypage.css';
-import { useNavigate } from 'react-router-dom';
+import useLogout from '@/hooks/useLogout';
+import '@/styled/pages/mypage.css';
 
 function MyPage() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => navigate("/logout");
+  const logout = useLogout();
   
   return (
     <section id="articles">
@@ -15,13 +13,13 @@ function MyPage() {
       </section>
 
       {/* 상태 툴바 */}
-      <section class="mypage-container">
-        <div class="mypage-progress">
+      <section className="mypage-container">
+        <div className="mypage-progress">
           어디까지 완료했나요?
-          <span class="mypage-count">2/10</span>
+          <span className="mypage-count">2/10</span>
         </div>
-        <div class="mypage-bar">
-          <div class="mypage-fill"></div>
+        <div className="mypage-bar">
+          <div className="mypage-fill"></div>
         </div>
       </section>
 
@@ -35,7 +33,7 @@ function MyPage() {
 
       {/* 회원탈퇴, 로그아웃 */}
       <section className="mypage-footer">
-        <button onClick={handleLogout} className="logoutBtn">로그아웃</button>
+        <button onClick={logout} className="logoutBtn">로그아웃</button>
         <span>|</span>
         <button className='signout'>회원탈퇴</button>
       </section>
