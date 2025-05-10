@@ -5,8 +5,8 @@
   display: flex;
   justify-content: space-between;
   display: flex;
-  justify-content: center; /* ✅ 가운데 정렬 */
-  gap: 100px; /* ✅ 간격 조절 */
+  justify-content: center; 
+  gap: 100px; 
 }
 
 /* 왼쪽 배너 영역 */
@@ -111,6 +111,7 @@
 .loginformGroup label {
   font-size: 14px;
   font-weight: 400;
+  background-color: transparent;
 }
 
 .loginformGroup input {
@@ -211,16 +212,15 @@
   position: absolute;
   border-radius: 50%;
   background: radial-gradient(circle, #6378eb, #f3f5fd);
-  opacity: 0.3;
   pointer-events: none;
 }
 
 /* 개별 위치와 크기 */
 .bubble1 {
-  width: 500px;
-  height: 500px;
-  top: 65px;
-  left: -100px;
+  width: 600px;
+  height: 600px;
+  top: 50px;
+  left: -80px;
 }
 
 .bubble2 {
@@ -248,5 +248,5 @@
   width: 60px;
   height: 60px;
   bottom: 80px;
-  left: 200px;
+  left: 500px;
 }

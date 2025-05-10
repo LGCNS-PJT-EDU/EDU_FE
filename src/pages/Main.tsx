@@ -12,7 +12,7 @@ function Main() {
 
         <div className="btn-group">
           <button className="btn-type">
-            <img src={frontbubble} alt="frontbubble" />
+            <img src={frontbubble} alt="frontbubble"/>
           </button>
           <button className="btn-type">
             <img src={backbubble} alt="backbubble" />
