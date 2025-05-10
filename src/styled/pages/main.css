@@ -1,10 +1,5 @@
 .mainpage {
-  background: linear-gradient(
-    to bottom,
-    #ffffff 0%,
-    #f3f5fd 40%,
-    #6378eb 100%
-  );
+  background: linear-gradient(to bottom, #ffffff 0%, #f3f5fd 40%, #6378eb 100%);
   height: calc(100vh - 70px);
   display: flex;
   justify-content: center;
@@ -42,7 +37,7 @@
   color: white;
 }
 
-.subtext-main{
+.subtext-main {
   background-color: rgba(152, 160, 161, 0.8);
   padding: 13px;
   border-radius: 30px;
@@ -58,7 +53,7 @@
   font-weight: bold;
   background: transparent;
   border: none;
-  cursor: pointer;  
+  cursor: pointer;
   color: #6378eb;
 }
 .get-start:hover {
@@ -73,7 +68,8 @@
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {

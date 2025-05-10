@@ -5,8 +5,8 @@
   display: flex;
   justify-content: space-between;
   display: flex;
-  justify-content: center; 
-  gap: 100px; 
+  justify-content: center;
+  gap: 100px;
 }
 
 /* 왼쪽 배너 영역 */
@@ -55,15 +55,15 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  
+
   box-shadow: -4px 0 10px rgba(0, 0, 0, 0.05);
-  border: 1px solid #E0E0E0;
+  border: 1px solid #e0e0e0;
   border-radius: 30px;
 }
-.welcome{
+.welcome {
   font-size: 13px;
 }
-.loginh2{
+.loginh2 {
   margin-top: 3px;
   margin-bottom: 5px;
 }
@@ -132,7 +132,7 @@
 /* 로그인 버튼 */
 .loginSubmit {
   padding: 12px;
-  background-color: #6378EB;
+  background-color: #6378eb;
   color: white;
   border: none;
   border-radius: 8px;
@@ -205,7 +205,6 @@
   text-decoration: none;
   margin: 0 6px;
 }
-
 
 /* 공통 스타일 */
 .bubble {

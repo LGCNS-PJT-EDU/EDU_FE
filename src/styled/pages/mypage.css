@@ -1,76 +1,72 @@
 /* 마이페이지 헤더 */
 .mypage-header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.feedbackBtn{
-    border: 1px solid #000;
-    border-radius: 7px;
-    padding: 7px;
+.feedbackBtn {
+  border: 1px solid #000;
+  border-radius: 7px;
+  padding: 7px;
 }
 
 /* 상태 툴바 */
 .mypage-container {
-    width: 100%;
-    margin-bottom: 15px;
+  width: 100%;
+  margin-bottom: 15px;
 }
-.mypage-progress{
-    margin-bottom: 15px;
+.mypage-progress {
+  margin-bottom: 15px;
 }
 /* 즐겨찾기 */
 .Favorites {
-    width: 100%;
-    border: 1px solid #000;
-    border-radius: 7px;
+  width: 100%;
+  border: 1px solid #000;
+  border-radius: 7px;
 }
 
 .curriculum {
-    display: flex;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .curriculum .labels {
-    border: 1px solid #000;
-    width: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 7px;
-    margin-right: 10px;
+  border: 1px solid #000;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 7px;
+  margin-right: 10px;
 }
 
 .mypage-bar {
-    width: 100%;
-    height: 16px;
-    background-color: #e0e0e0;
-    /* 연한 회색 */
-    border-radius: 999px;
-    overflow: hidden;
+  width: 100%;
+  height: 16px;
+  background-color: #e0e0e0;
+  /* 연한 회색 */
+  border-radius: 999px;
+  overflow: hidden;
 }
 
 .mypage-fill {
-    width: 30%;
-    /* 여기 퍼센트 조절해서 채워진 정도 표현 */
-    height: 100%;
-    background-color: #4BE9AC;
-    /* 초록 계열 */
-    border-radius: 999px 0 0 999px;
-    /* 왼쪽만 둥글게 */
-    transition: width 0.3s ease;
+  width: 30%;
+  /* 여기 퍼센트 조절해서 채워진 정도 표현 */
+  height: 100%;
+  background-color: #4be9ac;
+  /* 초록 계열 */
+  border-radius: 999px 0 0 999px;
+  /* 왼쪽만 둥글게 */
+  transition: width 0.3s ease;
 }
 
 /* 회원탈퇴 로그아웃웃 */
 .mypage-footer {
-    display: flex;
-    justify-content: center; 
-    align-items: center;   
-    gap: 5px; 
-    margin-top: 20px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 20px;
 }
-
-
-
-
