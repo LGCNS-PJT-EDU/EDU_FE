@@ -33,9 +33,7 @@ const answers: Answer[] = [
 
   /* 2) 로드맵 요청 함수 -------------------------------------------------- */
   async function requestRoadmap(body: Answer[]): Promise<RoadmapData> {
-    console.log("[REQ] POST /api/roadmap/guest →", body);
-    const res = await api.post<RoadmapData>("/api/roadmap/guest", body);
-    console.log("[RES] roadmap data →", res.data);
+    const res = await api.post<RoadmapData>("/api/diagnosis", body);
     return res.data;
   }
 

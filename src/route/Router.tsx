@@ -7,6 +7,7 @@ import MyPage from "@/pages/MyPage";
 import OAuthCallback from "@/pages/login/OAuthCallback";
 import Layout from "@/components/layout/Layouts";
 import Roadmap from "@/pages/roadmap/Roadmap";
+import Diagnosis from "@/pages/diagnosis/diagnosis";
 
 const router = createBrowserRouter([
   {
@@ -20,8 +21,9 @@ const router = createBrowserRouter([
       { path: "mypage", element: <MyPage /> },
       { path: "login/oauth2/code/:provider", element: <OAuthCallback /> },
       { path: "roadmap", element: <Roadmap /> },
+      { path: "diagnosis", element: <Diagnosis /> },
     ],
-  },
+  },  
 ]);
 
 export default router;
