@@ -62,8 +62,6 @@
     transition: width 0.3s ease;
 }
 
-.curriculum .names {}
-
 /* 회원탈퇴 로그아웃웃 */
 .mypage-footer {
     display: flex;

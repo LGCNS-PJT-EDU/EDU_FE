@@ -1,25 +1,38 @@
 /* 전체 적용 버튼 */
-button{
-    background-color: transparent;
-    border: none;
-  }
+button {
+  background-color: transparent;
+  border: none;
+  font-family: "Figtree", sans-serif;
+  color: #373F41;
+}
+.nav_header {
+  display: flex;
+  height: 70px;
+  justify-content: space-between;
+  width: 800px;
+  margin: 0 auto;
+  align-items: center;
+}
+.nav_header button{
+  font-size: 16px;
+}
+.nav_header button:hover{
+  color: #6378EB;
+  font-size: 17px;
+}
 
-.nav_header{
-    display: flex;
-    justify-content: space-between;
-    background-color: aquamarine;
-    padding: 0 100px;
+.nav_header img {
+  width: 100px;
 }
-.nav_header img{
-    width: 100px;
-}
+
 .header-center {
-    display: flex;
-    gap: 20px; /* 버튼 간 간격 조절 */
-    align-items: center; /* 세로 가운데 정렬 */
-  }
-  .login {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-  }
+  display: flex;
+  gap: 30px;
+  /* 버튼 간 간격 조절 */
+  align-items: center;
+  /* 세로 가운데 정렬 */
+}
+
+.login {
+  align-items: center;
+}
