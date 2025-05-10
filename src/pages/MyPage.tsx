@@ -3,10 +3,9 @@ import '@/styled/pages/mypage.css';
 
 function MyPage() {
   const logout = useLogout();
-  
+
   return (
     <section id="articles">
-
       <section className="mypage-header">
         <h1>MyPage</h1>
         <button className="feedbackBtn">피드백 보기</button>
@@ -33,11 +32,13 @@ function MyPage() {
 
       {/* 회원탈퇴, 로그아웃 */}
       <section className="mypage-footer">
-        <button onClick={logout} className="logoutBtn">로그아웃</button>
+        <button onClick={logout} className="logoutBtn">
+          로그아웃
+        </button>
         <span>|</span>
-        <button className='signout'>회원탈퇴</button>
+        <button className="signout">회원탈퇴</button>
       </section>
     </section>
-  )
+  );
 }
 export default MyPage;

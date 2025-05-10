@@ -65,7 +65,9 @@ function Signup() {
     }
 
     if (!isPasswordValid(password)) {
-      alert('비밀번호는 6-20자이며, 영문 대/소문자, 숫자, 특수문자 중 2가지 이상 조합이어야 합니다.');
+      alert(
+        '비밀번호는 6-20자이며, 영문 대/소문자, 숫자, 특수문자 중 2가지 이상 조합이어야 합니다.'
+      );
       return;
     }
 

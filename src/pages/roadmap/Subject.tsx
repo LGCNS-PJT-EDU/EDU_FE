@@ -1,6 +1,6 @@
 // src/components/Subject.jsx
-import { useEffect, useState } from "react";
-import "@/styled/pages/subject.css";
+import { useEffect, useState } from 'react';
+import '@/styled/pages/subject.css';
 
 export interface SubjectRef {
   subjectId: number;
@@ -29,15 +29,15 @@ async function fetchSubjectDetail(subjectId: number): Promise<SubjectDetail> {
 
   return {
     subjectId,
-    overview: "이 과목은 개발자가 반드시 알아야 할 기본 리눅스 명령어를 다룹니다.",
+    overview: '이 과목은 개발자가 반드시 알아야 할 기본 리눅스 명령어를 다룹니다.',
     videos: [
       {
-        title: "1시간에 끝내는 Linux 기본 명령어",
-        url: "https://www.youtube.com/watch?v=ymwMfvzAOPg&list=PL8oUjFBfGVJxH_oJkYfRwSqM9Q5Fy5C1X",
+        title: '1시간에 끝내는 Linux 기본 명령어',
+        url: 'https://www.youtube.com/watch?v=ymwMfvzAOPg&list=PL8oUjFBfGVJxH_oJkYfRwSqM9Q5Fy5C1X',
       },
       {
-        title: "생활코딩 - 리눅스(Linux)",
-        url: "https://edu.goorm.io/lecture/12984/%EC%83%9D%ED%99%9C%EC%BD%94%EB%94%A9-%EB%A6%AC%EB%88%85%EC%8A%A4-linux",
+        title: '생활코딩 - 리눅스(Linux)',
+        url: 'https://edu.goorm.io/lecture/12984/%EC%83%9D%ED%99%9C%EC%BD%94%EB%94%A9-%EB%A6%AC%EB%88%85%EC%8A%A4-linux',
       },
     ],
   };
@@ -88,10 +88,7 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
           )}
 
           <div className="footer">
-            <button
-              className="action"
-              onClick={() => alert("사전평가 화면으로 이동 예정")}
-            >
+            <button className="action" onClick={() => alert('사전평가 화면으로 이동 예정')}>
               사전평가 보러가기
             </button>
           </div>
