@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "@/api/axios";
 
 /* ---------- 타입 ---------- */
@@ -20,12 +21,22 @@ interface RawData {
   FE: Question[];
 }
 
+interface Subject {
+  subjectId: number;
+  subjectName: string;
+}
+
+interface RoadmapData {
+  subjects: Subject[];
+}
+
 /* ---------- 컴포넌트 ---------- */
 const Diagnosis = () => {
   const [raw, setRaw] = useState<RawData | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [currentIdx, setCurrentIdx] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   /* 1. 문제 받아오기 */
   useEffect(() => {
@@ -60,13 +71,15 @@ const Diagnosis = () => {
   const submit = async () => {
     if (!isAnswered || submitting) return;
     setSubmitting(true);
+
     const payload = Object.entries(answers).map(([id, val]) => ({
       questionId: Number(id),
       answer: val,
     }));
+
     try {
-      await api.post("/api/diagnosis", payload);
-      // TODO: 성공 후 후속 처리(결과 페이지 이동 등)
+    const { data } = await api.post<RoadmapData>("/api/diagnosis", payload);
+    navigate("/roadmap", { state: data });
     } finally {
       setSubmitting(false);
     }

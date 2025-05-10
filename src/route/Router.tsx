@@ -7,7 +7,7 @@ import MyPage from "@/pages/MyPage";
 import OAuthCallback from "@/pages/login/OAuthCallback";
 import Layout from "@/components/layout/Layouts";
 import Roadmap from "@/pages/roadmap/Roadmap";
-import Diagnosis from "@/pages/diagnosis/diagnosis";
+import Diagnosis from "@/pages/diagnosis/Diagnosis";
 
 const router = createBrowserRouter([
   {
