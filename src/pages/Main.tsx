@@ -1,4 +1,4 @@
-import '@/styled/pages/main.css';
+import '@/styled/pages/main.css'
 import chevron from '@/asset/img/main/chevron-down.png';
 import frontbubble from '@/asset/img/main/front_bubble.png';
 import backbubble from '@/asset/img/main/back_bubble.png';

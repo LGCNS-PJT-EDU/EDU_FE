@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import '@/styled/pages/signup.css';
 import axios from '@/api/axios';
 
 function Signup() {

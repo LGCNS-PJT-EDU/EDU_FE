@@ -34,7 +34,7 @@ function Nav() {
             <Link to="/login">
               <button className={location.pathname === '/login' ? 'active' : ''}>Login</button>
             </Link>
-            <Link to="/signup">
+            <Link to="/signup-refactored">
               <button className={location.pathname === '/signup' ? 'active' : ''}>Signup</button>
             </Link>
           </>
