@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '@/styled/pages/login.css';
 import axios from '@/api/axios';
 
 import google from '@/asset/img/login/btn_google.svg';
@@ -57,8 +55,13 @@ function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
   const saveAccessToken = useLogin();
+
+  const bubbleStyle = {
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, #6378eb, #f3f5fd)',
+    pointerEvents: 'none',
+  }
 
   const handleLogin = async (): Promise<void> => {
     try {
@@ -80,78 +83,101 @@ function Login() {
   };
 
   return (
-    <div className="loginWrapper">
-      <div className="loginBanner">
-        <div className="bannerContent">
-          <h1>TakeIT</h1>
-          <p>개발자의 꿈, 지금 TakeIT과 시작해보세요</p>
+    <div className="relative h-[calc(100vh-70px)] flex justify-center gap-[100px] overflow-hidden">
+      {/* 배너 */}
+      <div className="relative flex justify-center items-center">
+        <div className="z-20 text-center text-[#373f41]">
+          <h1 className="text-4xl font-bold text-white mb-2">TakeIT</h1>
+          <p className="text-sm text-white">개발자의 꿈, 지금 TakeIT과 시작해보세요</p>
         </div>
       </div>
-      {/* ✅ 오른쪽 로그인 컨테이너 */}
-      <div className="loginMain">
-        <div className="intro">
-          <p className="welcome">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
-          <h2 className="loginh2">Login</h2>
-        </div>
+
+      {/* 로그인 박스 */}
+      <div className="relative max-w-[400px] h-screen z-10 p-[60px_70px] mt-[50px] bg-white flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
+        <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
+        <h2 className="mt-1 mb-1 text-xl font-semibold">Login</h2>
+
         <form
-          className="loginformGroup"
+          className="flex flex-col"
           onKeyUp={(e) => {
-            if (e.key === 'Enter') {
-              handleLogin();
-            }
+            if (e.key === 'Enter') handleLogin();
           }}
         >
-          <div className="floatingInput">
-            <label htmlFor="email">Email</label>
+          <div className="relative mb-6">
+            <label
+              htmlFor="email"
+              className="absolute top-[-8px] left-[14px] bg-white px-[6px] text-xs text-gray-600 z-10"
+            >
+              Email
+            </label>
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder=" " // <-- 중요! placeholder가 공백이어야 라벨이 겹치지 않음
+              placeholder=" "
+              className="w-full px-3 pt-4 pb-3 text-base border border-gray-400 rounded-md focus:outline-none focus:border-[#6378eb] focus:ring-2 focus:ring-[#6378eb]/20"
             />
           </div>
-          <div className="floatingInput">
-            <label htmlFor="password">Password</label>
+
+          <div className="relative mb-6">
+            <label
+              htmlFor="password"
+              className="absolute top-[-8px] left-[14px] bg-white px-[6px] text-xs text-gray-600 z-10"
+            >
+              Password
+            </label>
             <input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder=" " // 여기도 공백
+              placeholder=" "
+              className="w-full px-3 pt-4 pb-3 text-base border border-gray-400 rounded-md focus:outline-none focus:border-[#6378eb] focus:ring-2 focus:ring-[#6378eb]/20"
             />
           </div>
         </form>
-        <button type="submit" className="loginSubmit" onClick={handleLogin}>
+
+        <button
+          onClick={handleLogin}
+          className="py-3 bg-[#6378EB] text-white rounded-md font-bold hover:bg-[#455ce3] transition"
+        >
           CONTINUE
         </button>
-        <div className="divider">
-          <span>Or</span>
+
+        <div className="flex items-center text-center my-1">
+          <div className="flex-1 border-b border-gray-300" />
+          <span className="px-3 text-sm text-gray-700 bg-white">Or</span>
+          <div className="flex-1 border-b border-gray-300" />
         </div>
-        <div className="sociallogin">
-          <button className="kakao" onClick={() => goOAuthLogin('kakao')}>
-            <img src={kakao} alt="카카오 로그인" />
+
+        <div className="flex justify-center gap-5">
+          <button onClick={() => goOAuthLogin('kakao')}>
+            <img src={kakao} alt="카카오 로그인" className="w-[42px] h-[42px] rounded-full" />
           </button>
-          <button className="naver" onClick={() => goOAuthLogin('naver')}>
-            <img src={naver} alt="네이버 로그인" />
+          <button onClick={() => goOAuthLogin('naver')}>
+            <img src={naver} alt="네이버 로그인" className="w-[42px] h-[42px] rounded-full" />
           </button>
-          <button className="google" onClick={() => goOAuthLogin('google')}>
-            <img src={google} alt="구글 로그인" />
+          <button onClick={() => goOAuthLogin('google')}>
+            <img src={google} alt="구글 로그인" className="w-[42px] h-[42px] rounded-full" />
           </button>
         </div>
-        <div className="links">
-          <a href="/signup">회원가입</a>
+
+        <div className="text-center text-xs text-gray-500 mt-3">
+          <a href="/signup" className="text-gray-600 mx-1">회원가입</a>
           <span>|</span>
-          <a href="#">아이디 찾기</a>
+          <a href="#" className="text-gray-600 mx-1">아이디 찾기</a>
           <span>|</span>
-          <a href="#">비밀번호 찾기</a>
+          <a href="#" className="text-gray-600 mx-1">비밀번호 찾기</a>
         </div>
       </div>
-      <div className="bubble bubble1"></div>
-      <div className="bubble bubble2"></div>
-      <div className="bubble bubble3"></div>
-      <div className="bubble bubble4"></div>
-      <div className="bubble bubble5"></div>
+
+      {/* 배경 버블 */}
+      <div className="bubble absolute w-[600px] h-[600px] top-[50px] left-[-80px]" style={bubbleStyle} />
+      <div className="bubble absolute w-[380px] h-[380px] bottom-[-120px] right-[-150px]" style={bubbleStyle}/>
+      <div className="bubble absolute w-[80px] h-[80px] top-[100px] left-[45%]" style={bubbleStyle}/>
+      <div className="bubble absolute w-[100px] h-[100px] top-[30%] right-[180px]" style={bubbleStyle}/>
+      <div className="bubble absolute w-[60px] h-[60px] bottom-[80px] left-[500px]" style={bubbleStyle}/>
     </div>
   );
 }
