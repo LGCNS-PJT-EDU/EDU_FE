@@ -1,0 +1,174 @@
+import { useEffect, useMemo, useState } from 'react';
+import api from '@/api/axios';
+
+/* ---------- 타입 ---------- */
+interface Choice {
+  choiceId: number;
+  choiceNum: number;
+  choice: string;
+  value: string;
+}
+interface Question {
+  diagnosisId: number;
+  question: string;
+  questionType: string;
+  choices: Choice[];
+}
+interface RawData {
+  COMMON: Question[];
+  BE: Question[];
+  FE: Question[];
+}
+
+/* ---------- 컴포넌트 ---------- */
+const Diagnosis = () => {
+  const [raw, setRaw] = useState<RawData | null>(null);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+
+  /* 1. 문제 받아오기 */
+  useEffect(() => {
+    api.get('/api/diagnosis').then((res) => setRaw(res.data as RawData));
+  }, []);
+
+  /* 2. BE / FE 선택에 따라 전체 문제 시퀀스 구성 */
+  const track = answers[1]; // 첫 번째 공통문항(진로 선택)의 값
+  const questions: Question[] = useMemo(() => {
+    if (!raw) return [];
+    const common = raw.COMMON;
+    if (track === 'BE') return [...common, ...raw.BE];
+    if (track === 'FE') return [...common, ...raw.FE];
+    return common;
+  }, [raw, track]);
+
+  const totalCount = track ? questions.length : undefined;
+  const currentQ = questions[currentIdx];
+  const isAnswered = answers[currentQ?.diagnosisId ?? -1] !== undefined;
+
+  /* 3. 선택지 클릭 */
+  const choose = (value: string) => {
+    if (!currentQ) return;
+    setAnswers((prev) => ({ ...prev, [currentQ.diagnosisId]: value }));
+  };
+
+  /* 4. 페이지 이동 */
+  const toPrev = () => currentIdx > 0 && setCurrentIdx((i) => i - 1);
+  const toNext = () => currentIdx < questions.length - 1 && setCurrentIdx((i) => i + 1);
+
+  /* 5. 제출 */
+  const submit = async () => {
+    if (!isAnswered || submitting) return;
+    setSubmitting(true);
+    const payload = Object.entries(answers).map(([id, val]) => ({
+      questionId: Number(id),
+      answer: val,
+    }));
+    try {
+      await api.post('/api/diagnosis', payload);
+      // TODO: 성공 후 후속 처리(결과 페이지 이동 등)
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  /* ---------- 뷰 ---------- */
+  return (
+    <div className="w-full flex flex-col items-center gap-8 py-8 px-4">
+      {/* 상단 배너 */}
+      <div className="w-full max-w-[1100px] h-[175px] bg-[#6378EB] rounded-[15px]" />
+
+      <div className="w-full max-w-[1300px] flex flex-col lg:flex-row gap-6">
+        {/* 왼쪽 통계 박스 */}
+        <div className="flex flex-row lg:flex-col gap-6">
+          <StatCard title="전체 질문 갯수" value={totalCount ?? '-'} />
+          <StatCard title="현재 응답 갯수" value={Object.keys(answers).length} />
+        </div>
+
+        {/* 오른쪽 질문 카드 */}
+        {currentQ && (
+          <div className="flex-1 bg-white rounded-[15px] shadow-md p-8 flex flex-col gap-6">
+            {/* 질문 */}
+            <p className="text-lg font-semibold">
+              {currentIdx + 1}. {currentQ.question}
+              <span className="text-red-500">*</span>
+            </p>
+
+            {/* 선택지 */}
+            <div className="flex flex-col gap-4">
+              {currentQ.choices.map((c) => {
+                const selected = answers[currentQ.diagnosisId] === c.value;
+                return (
+                  <button
+                    key={c.choiceId}
+                    onClick={() => choose(c.value)}
+                    className={`flex items-center gap-3 w-full px-4 py-3 rounded-[15px] border
+                      ${
+                        selected
+                          ? 'bg-[#C9EBEF] border-[#51BACB]'
+                          : 'bg-[#F6F5F8] border-transparent'
+                      }`}
+                  >
+                    {/* 체크 아이콘 */}
+                    <span
+                      className={`w-5 h-5 flex items-center justify-center rounded-full text-white
+                        ${selected ? 'bg-[#51BACB]' : 'bg-[#DBDFE3]'}`}
+                    >
+                      {selected && '✓'}
+                    </span>
+                    <span className="flex-1 text-left">{c.choice}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 네비게이션 버튼 */}
+            <div className="flex justify-between mt-8">
+              {/* 이전 */}
+              <button
+                onClick={toPrev}
+                disabled={currentIdx === 0}
+                className={`px-6 py-3 rounded-[8px] bg-[#6378EB] text-white
+                  ${currentIdx === 0 && 'opacity-40 cursor-not-allowed'}`}
+              >
+                &lt; 이전 문제로
+              </button>
+
+              {currentIdx < questions.length - 1 ? (
+                /* 다음 */
+                <button
+                  onClick={toNext}
+                  disabled={!isAnswered}
+                  className={`px-6 py-3 rounded-[8px] bg-[#D7DBFF] text-[#6378EB]
+                    ${!isAnswered && 'opacity-40 cursor-not-allowed'}`}
+                >
+                  다음 문제로 &gt;
+                </button>
+              ) : (
+                /* 제출 */
+                <button
+                  onClick={submit}
+                  disabled={!isAnswered || submitting}
+                  className={`px-6 py-3 rounded-[8px] bg-[#51BACB] text-white
+                    ${(!isAnswered || submitting) && 'opacity-40 cursor-not-allowed'}`}
+                >
+                  제출
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Diagnosis;
+
+/* ---------- 보조 컴포넌트 ---------- */
+const StatCard = ({ title, value }: { title: string; value: number | string }) => (
+  <div className="w-64 h-40 bg-white rounded-[15px] shadow-md flex flex-col items-center justify-center">
+    <p className="text-gray-800 font-semibold">{title}</p>
+    <p className="text-3xl mt-2">{value}</p>
+  </div>
+);

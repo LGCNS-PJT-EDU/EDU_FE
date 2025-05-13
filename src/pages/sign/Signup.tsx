@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import '@/styled/pages/signup.css';
 import axios from '@/api/axios';
-import { NavigateFunction, useNavigate } from "react-router-dom";
 
 function Signup() {
   const [email, setEmail] = useState<string>('');
@@ -9,7 +7,6 @@ function Signup() {
   const [nickname, setNickname] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordCheck, setPasswordCheck] = useState<string>('');
-  const navigate: NavigateFunction = useNavigate();
 
   // 이메일 유효성 검사
   const isValidEmail = (email: string): boolean => {
@@ -67,7 +64,9 @@ function Signup() {
     }
 
     if (!isPasswordValid(password)) {
-      alert('비밀번호는 6-20자이며, 영문 대/소문자, 숫자, 특수문자 중 2가지 이상 조합이어야 합니다.');
+      alert(
+        '비밀번호는 6-20자이며, 영문 대/소문자, 숫자, 특수문자 중 2가지 이상 조합이어야 합니다.'
+      );
       return;
     }
 
@@ -85,7 +84,7 @@ function Signup() {
 
       if (res.status === 201 || res.status === 200) {
         alert('회원가입이 완료되었습니다!');
-        navigate("/", { replace: true });
+        // 회원가입 성공 시 추가 처리 가능
       }
     } catch (err) {
       console.error(err);
