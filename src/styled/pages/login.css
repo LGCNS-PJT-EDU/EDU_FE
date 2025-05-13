@@ -1,251 +1,27 @@
-.loginWrapper {
-  position: relative;
-  height: calc(100vh - 70px);
-  overflow: hidden;
-  display: flex;
-  justify-content: space-between;
-  display: flex;
-  justify-content: center;
-  gap: 100px;
+.loginMain{
+    width: 500px;
+    margin: 0 auto;
+    background-color:bisque;
 }
-
-/* 왼쪽 배너 영역 */
-.loginBanner {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.loginMain img{
+    width: 100px;
 }
-
-.loginBanner .bannerContent {
-  z-index: 2;
-  text-align: center;
-  color: #373f41;
+.subtitle {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+.sociallogin img{
+    width: 40px; height: 40px;
 }
-
-.bannerContent h2 {
-  font-size: 18px;
-  color: #636b73;
-  margin-bottom: 8px;
+.naver img{
+    border-radius: 50%;
 }
-
-.bannerContent h1 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: #fff;
-}
-
-.bannerContent p {
-  font-size: 14px;
-  color: #fff;
-}
-
-/* 오른쪽 로그인 폼 영역 */
-.loginMain {
-  position: relative;
-  max-width: 400px;
-  height: 100vh;
-
-  z-index: 10;
-  padding: 60px 70px;
-  margin-top: 50px;
-
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-
-  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e0e0e0;
-  border-radius: 30px;
-}
-.welcome {
-  font-size: 13px;
-}
-.loginh2 {
-  margin-top: 3px;
-  margin-bottom: 5px;
-}
-
-/* input 영역 */
-.floatingInput {
-  position: relative;
-  margin-bottom: 24px;
-}
-
-.floatingInput input {
-  width: 100%;
-  padding: 16px 12px 12px;
-  font-size: 16px;
-  border: 1px solid #999;
-  border-radius: 8px;
-  background: white;
-  box-sizing: border-box;
-}
-
-.floatingInput label {
-  position: absolute;
-  top: -8px;
-  left: 14px;
-  background: white;
-  padding: 0 6px;
-  font-size: 13px;
-  color: #666;
-  z-index: 1;
-}
-
-/* 폼 제목과 안내문 */
-.loginMain > p.subtitle {
-  font-size: 14px;
-  color: #777;
-  text-align: center;
-  margin-top: -20px;
-}
-
-.loginformGroup {
-  display: flex;
-  flex-direction: column;
-}
-
-.loginformGroup label {
-  font-size: 14px;
-  font-weight: 400;
-  background-color: transparent;
-}
-
-.loginformGroup input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.loginformGroup input:focus {
-  border-color: #6378eb;
-  box-shadow: 0 0 0 2px rgba(99, 120, 235, 0.2);
-}
-
-/* 로그인 버튼 */
-.loginSubmit {
-  padding: 12px;
-  background-color: #6378eb;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.loginSubmit:hover {
-  background-color: #455ce3;
-}
-
-/* divider 소셜로그인 전 */
-
-.divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  margin: 3px 0;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid #ddd;
-}
-
-.divider span {
-  padding: 0 12px;
-  font-size: 14px;
-  color: #333;
-  background-color: white; /* 배경색이 흰색이면 선과 겹치지 않음 */
-}
-
-/* 소셜 로그인 */
-.start {
-  text-align: center;
-  font-weight: 500;
-  font-size: 13px;
-}
-
-.sociallogin {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.sociallogin button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.sociallogin img {
-  width: 42px;
-  height: 42px;
-  border-radius: 100%;
-}
-
-/* 하단 링크 */
 .links {
-  text-align: center;
-  font-size: 13px;
-  color: #777;
+  font-size: 14px;
 }
 
 .links a {
-  color: #555;
   text-decoration: none;
-  margin: 0 6px;
-}
-
-/* 공통 스타일 */
-.bubble {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle, #6378eb, #f3f5fd);
-  pointer-events: none;
-}
-
-/* 개별 위치와 크기 */
-.bubble1 {
-  width: 600px;
-  height: 600px;
-  top: 50px;
-  left: -80px;
-}
-
-.bubble2 {
-  width: 380px;
-  height: 380px;
-  bottom: -120px;
-  right: -150px;
-}
-
-.bubble3 {
-  width: 80px;
-  height: 80px;
-  top: 100px;
-  left: 45%;
-}
-
-.bubble4 {
-  width: 100px;
-  height: 100px;
-  top: 30%;
-  right: 180px;
-}
-
-.bubble5 {
-  width: 60px;
-  height: 60px;
-  bottom: 80px;
-  left: 500px;
+  color: black;
+  margin: 0 5px;
 }
