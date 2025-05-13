@@ -1,5 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import '@/styled/components/nav.css';
+import { Link, useLocation } from 'react-router-dom';
 import rabbitImage from '@/asset/img/common/main.png';
 import { useAuthStore } from '@/store/authGlobal';
 import useLogout from '@/hooks/useLogout';
@@ -11,39 +10,42 @@ function Nav() {
   const isLogin = !!accessToken;
   const logout = useLogout();
 
+  const baseBtnClass = 'bg-transparent border-none font-[Figtree] text-[#373F41] text-base hover:text-[#6378EB] hover:text-[17px] transition-all'
+
   return (
-    <header className="nav_header">
-      <div className="logo">
-        <img src={rabbitImage} alt="takeit" />
+    <header className="flex items-center justify-between h-[70px] w-[800px] mx-auto">
+      <div className="w-[100px]">
+        <img src={rabbitImage} alt="takeit" className='w-full' />
       </div>
 
-      <div className="header-center">
+      <div className="flex items-center gap-[30px]">
         <Link to="/">
-          <button className={location.pathname === '/' ? 'active' : ''}>HOME</button>
+          <button className={`${baseBtnClass} ${location.pathname === '/' ? 'font-semibold' : ''}`}>HOME</button>
         </Link>
         <Link to="/About">
-          <button className={location.pathname === '/About' ? 'active' : ''}>ABOUT</button>
+          <button className={`${baseBtnClass} ${location.pathname === '/About' ? 'font-semibold' : ''}`}>ABOUT</button>
         </Link>
         <a href="mailto:example@example.com">
-          <button>CONTACT</button>
+          <button className={baseBtnClass}>CONTACT</button>
         </a>
       </div>
-      <div className="login">
+
+      <div className="flex items-center gap-3">
         {!isLogin ? (
           <>
             <Link to="/login">
-              <button className={location.pathname === '/login' ? 'active' : ''}>Login</button>
+              <button className={`${baseBtnClass} ${location.pathname === '/login' ? 'font-semibold' : ''}`}>Login</button>
             </Link>
             <Link to="/signup-refactored">
-              <button className={location.pathname === '/signup' ? 'active' : ''}>Signup</button>
+              <button className={`${baseBtnClass} ${location.pathname === '/signup' ? 'font-semibold' : ''}`}>Signup</button>
             </Link>
           </>
         ) : (
           <>
             <Link to="/mypage">
-              <button className={location.pathname === '/mypage' ? 'active' : ''}>MyPage</button>
+              <button className={`${baseBtnClass} ${location.pathname === '/mypage' ? 'font-semibold' : ''}`}>MyPage</button>
             </Link>
-            <button onClick={logout}>Logout</button>
+            <button onClick={logout} className='baseBtnClass'>Logout</button>
           </>
         )}
       </div>
