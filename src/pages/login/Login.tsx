@@ -57,12 +57,6 @@ function Login() {
   const [password, setPassword] = useState('');
   const saveAccessToken = useLogin();
 
-  const bubbleStyle = {
-    borderRadius: '50%',
-    background: 'radial-gradient(circle, #6378eb, #f3f5fd)',
-    pointerEvents: 'none',
-  }
-
   const handleLogin = async (): Promise<void> => {
     try {
       const res = await axios.post('/api/user/signin', {
@@ -83,7 +77,7 @@ function Login() {
   };
 
   return (
-    <div className="relative h-[calc(100vh-70px)] flex justify-center gap-[100px] overflow-hidden">
+    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex justify-center gap-[100px] overflow-hidden">
       {/* 배너 */}
       <div className="relative flex justify-center items-center">
         <div className="z-20 text-center text-[#373f41]">
@@ -172,12 +166,6 @@ function Login() {
         </div>
       </div>
 
-      {/* 배경 버블 */}
-      <div className="bubble absolute w-[600px] h-[600px] top-[50px] left-[-80px]" style={bubbleStyle} />
-      <div className="bubble absolute w-[380px] h-[380px] bottom-[-120px] right-[-150px]" style={bubbleStyle}/>
-      <div className="bubble absolute w-[80px] h-[80px] top-[100px] left-[45%]" style={bubbleStyle}/>
-      <div className="bubble absolute w-[100px] h-[100px] top-[30%] right-[180px]" style={bubbleStyle}/>
-      <div className="bubble absolute w-[60px] h-[60px] bottom-[80px] left-[500px]" style={bubbleStyle}/>
     </div>
   );
 }
