@@ -34,34 +34,35 @@ export default function Roadmap() {
     }
   }, [state, navigate, setInitial]);
 
-  return (
-    <section className="relative">
-      <header className="flex items-center justify-between p-4">
-        <h1 className="text-xl font-bold">맞춤 로드맵</h1>
-        <div className="space-x-2">
-          {editing ? (
-            <Button onClick={toggleEditing} variant="default" size="sm" className="gap-1">
-              <Check size={16} /> 완료
-            </Button>
-          ) : (
-            <Button onClick={toggleEditing} variant="outline" size="sm">
-              수정
-            </Button>
-          )}
-          <Button onClick={handleAdd} size="sm" variant="secondary">
-            <Plus size={16} />
-          </Button>
-        </div>
-      </header>
+    return (
+      <section className="relative">
+        <header className="absolute left-1/2 top-6 -translate-x-1/2 flex flex-col items-center gap-2 z-20">
+          <h1 className="text-2xl font-bold drop-shadow">맞춤 로드맵</h1>
+          <div className="space-x-2">
+            {editing ? (
+              <div className="absolute top-4 left-128">
+              <Button onClick={toggleEditing} variant="default" size="sm" className="gap-1">
+                <Check size={16} /> 완료
+              </Button>
+              </div>
+            ) : (
+              <div className="absolute top-4 left-128">
+              <Button onClick={toggleEditing} variant="outline" size="sm">
+                수정
+              </Button>
+              </div>
+            )}
+          </div>
+        </header>
 
-      <RoadmapCanvas />
+        <RoadmapCanvas />
 
-      {modalOpen && selected && (
-        <SubjectModal
-          subject={{ subjectId: selected.id, subjectName: selected.label }}
-          onClose={closeModal}
-        />
-      )}
-    </section>
-  );
-}
+        {modalOpen && selected && (
+          <SubjectModal
+            subject={{ subjectId: selected.id, subjectName: selected.label }}
+            onClose={closeModal}
+          />
+        )}
+      </section>
+    );
+  }
