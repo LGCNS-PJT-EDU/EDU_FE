@@ -1,107 +1,68 @@
-// src/components/Roadmap.jsx
-import { useEffect, useState } from 'react';
-import SubjectModal from '@/pages/roadmap/Subject';
-import api from '@/api/axios';
-import '@/styled/pages/roadmap.css';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useRoadmapStore } from "@/store/roadmapStore";
+import RoadmapCanvas from "./RoadmapCanvas";
+import SubjectModal from "@/pages/roadmap/Subject";
+import { Button } from "@/components/ui/button";
+import { Check, Plus } from "lucide-react";
 
-interface Answer {
-  questionId: number;
-  answer: string;
-}
-
-interface Subject {
-  subjectId: number;
-  subjectName: string;
-}
-
-interface RoadmapData {
-  subjects: Subject[];
-}
-
-/* 1) 설문 응답 mock 나중에 지울 예정 -------------------------------------- */
-const answers: Answer[] = [
-  { questionId: 1, answer: 'BE' },
-  { questionId: 2, answer: '2' },
-  { questionId: 3, answer: '3' },
-  { questionId: 4, answer: 'Y' },
-  { questionId: 11, answer: 'Java/Spring' },
-  { questionId: 12, answer: 'Y' },
-  { questionId: 13, answer: 'Y' },
-  { questionId: 14, answer: 'Y' },
-  { questionId: 15, answer: 'N' },
-];
-
-/* 2) 로드맵 요청 함수 -------------------------------------------------- */
-async function requestRoadmap(body: Answer[]): Promise<RoadmapData> {
-  const res = await api.post<RoadmapData>('/api/diagnosis', body);
-  return res.data;
-}
-
-/* 3) 컴포넌트 ---------------------------------------------------------- */
 export default function Roadmap() {
-  const [roadmap, setRoadmap] = useState<RoadmapData | null>(null);
-  const [selected, setSelected] = useState<Subject | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [error, setError] = useState('');
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const setInitial = useRoadmapStore((s) => s.setInitial);
+  const toggleEditing = useRoadmapStore((s) => s.toggleEditing);
+  const editing = useRoadmapStore((s) => s.editing);
+  const selected = useRoadmapStore((s) => s.selected);
+  const modalOpen = useRoadmapStore((s) => s.modalOpen);
+  const closeModal = useRoadmapStore((s) => s.closeModal);
+  const addNode = useRoadmapStore((s) => s.addNode);
 
-  /* 3‑1) 마운트 → 로드맵 요청 */
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await requestRoadmap(answers);
-        if (!data?.subjects?.length) {
-          console.warn('subjects 배열이 비어 있습니다.');
-        }
-        setRoadmap(data);
-      } catch (e) {
-        console.error(e);
-        setError('로드맵을 불러오지 못했습니다.');
-      }
-    })();
-  }, []);
-
-  /* 3‑2) 모달 열기 */
-  const openModal = (subject: Subject) => {
-    setSelected(subject);
-    setIsModalOpen(true);
+  const handleAdd = () => {
+    const newLabel = prompt("새 과목명을 입력하세요");
+    if (newLabel?.trim()) {
+      addNode(newLabel.trim());
+    }
   };
 
-  /* 4) 렌더링 ---------------------------------------------------------- */
-  const subjects = roadmap?.subjects ?? [];
+  useEffect(() => {
+    const roadmap = state ?? null;
+    if (!roadmap || !roadmap.subjects) {
+      alert("로드맵 정보가 없습니다. 진단을 먼저 진행해 주세요.");
+      navigate("/diagnosis", { replace: true });
+    } else {
+      setInitial(roadmap.subjects);
+    }
+  }, [state, navigate, setInitial]);
 
-  return (
-    <section id="roadmap">
-      <div className="container">
-        {/* 헤더 */}
-        <header className="header">
-          <h1>맞춤 로드맵</h1>
+    return (
+      <section className="relative">
+        <header className="absolute left-1/2 top-6 -translate-x-1/2 flex flex-col items-center gap-2 z-20">
+          <h1 className="text-2xl font-bold drop-shadow">맞춤 로드맵</h1>
+          <div className="space-x-2">
+            {editing ? (
+              <div className="absolute top-4 left-128">
+              <Button onClick={toggleEditing} variant="default" size="sm" className="gap-1">
+                <Check size={16} /> 완료
+              </Button>
+              </div>
+            ) : (
+              <div className="absolute top-4 left-128">
+              <Button onClick={toggleEditing} variant="outline" size="sm">
+                수정
+              </Button>
+              </div>
+            )}
+          </div>
         </header>
 
-        {/* 에러 표시 */}
-        {error && <p className="error-msg">{error}</p>}
+        <RoadmapCanvas />
 
-        {/* subjects 존재하면 로드맵 그려주기 */}
-        {subjects?.length > 0 && (
-          <section className="visual">
-            <div className="line" />
-
-            <ul className="list">
-              {subjects.map((s) => (
-                <li key={s.subjectId} className="node">
-                  <button className="btn-subject" onClick={() => openModal(s)}>
-                    {s.subjectName}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
+        {modalOpen && selected && (
+          <SubjectModal
+            subject={{ subjectId: selected.id, subjectName: selected.label }}
+            onClose={closeModal}
+          />
         )}
-
-        {/* 모달 */}
-        {isModalOpen && selected && (
-          <SubjectModal subject={selected} onClose={() => setIsModalOpen(false)} />
-        )}
-      </div>
-    </section>
-  );
-}
+      </section>
+    );
+  }
