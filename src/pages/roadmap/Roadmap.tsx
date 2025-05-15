@@ -40,13 +40,13 @@ export default function Roadmap() {
           <h1 className="text-2xl font-bold drop-shadow">맞춤 로드맵</h1>
           <div className="space-x-2">
             {editing ? (
-              <div className="absolute top-4 left-128">
+              <div className="absolute top-4 left-96">
               <Button onClick={toggleEditing} variant="default" size="sm" className="gap-1">
                 <Check size={16} /> 완료
               </Button>
               </div>
             ) : (
-              <div className="absolute top-4 left-128">
+              <div className="absolute top-4 left-96">
               <Button onClick={toggleEditing} variant="outline" size="sm">
                 수정
               </Button>
