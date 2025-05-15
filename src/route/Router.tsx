@@ -8,17 +8,26 @@ import Layout from '@/components/layout/Layouts';
 import Roadmap from '@/pages/roadmap/Roadmap';
 import SignupRefactored from '@/pages/sign/SignupRefactored';
 import Diagnosis from '@/pages/diagnosis/Diagnosis';
+import FullLayouts from '@/components/layout/FullLayouts';
+import Report from '@/pages/Report';
 
 const router = createBrowserRouter([
+  {
+    path : '/',
+    element : <FullLayouts />,
+    children : [
+      { path: '', element: <Main /> },
+      { path: 'login', element: <Login /> },
+      { path: 'signup-refactored', element: <SignupRefactored /> },
+    ]
+  },
   {
     path: '/',
     element: <Layout />,
     children: [
-      { path: '', element: <Main /> },
       { path: 'about', element: <About /> },
-      { path: 'login', element: <Login /> },
-      { path: 'signup-refactored', element: <SignupRefactored /> },
       { path: 'mypage', element: <MyPage /> },
+      { path: 'report', element: <Report /> },
       { path: 'login/oauth2/code/:provider', element: <OAuthCallback /> },
       { path: 'roadmap', element: <Roadmap /> },
       { path: 'diagnosis', element: <Diagnosis /> },
