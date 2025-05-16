@@ -62,13 +62,13 @@ export const SUBJECT_IMAGES: Record<string, string> = {
   "Git & GitHub": git,
 
   // 7
-  "Git Hook (Husky, lint-staged) 자동화": gitHook,
+  "Git Hook 자동화": gitHook,
 
   // 8
-  "Axios 인스턴스 관리, 공통 인터셉터 구성": axiosInstance,
+  "Axios 관리": axiosInstance,
 
   // 9
-  "REST API 기반 에러 처리 / 재시도 로직": restAPI,
+  "REST API": restAPI,
 
   // 10
   "React": react,
@@ -92,7 +92,7 @@ export const SUBJECT_IMAGES: Record<string, string> = {
   "NgRx": ngrx,
 
   // 17
-  "컴포넌트 디자인 시스템(Storybook)": storybook,
+  "Storybook": storybook,
 
   // 18
   "Tailwind CSS": tailwind,
@@ -110,46 +110,46 @@ export const SUBJECT_IMAGES: Record<string, string> = {
   "Next.js": nextjs,
 
   // 23
-  "React 렌더링 최적화 (React.memo, useMemo, useCallback)": react, // 🔸 TODO: 전용 아이콘 있으면 교체
+  "React 렌더링": react,              // 🔸 전용 아이콘 생기면 교체
 
   // 24
-  "React Query 심화 (Prefetch, Query Keys, Invalidations)": react, // 🔸 TODO
+  "React Query 심화": react,         // 🔸 전용 아이콘 생기면 교체
 
   // 25
-  "Vue Test Utils (Vue)": vueTest,
+  "Vue Test Utils": vueTest,
 
   // 26
-  "Nuxt.js (Vue)": nuxtjs,
+  "Nuxt.js": nuxtjs,
 
   // 27
-  "Angular Universal (Angular SSR)": angularUniversal,
+  "Angular Universal": angularUniversal,
 
   // 28
-  "Jasmine (Angular)": jasmine,
+  "Jasmine": jasmine,
 
   // 29
   "Webpack 개념과 설정": webpack,
 
   // 30
-  "GitHub Actions로 빌드/배포 자동화": gitAction,
+  "빌드/배포 자동화": gitAction,
 
   // 31
-  "Dockerize된 프론트엔드 앱 배포 (Nginx 등)": nginx,
+  "프론트엔드 앱 배포": nginx,
 
   // 32
-  "AWS S3 + CloudFront 기반 SPA 배포": awss3,
+  "AWS S3 + CloudFront 배포": awss3,
 
   // 33
-  "Unit Test, Snapshot Test, Integration Test": react, // 🔸 TODO
+  "Component Test": react,           // 🔸 전용 아이콘 생기면 교체
 
   // 34
-  "E2E Test, Visual Regression Test": react, // 🔸 TODO
+  "Visual Test": react,              // 🔸 전용 아이콘 생기면 교체
 
   // 35
-  "리눅스 명령어": linux,
+  "Linux": linux,
 
   // 36
-  "HTTP, HTTPS, DNS, TCP/IP 기본 개념": http,
+  "인터넷 & 네트워크": http,
 
   // 37 (중복) ― 이미 6번에서 지정
 
@@ -170,13 +170,13 @@ export const SUBJECT_IMAGES: Record<string, string> = {
   "SQL문": sql,
 
   // 44
-  "More About Database(RDB 종류, NoSQL)": moreAboutDB,
+  "More About Database": moreAboutDB,
 
   // 45
-  "Scaling Databases(쿼리튜닝, 정규화)": scalingDB,
+  "Scaling Databases": scalingDB,
 
   // 46
-  "Spring & Spring Boot(Java)": javaSpring,
+  "Spring Boot(Java)": javaSpring,
 
   // 47
   "Node.js & Express.js": nodejs,
@@ -188,31 +188,31 @@ export const SUBJECT_IMAGES: Record<string, string> = {
   "Flask": flask,
 
   // 50
-  "Spring & Spring Boot(Kotlin)": kotlinSpring,
+  "Spring Boot(Kotlin)": kotlinSpring,
 
   // 51
-  "Java + Spring 라이브러리 & 유틸": javaSpring,
+  "Java + Spring Lib & Utils": javaSpring,
 
   // 52
-  "Kotlin + Spring 라이브러리 & 유틸": kotlinSpring,
+  "Kotlin + Spring Lib & Utils": kotlinSpring,
 
   // 53
   "Java,Kotlin + Spring 운영 & 배포": javaSpring,
 
   // 54
-  "Node.js 라이브러리 & 유틸": nodejs,
+  "Node.js Lib & Utils": nodejs,
 
   // 55
   "Node.js 운영 & 배포": nodejs,
 
   // 56
-  "Django 라이브러리 & 유틸": django,
+  "Django Lib & Utils": django,
 
   // 57
   "Django 운영 & 배포": django,
 
   // 58
-  "Flask 라이브러리 & 유틸": flask,
+  "Flask Lib & Utils": flask,
 
   // 59
   "Flask 운영 & 배포": flask,
