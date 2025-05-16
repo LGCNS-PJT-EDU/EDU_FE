@@ -10,7 +10,7 @@ export default function useLogin() {
     (token) => {
       setLogin(token);
       alert('로그인 성공!');
-      navigate('/', { replace: true });
+      navigate('/roadmap', { replace: true });
     },
     [setLogin, navigate]
   );
