@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@/api/axios";
+import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 
 /* ---------- 타입 ---------- */
 interface Choice {
@@ -30,6 +31,12 @@ interface RoadmapData {
   subjects: Subject[];
 }
 
+interface StatCardProps {
+  title: string;
+  value: number | string;
+  bgColor?: string;
+}
+
 /* ---------- 컴포넌트 ---------- */
 const Diagnosis = () => {
   const [raw, setRaw] = useState<RawData | null>(null);
@@ -54,8 +61,8 @@ const Diagnosis = () => {
   const questions: Question[] = useMemo(() => {
     if (!raw) return [];
     const common = raw.COMMON ?? [];
-    const be     = raw.BE     ?? [];
-    const fe     = raw.FE     ?? [];
+    const be = raw.BE ?? [];
+    const fe = raw.FE ?? [];
 
     if (track === "BE") return [...common, ...be];
     if (track === "FE") return [...common, ...fe];
@@ -87,8 +94,8 @@ const Diagnosis = () => {
     }));
 
     try {
-    const { data } = await api.post<RoadmapData>("/api/diagnosis", payload);
-    navigate("/roadmap", { state: data });
+      const { data } = await api.post<RoadmapData>("/api/diagnosis", payload);
+      navigate("/roadmap", { state: data });
     } finally {
       setSubmitting(false);
     }
@@ -96,50 +103,59 @@ const Diagnosis = () => {
 
   /* ---------- 뷰 ---------- */
   return (
-    <div className="w-full flex flex-col items-center gap-8 py-8 px-4">
+    <div className="w-full flex flex-col items-center gap-8 py-8 px-4 font-[pretendard] h-[calc(100vh-70px)] justify-center"
+      style={{
+        background: 'linear-gradient(to bottom, #ffffff 30%, #C6EDF2 80%)',
+      }}>
       {/* 상단 배너 */}
-      <div className="w-full max-w-[1100px] h-[175px] bg-[#6378EB] rounded-[15px]" />
-
-      <div className="w-full max-w-[1300px] flex flex-col lg:flex-row gap-6">
+      <div className="w-full max-w-[800px] flex flex-col lg:flex-row gap-6">
         {/* 왼쪽 통계 박스 */}
-        <div className="flex flex-row lg:flex-col gap-6">
-          <StatCard title="전체 질문 갯수" value={totalCount ?? "-"} />
-          <StatCard title="현재 응답 갯수" value={Object.keys(answers).length} />
+        <div className="flex flex-row lg:flex-col gap-6 " >
+          <StatCard title="전체 질문 갯수" value={totalCount ?? "-"} bgColor="#F2F2F2" />
+          <StatCard title="현재 응답 갯수" value={Object.keys(answers).length} bgColor="#C6EDF2" />
         </div>
 
         {/* 오른쪽 질문 카드 */}
         {currentQ && (
-          <div className="flex-1 bg-white rounded-[15px] shadow-md p-8 flex flex-col gap-6">
-            {/* 질문 */}
-            <p className="text-lg font-semibold">
-              {currentIdx + 1}. {currentQ.question}
-              <span className="text-red-500">*</span>
-            </p>
-
-            {/* 선택지 */}
+          <div
+            className="flex-1 bg-white rounded-[15px] p-8 flex flex-col justify-between h-full"
+            style={{
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 -4px 6px rgba(0, 0, 0, 0.05)', // 아래 + 위 그림자
+            }}
+          >
+            {/* 질문 + 선택지 묶음 */}
             <div className="flex flex-col gap-4">
-              {currentQ.choices.map((c) => {
-                const selected = answers[currentQ.diagnosisId] === c.value;
-                return (
-                  <button
-                    key={c.choiceId}
-                    onClick={() => choose(c.value)}
-                    className={`flex items-center gap-3 w-full px-4 py-3 rounded-[15px] border
-                      ${
-                        selected
+              {/* 질문 */}
+              <p className="text-lg font-semibold">
+                {currentIdx + 1}. {currentQ.question}
+                <span className="text-red-500"> *</span>
+              </p>
+
+              {/* 선택지 */}
+              <div className="flex flex-col gap-4">
+                {currentQ.choices.map((c) => {
+                  const selected = answers[currentQ.diagnosisId] === c.value;
+                  return (
+                    <button
+                      key={c.choiceId}
+                      onClick={() => choose(c.value)}
+                      className={`flex items-center gap-3 w-full px-4 py-3 rounded-[15px] border ${selected
                           ? "bg-[#C9EBEF] border-[#51BACB]"
                           : "bg-[#F6F5F8] border-transparent"
-                      }`}>
-                    {/* 체크 아이콘 */}
-                    <span
-                      className={`w-5 h-5 flex items-center justify-center rounded-full text-white
-                        ${selected ? "bg-[#51BACB]" : "bg-[#DBDFE3]"}`}>
-                      {selected && "✓"}
-                    </span>
-                    <span className="flex-1 text-left">{c.choice}</span>
-                  </button>
-                );
-              })}
+                        }`}
+                    >
+                      {/* 체크 아이콘 */}
+                      <span
+                        className={`w-5 h-5 flex items-center justify-center rounded-full text-white ${selected ? "bg-[#51BACB]" : "bg-[#DBDFE3]"
+                          }`}
+                      >
+                        {selected && "✔"}
+                      </span>
+                      <span className="flex-1 text-left">{c.choice}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* 네비게이션 버튼 */}
@@ -148,9 +164,10 @@ const Diagnosis = () => {
               <button
                 onClick={toPrev}
                 disabled={currentIdx === 0}
-                className={`px-6 py-3 rounded-[8px] bg-[#6378EB] text-white
-                  ${currentIdx === 0 && "opacity-40 cursor-not-allowed"}`}>
-                &lt; 이전 문제로
+                className={`flex items-center gap-1 px-6 py-3 rounded-[8px] bg-[#6378EB] text-white ${currentIdx === 0 && "opacity-40 cursor-not-allowed"
+                  }`}
+              >
+              <SlArrowLeft className="w-4 h-4"/> 이전 문제로 
               </button>
 
               {currentIdx < questions.length - 1 ? (
@@ -158,17 +175,19 @@ const Diagnosis = () => {
                 <button
                   onClick={toNext}
                   disabled={!isAnswered}
-                  className={`px-6 py-3 rounded-[8px] bg-[#D7DBFF] text-[#6378EB]
-                    ${!isAnswered && "opacity-40 cursor-not-allowed"}`}>
-                  다음 문제로 &gt;
+                  className={`items-center gap-1 px-6 py-3 rounded-[8px] bg-[#D7DBFF] flex text-[#6378EB] ${!isAnswered && "opacity-40 cursor-not-allowed"
+                    }`}
+                >
+                다음 문제로 <SlArrowRight className="w-4 h-4"/>
                 </button>
               ) : (
                 /* 제출 */
                 <button
                   onClick={submit}
                   disabled={!isAnswered || submitting}
-                  className={`px-6 py-3 rounded-[8px] bg-[#51BACB] text-white
-                    ${(!isAnswered || submitting) && "opacity-40 cursor-not-allowed"}`}>
+                  className={`px-6 py-3 rounded-[8px] bg-[#51BACB] text-white ${(!isAnswered || submitting) && "opacity-40 cursor-not-allowed"
+                    }`}
+                >
                   제출
                 </button>
               )}
@@ -178,20 +197,23 @@ const Diagnosis = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Diagnosis;
 
 /* ---------- 보조 컴포넌트 ---------- */
-const StatCard = ({
-  title,
-  value,
-}: {
-  title: string;
-  value: number | string;
-}) => (
-  <div className="w-64 h-40 bg-white rounded-[15px] shadow-md flex flex-col items-center justify-center">
-    <p className="text-gray-800 font-semibold">{title}</p>
-    <p className="text-3xl mt-2">{value}</p>
+const StatCard = ({ title, value, bgColor = "#F2F2F2" }: StatCardProps) => (
+  <div
+    className="w-[200px] h-[70px] px-10 rounded-[15px] flex flex-col items-center justify-center"
+    style={{ backgroundColor: bgColor }}
+  >
+    <div className="flex justify-between w-full">
+      <p className="text-[#333333] font-semibold">
+        {title}
+      </p>
+      <p className="text-[#898989] whitespace-nowrap">
+        {value}
+      </p>
+    </div>
   </div>
 );

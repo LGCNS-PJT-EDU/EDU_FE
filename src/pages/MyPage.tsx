@@ -16,7 +16,7 @@ function MyPage() {
   const [activeTab, setActiveTab] = useState<TabType>('favorite')
 
   return (
-    <div className='flex flex-col min-h-screen font-[pretendard]'>
+    <div className='flex flex-col min-h-screen font-[pretendard]' >
       <div className="flex-grow px-4">
       {/* 헤더 */}
       <div className="w-full flex justify-between items-center mb-6 mt-10">

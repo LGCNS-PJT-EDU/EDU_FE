@@ -13,12 +13,13 @@ import Report from '@/pages/Report';
 
 const router = createBrowserRouter([
   {
-    path : '/',
-    element : <FullLayouts />,
-    children : [
+    path: '/',
+    element: <FullLayouts />,
+    children: [
       { path: '', element: <Main /> },
       { path: 'login', element: <Login /> },
       { path: 'signup-refactored', element: <SignupRefactored /> },
+      { path: 'diagnosis', element: <Diagnosis /> },
     ]
   },
   {
@@ -28,9 +29,10 @@ const router = createBrowserRouter([
       { path: 'about', element: <About /> },
       { path: 'mypage', element: <MyPage /> },
       { path: 'report', element: <Report /> },
-      { path: 'login/oauth2/code/:provider', element: <OAuthCallback /> },
       { path: 'roadmap', element: <Roadmap /> },
-      { path: 'diagnosis', element: <Diagnosis /> },
+
+      { path: 'login/oauth2/code/:provider', element: <OAuthCallback /> },
+
     ],
   },
 ]);
