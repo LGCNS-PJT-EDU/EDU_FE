@@ -1,6 +1,6 @@
-// src/components/Subject.jsx
 import { useEffect, useState } from 'react';
 import '@/styled/pages/subject.css';
+import api from '@/api/axios';
 
 export interface SubjectRef {
   subjectId: number;
@@ -12,10 +12,16 @@ interface Video {
   url: string;
 }
 
+interface Chapter {
+  chapterName: string;
+  chapterOrder: number;
+}
+
 interface SubjectDetail {
   subjectId: number;
   overview: string;
   videos: Video[];
+  chapters: Chapter[];
 }
 
 interface SubjectModalProps {
@@ -23,24 +29,40 @@ interface SubjectModalProps {
   onClose: () => void;
 }
 
-async function fetchSubjectDetail(subjectId: number): Promise<SubjectDetail> {
-  // TODO: 실제 API 연동 시 교체
-  await new Promise((r) => setTimeout(r, 300));
+interface ApiRecommendContent {
+  contentName: string;
+  url: string;
+  contentType: string;
+}
 
-  return {
-    subjectId,
-    overview: '이 과목은 개발자가 반드시 알아야 할 기본 리눅스 명령어를 다룹니다.',
-    videos: [
-      {
-        title: '1시간에 끝내는 Linux 기본 명령어',
-        url: 'https://www.youtube.com/watch?v=ymwMfvzAOPg&list=PL8oUjFBfGVJxH_oJkYfRwSqM9Q5Fy5C1X',
-      },
-      {
-        title: '생활코딩 - 리눅스(Linux)',
-        url: 'https://edu.goorm.io/lecture/12984/%EC%83%9D%ED%99%9C%EC%BD%94%EB%94%A9-%EB%A6%AC%EB%88%85%EC%8A%A4-linux',
-      },
-    ],
-  };
+interface ApiSubjectResponse {
+  subject_name: string;
+  subject_overview: string;
+  chapters: Chapter[];  
+  preSubmitCount: number;
+  postSubmitCount: number;
+  recommendContents: ApiRecommendContent[];
+}
+
+async function fetchSubjectDetail(subjectId: number): Promise<SubjectDetail> {
+  try {
+    const { data } = await api.get<ApiSubjectResponse>('/api/roadmap/subject', {
+      params: { subjectId },
+    });
+
+    return {
+      subjectId,
+      overview: data.subject_overview,
+      videos: data.recommendContents.map((c) => ({
+        title: c.contentName,
+        url: c.url,
+      })),
+      chapters: data.chapters, 
+    };
+  } catch (err) {
+    console.error('fetchSubjectDetail error:', err);
+    throw err;
+  }
 }
 
 export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
@@ -66,7 +88,13 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
           {detail ? (
             <div className="body">
               <p className="overview">{detail.overview}</p>
-
+              <ol className="chapter-list">
+                {detail.chapters
+                  .sort((a, b) => a.chapterOrder - b.chapterOrder)
+                  .map((ch) => (
+                    <li key={ch.chapterOrder}>{ch.chapterName}</li>
+                  ))}
+              </ol>
               <h4 className="subtitle">추천 강의</h4>
               <ul className="video-list">
                 {detail.videos.map((v) => (

@@ -24,3 +24,6 @@ export const useAuthStore = create<AuthState>()(
 
 /** ②  전역 util – 컴포넌트 밖에서 토큰을 읽을 때 사용 */
 export const getAccessToken = () => useAuthStore.getState().accessToken;
+
+/** ③ 로그인 여부 one-liner */
+export const isLoggedIn = () => !!useAuthStore.getState().accessToken;
