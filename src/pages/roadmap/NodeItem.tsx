@@ -73,9 +73,8 @@ export default function NodeItem({ node, index }: NodeItemProps) {
           <span className="text-lg font-semibold">{node.label.charAt(0)}</span>
         )}
       </motion.div>
-      <p className="mt-1 w-[76px] text-center text-[13px] leading-tight
-                    break-words whitespace-normal
-                    bg-white px-1 rounded-2xl">{node.label}</p>
+      <p className="mt-1 w-[86px] text-center text-[17px] leading-tight
+                    break-words whitespace-normal font-bold text-white">{node.label}</p>
     </div>
   );
 }
