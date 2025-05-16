@@ -4,7 +4,14 @@ import axios from '@/api/axios';
 import google from '@/asset/img/login/btn_google.svg';
 import kakao from '@/asset/img/login/btn_kakao.svg';
 import naver from '@/asset/img/login/btn_naver.svg';
+import pixel_texture from '@/asset/img/login/pixel texture.png';
+import cloud from '@/asset/img/login/cloud.png';
+import cloud_down from '@/asset/img/login/cloud_down.png';
+import star from '@/asset/img/login/star.png';
+import main from '@/asset/img/common/main.png';
+
 import useLogin from '@/hooks/useLogin';
+
 
 /* 1) 공급자별 고정 파라미터 */
 const OAUTH = {
@@ -78,11 +85,34 @@ function Login() {
 
   return (
     <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex justify-center gap-[100px] overflow-hidden">
+      <img
+        src={pixel_texture}
+        alt="pixel texture background"
+        className="absolute top-0 left-0 w-full h-full object-cover z-0 opacity-70"
+      />
+
+      {/* 구름 & 별 장식 */}
+      <img
+        src={cloud}
+        alt="cloud"
+        className="absolute top-20 left-0 w-[200px] opacity-70 z-10"
+      />
+      <img
+        src={cloud_down}
+        alt="cloud down"
+        className="absolute bottom-30 right-20 w-[250px] opacity-70 z-10"
+      />
+      <img
+        src={star}
+        alt="star"
+        className="absolute top-15 left-130 w-[100px] z-10"
+      />
+
       {/* 배너 */}
       <div className="relative flex justify-center items-center">
-        <div className="z-20 text-center text-[#373f41]">
-          <h1 className="text-4xl font-bold text-white mb-2">TakeIT</h1>
-          <p className="text-sm text-white">개발자의 꿈, 지금 TakeIT과 시작해보세요</p>
+        <div className="z-20 text-[#373f41]">
+          <img src={main} alt="main" className='w-[200px] mb-[10px]'/>
+          <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">개발자의 꿈,<br />지금 TakeIT과 시작해보세요</p>
         </div>
       </div>
 
