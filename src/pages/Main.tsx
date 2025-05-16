@@ -2,6 +2,7 @@ import chevron from '@/asset/img/main/chevron-down.png';
 import frontbubble from '@/asset/img/main/front_bubble.png';
 import backbubble from '@/asset/img/main/back_bubble.png';
 import startBtn from '@/asset/img/main/BTN style 1.png';
+import { Link } from 'react-router-dom';
 
 function Main() {
   return (
@@ -24,16 +25,18 @@ function Main() {
           <p className="text-s text-[#5E5E5E]">🕐 진단 소요시간: 약 7분, 약 20문제</p>
         </div>
 
-        <div className="mt-[20px]">
+        <Link to="/diagnosis" className="mt-[20px]">
           <button className="text-lg bg-transparent border-none cursor-pointer font-['Press_Start_2P'] text-[#fff]">
             <img src={startBtn} alt="startBtn" className='w-[167px]' />
           </button>
-        </div>
+        </Link>
 
         <div className="relative w-[200px] h-[120px] mx-auto">
-          <button className="absolute top-0 left-0 z-0 btn-type cursor-pointer">
-            <img src={backbubble} alt="BackEnd"/>
-          </button>
+
+            <div className="absolute top-0 left-0 z-10 btn-type cursor-pointer">
+              <img src={backbubble} alt="BackEnd" />
+            </div>
+
 
           {/* FrontEnd 말풍선 */}
           <button className="absolute bottom-5 z-10 btn-type cursor-pointer">
