@@ -11,18 +11,18 @@ const OAUTH = {
   naver: {
     authUrl: 'https://nid.naver.com/oauth2.0/authorize',
     clientId: 'bG5y9c7SsXkdkxq2I14X',
-    redirect: 'http://localhost:5173/login/oauth2/code/naver',
+    redirect: 'https://takeit.academy/login/oauth2/code/naver',
     scope: 'name email',
   },
   kakao: {
     authUrl: 'https://kauth.kakao.com/oauth/authorize',
     clientId: '0257e0d9342333ce55ef60c412d20c5f',
-    redirect: 'http://localhost:5173/login/oauth2/code/kakao',
+    redirect: 'https://takeit.academy/login/oauth2/code/kakao',
   },
   google: {
     authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
     clientId: '478095454422-f3q1th169ltqv6i6bq5g92oaa7e2l6h8.apps.googleusercontent.com',
-    redirect: 'http://localhost:5173/login/oauth2/code/google',
+    redirect: 'https://takeit.academy/login/oauth2/code/google',
     scope: 'openid email profile',
   },
 } as const;
