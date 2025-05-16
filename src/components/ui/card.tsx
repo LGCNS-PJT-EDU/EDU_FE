@@ -72,4 +72,11 @@ function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-export { Card, CardHeader, CardFooter, CardTitle, CardAction, CardDescription, CardContent };
+function CardPoster({ src, alt, className }: { src: string; alt?: string; className?: string }) {
+  return (
+    <div className={cn('w-full h-[120px] overflow-hidden rounded-t-xl', className)}>
+      <img src={src} alt={alt} className="w-full h-full object-cover" />
+    </div>
+  );
+}
+export { Card, CardHeader, CardFooter, CardTitle, CardAction, CardDescription, CardContent, CardPoster };
