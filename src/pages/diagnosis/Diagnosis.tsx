@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@/api/axios";
+import { isLoggedIn } from "@/store/authGlobal";
 
 /* ---------- 타입 ---------- */
 interface Choice {
@@ -76,6 +77,7 @@ const Diagnosis = () => {
   const toPrev = () => currentIdx > 0 && setCurrentIdx((i) => i - 1);
   const toNext = () => currentIdx < questions.length - 1 && setCurrentIdx((i) => i + 1);
 
+
   /* 5. 제출 */
   const submit = async () => {
     if (!isAnswered || submitting) return;
@@ -87,14 +89,24 @@ const Diagnosis = () => {
     }));
 
     try {
-    const { data } = await api.post<RoadmapData>("/api/diagnosis", payload);
-    navigate("/roadmap", { state: data });
+      /* ✅ 응답 타입에 uuid 포함 */
+      const { data } = await api.post< RoadmapData & { uuid?: string } >(
+        "/api/diagnosis",
+        payload,
+      );
+
+      /* ✅ 게스트라면 uuid 를 localStorage 에 덮어쓴다 */
+      if (!isLoggedIn() && data.uuid) {
+        localStorage.setItem("roadmapUuid", data.uuid);
+      }
+
+      /* 로드맵 페이지로 subjects 넘기기 */
+      navigate("/roadmap", { state: data });
     } finally {
       setSubmitting(false);
     }
   };
 
-  /* ---------- 뷰 ---------- */
   return (
     <div className="w-full flex flex-col items-center gap-8 py-8 px-4">
       {/* 상단 배너 */}
