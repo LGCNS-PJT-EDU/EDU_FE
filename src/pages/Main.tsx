@@ -13,7 +13,7 @@ function Main() {
       }}
     >
       <div className="flex flex-col items-center gap-4 font-[NeoDunggeunmo] pt-12">
-        <p className='text-xl'>
+        <p className="text-xl">
           방향을 잃고 헤매고 있나요?
           <br />
           진단 한 번으로 당신의 성장 경로가 눈앞에 펼쳐집니다.
@@ -27,16 +27,14 @@ function Main() {
 
         <Link to="/diagnosis" className="mt-[20px]">
           <button className="text-lg bg-transparent border-none cursor-pointer font-['Press_Start_2P'] text-[#fff]">
-            <img src={startBtn} alt="startBtn" className='w-[167px]' />
+            <img src={startBtn} alt="startBtn" className="w-[167px]" />
           </button>
         </Link>
 
         <div className="relative w-[200px] h-[120px] mx-auto">
-
-            <div className="absolute top-0 left-0 z-10 btn-type cursor-pointer">
-              <img src={backbubble} alt="BackEnd" />
-            </div>
-
+          <div className="absolute top-0 left-0 z-10 btn-type cursor-pointer">
+            <img src={backbubble} alt="BackEnd" />
+          </div>
 
           {/* FrontEnd 말풍선 */}
           <button className="absolute bottom-5 z-10 btn-type cursor-pointer">
@@ -45,7 +43,7 @@ function Main() {
         </div>
 
         <div className="text-2xl mt-10 animate-bounce">
-          <img src={chevron} alt="takeit" className='mx-auto' />
+          <img src={chevron} alt="takeit" className="mx-auto" />
         </div>
       </div>
     </div>

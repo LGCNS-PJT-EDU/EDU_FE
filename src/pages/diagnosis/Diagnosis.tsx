@@ -48,11 +48,11 @@ const Diagnosis = () => {
   /* 1. 문제 받아오기 */
   useEffect(() => {
     api
-      .get("/api/diagnosis")
+      .get('/api/diagnosis')
       .then((res) => setRaw(res.data as RawData))
       .catch((e) => {
-        console.error("문제 로드 실패:", e);
-        alert("문제를 불러오지 못했습니다.");
+        console.error('문제 로드 실패:', e);
+        alert('문제를 불러오지 못했습니다.');
       });
   }, []);
 
@@ -64,8 +64,8 @@ const Diagnosis = () => {
     const be = raw.BE ?? [];
     const fe = raw.FE ?? [];
 
-    if (track === "BE") return [...common, ...be];
-    if (track === "FE") return [...common, ...fe];
+    if (track === 'BE') return [...common, ...be];
+    if (track === 'FE') return [...common, ...fe];
     return common;
   }, [raw, track]);
 
