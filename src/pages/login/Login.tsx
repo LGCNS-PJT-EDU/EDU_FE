@@ -158,14 +158,19 @@ function Login() {
         </div>
 
         <div className="text-center text-xs text-gray-500 mt-3">
-          <a href="/signup" className="text-gray-600 mx-1">회원가입</a>
+          <a href="/signup" className="text-gray-600 mx-1">
+            회원가입
+          </a>
           <span>|</span>
-          <a href="#" className="text-gray-600 mx-1">아이디 찾기</a>
+          <a href="#" className="text-gray-600 mx-1">
+            아이디 찾기
+          </a>
           <span>|</span>
-          <a href="#" className="text-gray-600 mx-1">비밀번호 찾기</a>
+          <a href="#" className="text-gray-600 mx-1">
+            비밀번호 찾기
+          </a>
         </div>
       </div>
-
     </div>
   );
 }

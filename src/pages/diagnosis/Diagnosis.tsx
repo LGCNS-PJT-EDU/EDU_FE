@@ -42,11 +42,11 @@ const Diagnosis = () => {
   /* 1. 문제 받아오기 */
   useEffect(() => {
     api
-      .get("/api/diagnosis")
+      .get('/api/diagnosis')
       .then((res) => setRaw(res.data as RawData))
       .catch((e) => {
-        console.error("문제 로드 실패:", e);
-        alert("문제를 불러오지 못했습니다.");
+        console.error('문제 로드 실패:', e);
+        alert('문제를 불러오지 못했습니다.');
       });
   }, []);
 
@@ -55,11 +55,11 @@ const Diagnosis = () => {
   const questions: Question[] = useMemo(() => {
     if (!raw) return [];
     const common = raw.COMMON ?? [];
-    const be     = raw.BE     ?? [];
-    const fe     = raw.FE     ?? [];
+    const be = raw.BE ?? [];
+    const fe = raw.FE ?? [];
 
-    if (track === "BE") return [...common, ...be];
-    if (track === "FE") return [...common, ...fe];
+    if (track === 'BE') return [...common, ...be];
+    if (track === 'FE') return [...common, ...fe];
     return common;
   }, [raw, track]);
 
@@ -89,18 +89,13 @@ const Diagnosis = () => {
     }));
 
     try {
-      /* ✅ 응답 타입에 uuid 포함 */
       const { data } = await api.post< RoadmapData & { uuid?: string } >(
         "/api/diagnosis",
         payload,
       );
-
-      /* ✅ 게스트라면 uuid 를 localStorage 에 덮어쓴다 */
       if (!isLoggedIn() && data.uuid) {
         localStorage.setItem("roadmapUuid", data.uuid);
       }
-
-      /* 로드맵 페이지로 subjects 넘기기 */
       navigate("/roadmap", { state: data });
     } finally {
       setSubmitting(false);
@@ -115,7 +110,7 @@ const Diagnosis = () => {
       <div className="w-full max-w-[1300px] flex flex-col lg:flex-row gap-6">
         {/* 왼쪽 통계 박스 */}
         <div className="flex flex-row lg:flex-col gap-6">
-          <StatCard title="전체 질문 갯수" value={totalCount ?? "-"} />
+          <StatCard title="전체 질문 갯수" value={totalCount ?? '-'} />
           <StatCard title="현재 응답 갯수" value={Object.keys(answers).length} />
         </div>
 
@@ -139,14 +134,16 @@ const Diagnosis = () => {
                     className={`flex items-center gap-3 w-full px-4 py-3 rounded-[15px] border
                       ${
                         selected
-                          ? "bg-[#C9EBEF] border-[#51BACB]"
-                          : "bg-[#F6F5F8] border-transparent"
-                      }`}>
+                          ? 'bg-[#C9EBEF] border-[#51BACB]'
+                          : 'bg-[#F6F5F8] border-transparent'
+                      }`}
+                  >
                     {/* 체크 아이콘 */}
                     <span
                       className={`w-5 h-5 flex items-center justify-center rounded-full text-white
-                        ${selected ? "bg-[#51BACB]" : "bg-[#DBDFE3]"}`}>
-                      {selected && "✓"}
+                        ${selected ? 'bg-[#51BACB]' : 'bg-[#DBDFE3]'}`}
+                    >
+                      {selected && '✓'}
                     </span>
                     <span className="flex-1 text-left">{c.choice}</span>
                   </button>
@@ -161,7 +158,8 @@ const Diagnosis = () => {
                 onClick={toPrev}
                 disabled={currentIdx === 0}
                 className={`px-6 py-3 rounded-[8px] bg-[#6378EB] text-white
-                  ${currentIdx === 0 && "opacity-40 cursor-not-allowed"}`}>
+                  ${currentIdx === 0 && 'opacity-40 cursor-not-allowed'}`}
+              >
                 &lt; 이전 문제로
               </button>
 
@@ -171,7 +169,8 @@ const Diagnosis = () => {
                   onClick={toNext}
                   disabled={!isAnswered}
                   className={`px-6 py-3 rounded-[8px] bg-[#D7DBFF] text-[#6378EB]
-                    ${!isAnswered && "opacity-40 cursor-not-allowed"}`}>
+                    ${!isAnswered && 'opacity-40 cursor-not-allowed'}`}
+                >
                   다음 문제로 &gt;
                 </button>
               ) : (
@@ -180,7 +179,8 @@ const Diagnosis = () => {
                   onClick={submit}
                   disabled={!isAnswered || submitting}
                   className={`px-6 py-3 rounded-[8px] bg-[#51BACB] text-white
-                    ${(!isAnswered || submitting) && "opacity-40 cursor-not-allowed"}`}>
+                    ${(!isAnswered || submitting) && 'opacity-40 cursor-not-allowed'}`}
+                >
                   제출
                 </button>
               )}
@@ -195,13 +195,7 @@ const Diagnosis = () => {
 export default Diagnosis;
 
 /* ---------- 보조 컴포넌트 ---------- */
-const StatCard = ({
-  title,
-  value,
-}: {
-  title: string;
-  value: number | string;
-}) => (
+const StatCard = ({ title, value }: { title: string; value: number | string }) => (
   <div className="w-64 h-40 bg-white rounded-[15px] shadow-md flex flex-col items-center justify-center">
     <p className="text-gray-800 font-semibold">{title}</p>
     <p className="text-3xl mt-2">{value}</p>
