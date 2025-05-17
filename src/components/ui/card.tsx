@@ -79,4 +79,13 @@ function CardPoster({ src, alt, className }: { src: string; alt?: string; classN
     </div>
   );
 }
-export { Card, CardHeader, CardFooter, CardTitle, CardAction, CardDescription, CardContent, CardPoster };
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
+  CardPoster,
+};

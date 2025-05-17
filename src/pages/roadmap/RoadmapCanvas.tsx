@@ -1,10 +1,10 @@
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import carrot from '@/asset/img/roadmap/background/roadmap_carrot_final.png';
-import { useRoadmapStore } from "@/store/roadmapStore";
-import NodeItem from "./NodeItem";
-import SlotPlaceholder from "./SlotPlaceholder";
-import { SLOTS } from "@/pages/roadmap/slots";
+import { useRoadmapStore } from '@/store/roadmapStore';
+import NodeItem from './NodeItem';
+import SlotPlaceholder from './SlotPlaceholder';
+import { SLOTS } from '@/pages/roadmap/slots';
 
 export default function RoadmapCanvas() {
   const nodes = useRoadmapStore((s) => s.nodes);
@@ -16,7 +16,7 @@ export default function RoadmapCanvas() {
   });
 
   const bgCount = Math.ceil(canvasWidth / 1024);
-  const lastClip  = canvasWidth - (bgCount - 1) * 1024;
+  const lastClip = canvasWidth - (bgCount - 1) * 1024;
 
   return (
     <div className="w-full pt-20">
@@ -50,8 +50,6 @@ export default function RoadmapCanvas() {
               );
             })}
           </div>
-
-
 
           <DndProvider backend={HTML5Backend}>
             {SLOTS.map((_, i) => (

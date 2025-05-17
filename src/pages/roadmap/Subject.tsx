@@ -38,7 +38,7 @@ interface ApiRecommendContent {
 interface ApiSubjectResponse {
   subject_name: string;
   subject_overview: string;
-  chapters: Chapter[];  
+  chapters: Chapter[];
   preSubmitCount: number;
   postSubmitCount: number;
   recommendContents: ApiRecommendContent[];
@@ -57,7 +57,7 @@ async function fetchSubjectDetail(subjectId: number): Promise<SubjectDetail> {
         title: c.contentName,
         url: c.url,
       })),
-      chapters: data.chapters, 
+      chapters: data.chapters,
     };
   } catch (err) {
     console.error('fetchSubjectDetail error:', err);

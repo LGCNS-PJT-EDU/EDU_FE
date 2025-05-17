@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 export interface NodeData {
   id: number;
@@ -27,8 +27,7 @@ export const useRoadmapStore = create<RoadmapStore>((set) => ({
 
   toggleEditing: () => set((s) => ({ editing: !s.editing })),
 
-  addNode: (label) =>
-    set((s) => ({ nodes: [...s.nodes, { id: Date.now(), label }] })),
+  addNode: (label) => set((s) => ({ nodes: [...s.nodes, { id: Date.now(), label }] })),
 
   deleteNode: (index) =>
     set((s) => {
@@ -51,8 +50,7 @@ export const useRoadmapStore = create<RoadmapStore>((set) => ({
       nodes: subjects.map((s) => ({ id: s.subjectId, label: s.subjectName })),
     })),
 
-  openModal: (index) =>
-    set((s) => ({ modalOpen: true, selected: s.nodes[index] })),
+  openModal: (index) => set((s) => ({ modalOpen: true, selected: s.nodes[index] })),
 
   closeModal: () => set(() => ({ modalOpen: false, selected: null })),
 }));
