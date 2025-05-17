@@ -13,13 +13,13 @@ import Report from '@/pages/Report';
 
 const router = createBrowserRouter([
   {
-    path : '/',
-    element : <FullLayouts />,
-    children : [
+    path: '/',
+    element: <FullLayouts />,
+    children: [
       { path: '', element: <Main /> },
       { path: 'login', element: <Login /> },
       { path: 'signup-refactored', element: <SignupRefactored /> },
-    ]
+    ],
   },
   {
     path: '/',

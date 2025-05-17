@@ -2,7 +2,7 @@ import { getAccessToken } from '@/store/authGlobal';
 import axios, { InternalAxiosRequestConfig } from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://api.takeit.academy',
+  baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
