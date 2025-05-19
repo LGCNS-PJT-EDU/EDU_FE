@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import takeRabbit from "@/asset/img/common/takeRabbit.png";
+import takeRabbit from '@/asset/img/common/takeRabbit.png';
 
 export interface WithImage {
   imgSrc?: string;
@@ -25,11 +25,11 @@ export default function LoginRequiredModal({ onClose, imgSrc, imgAlt }: Props) {
         </button>
 
         {/* 중앙 이미지 (선택) */}
-          <img
-            src={image}
-            alt={imgAlt ?? 'modal image'}
-            className="mx-auto mb-4 h-28 w-28 object-contain"
-          />
+        <img
+          src={image}
+          alt={imgAlt ?? 'modal image'}
+          className="mx-auto mb-4 h-28 w-28 object-contain"
+        />
 
         <h3 className="mb-2 text-center text-xl font-semibold">로그인이 필요합니다!</h3>
         <p className="mb-6 text-center text-gray-600">

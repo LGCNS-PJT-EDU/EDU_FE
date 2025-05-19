@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
-import { useDrop } from "react-dnd";
-import { useRoadmapStore } from "@/store/roadmapStore";
-import { SLOTS } from "@/pages/roadmap/slots";
+import React, { useRef } from 'react';
+import { useDrop } from 'react-dnd';
+import { useRoadmapStore } from '@/store/roadmapStore';
+import { SLOTS } from '@/pages/roadmap/slots';
 
 export default function SlotPlaceholder({ index }: { index: number }) {
   const editing = useRoadmapStore((s) => s.editing);
@@ -10,12 +10,12 @@ export default function SlotPlaceholder({ index }: { index: number }) {
   const ref = useRef<HTMLDivElement>(null);
 
   const [, drop] = useDrop({
-    accept: "NODE",
+    accept: 'NODE',
     drop: (item: any) => reorder(item.index, index),
   });
 
   drop(ref);
-  
+
   const slot = SLOTS[index];
   if (!editing || !slot) return null;
 
