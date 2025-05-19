@@ -6,7 +6,7 @@ import MyPage from '@/pages/MyPage';
 import OAuthCallback from '@/pages/login/OAuthCallback';
 import Layout from '@/components/layout/Layouts';
 import Roadmap from '@/pages/roadmap/Roadmap';
-import SignupRefactored from '@/pages/sign/SignupRefactored';
+import Signup from '@/pages/sign/Signup';
 import Diagnosis from '@/pages/diagnosis/Diagnosis';
 import FullLayouts from '@/components/layout/FullLayouts';
 import Report from '@/pages/Report';
@@ -16,12 +16,9 @@ const router = createBrowserRouter([
     path: '/',
     element: <FullLayouts />,
     children: [
-    path: '/',
-    element: <FullLayouts />,
-    children: [
       { path: '', element: <Main /> },
       { path: 'login', element: <Login /> },
-      { path: 'signup-refactored', element: <SignupRefactored /> },
+      { path: 'signup', element: <Signup /> },
       { path: 'diagnosis', element: <Diagnosis /> },
     ]
   },
