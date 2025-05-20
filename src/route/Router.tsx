@@ -30,7 +30,6 @@ const router = createBrowserRouter([
       { path: 'mypage', element: <MyPage /> },
       { path: 'report', element: <Report /> },
       { path: 'roadmap', element: <Roadmap /> },
-
       { path: 'login/oauth2/code/:provider', element: <OAuthCallback /> },
 
     ],
