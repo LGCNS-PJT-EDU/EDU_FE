@@ -84,40 +84,45 @@ function Login() {
   };
 
   return (
-    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex justify-center gap-[100px] overflow-hidden">
+    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex justify-center gap-[200px] overflow-hidden">
       <img
         src={pixel_texture}
         alt="pixel texture background"
-        className="absolute top-0 left-0 w-full h-full object-cover z-0 opacity-70"
+        className="absolute bottom-0 left-0 w-full h-[70%] object-cover z-0 opacity-70"
       />
 
       {/* 구름 & 별 장식 */}
       <img
         src={cloud}
         alt="cloud"
-        className="absolute top-20 left-0 w-[200px] opacity-70 z-10"
+        className="absolute top-35 left-0 w-[200px] z-10"
       />
       <img
         src={cloud_down}
         alt="cloud down"
-        className="absolute bottom-30 right-20 w-[250px] opacity-70 z-10"
+        className="absolute bottom-30 right-20 w-[250px] z-20"
       />
       <img
         src={star}
         alt="star"
         className="absolute top-15 left-130 w-[100px] z-10"
       />
+      <img
+        src={star}
+        alt="star"
+        className="absolute top-50 right-80 w-[100px] z-20"
+      />
 
       {/* 배너 */}
       <div className="relative flex justify-center items-center">
         <div className="z-20 text-[#373f41]">
-          <img src={main} alt="main" className='w-[200px] mb-[10px]'/>
+          <img src={main} alt="main" className='w-[200px] mb-[10px]' />
           <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">개발자의 꿈,<br />지금 TakeIT과 시작해보세요</p>
         </div>
       </div>
 
       {/* 로그인 박스 */}
-      <div className="relative max-w-[400px] h-screen z-10 p-[60px_70px] mt-[50px] bg-white flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
+      <div className="relative max-w-[400px] my-6 z-10 p-[60px_70px] bg-white flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
         <h2 className="mt-1 mb-1 text-xl font-semibold">Login</h2>
 
