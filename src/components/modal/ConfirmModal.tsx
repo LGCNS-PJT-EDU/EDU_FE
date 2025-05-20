@@ -18,9 +18,9 @@ export default function ConfirmModal({
   onClose,
   imgSrc,
   imgAlt,
-  title = '알림림',
+  title ,
   message,
-  confirmText = "확인",
+  confirmText,
   onConfirm,
 }: Props) {
   const navigate = useNavigate();
@@ -30,6 +30,7 @@ export default function ConfirmModal({
     onConfirm?.(); //선택적으로 실행
     onClose();
   }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="relative w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl">
