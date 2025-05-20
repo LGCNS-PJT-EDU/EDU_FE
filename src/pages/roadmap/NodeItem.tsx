@@ -1,10 +1,10 @@
-import React, { useRef } from "react";
-import { motion } from "framer-motion";
-import { useDrag, useDrop } from "react-dnd";
-import { useRoadmapStore } from "@/store/roadmapStore";
-import { SLOTS } from "@/pages/roadmap/slots";
-import { X } from "lucide-react";
-import { SUBJECT_IMAGES } from "@/pages/roadmap/subjectImages";
+import React, { useRef } from 'react';
+import { motion } from 'framer-motion';
+import { useDrag, useDrop } from 'react-dnd';
+import { useRoadmapStore } from '@/store/roadmapStore';
+import { SLOTS } from '@/pages/roadmap/slots';
+import { X } from 'lucide-react';
+import { SUBJECT_IMAGES } from '@/pages/roadmap/subjectImages';
 
 interface NodeItemProps {
   node: { id: number; label: string };
@@ -12,23 +12,23 @@ interface NodeItemProps {
 }
 
 export default function NodeItem({ node, index }: NodeItemProps) {
-  const wrapperRef   = useRef<HTMLDivElement>(null);
-  const imgBoxRef    = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const imgBoxRef = useRef<HTMLDivElement>(null);
 
-  const editing  = useRoadmapStore((s) => s.editing);
-  const reorder  = useRoadmapStore((s) => s.reorderNode);
-  const del      = useRoadmapStore((s) => s.deleteNode);
+  const editing = useRoadmapStore((s) => s.editing);
+  const reorder = useRoadmapStore((s) => s.reorderNode);
+  const del = useRoadmapStore((s) => s.deleteNode);
   const openModal = useRoadmapStore((s) => s.openModal);
 
   /* 드롭: 다른 노드가 이 자리로 오면 순서 스왑 */
   const [, drop] = useDrop({
-    accept: "NODE",
+    accept: 'NODE',
     drop: (item: any) => item.index !== index && reorder(item.index, index),
   });
 
   /* 드래그: 편집 모드일 때만 가능 */
   const [{ isDragging }, drag] = useDrag({
-    type: "NODE",
+    type: 'NODE',
     item: { index },
     canDrag: editing,
     collect: (m) => ({ isDragging: m.isDragging() }),
@@ -47,7 +47,7 @@ export default function NodeItem({ node, index }: NodeItemProps) {
       <motion.div
         ref={imgBoxRef}
         className={`relative w-[80px] h-[80px] rounded-full bg-white shadow-lg flex items-center justify-center ${
-          editing ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
+          editing ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'
         }`}
         onClick={() => !editing && openModal(index)}
         whileHover={editing ? { scale: 1.05 } : undefined}
@@ -73,8 +73,12 @@ export default function NodeItem({ node, index }: NodeItemProps) {
           <span className="text-lg font-semibold">{node.label.charAt(0)}</span>
         )}
       </motion.div>
-      <p className="mt-1 w-[86px] text-center text-[17px] leading-tight
-                    break-words whitespace-normal font-bold text-white">{node.label}</p>
+      <p
+        className="mt-1 w-[86px] text-center text-[17px] leading-tight
+                    break-words whitespace-normal font-bold text-white"
+      >
+        {node.label}
+      </p>
     </div>
   );
 }

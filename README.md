@@ -13,7 +13,7 @@
 | 분류               | 라이브러리                   | 설명                                                 |
 | :----------------- | :--------------------------- | :--------------------------------------------------- |
 | 프레임워크/빌드 툴 | React 18, Vite               | UI 라이브러리 + 번들러/개발서버                      |
-| 스타일링           | Tailwind, shadcn/ui        | 유틸리티 기반 CSS 프레임워크, UI 컴포넌트 라이브러리 |
+| 스타일링           | Tailwind, shadcn/ui          | 유틸리티 기반 CSS 프레임워크, UI 컴포넌트 라이브러리 |
 | 상태 관리          | Redux Toolkit, Zustand       | 전역 상태 관리 라이브러리                            |
 | 데이터 통신        | React Query, Axios           | 서버 상태 관리(캐싱, 동기화) + HTTP 요청 라이브러리  |
 | API Mocking        | Mock Service Worker (MSW)    | API 요청을 가짜(Mock)로 시뮬레이션하는 툴            |

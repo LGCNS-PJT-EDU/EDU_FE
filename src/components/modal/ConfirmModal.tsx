@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import takeRabbit from "@/asset/img/common/takeRabbit.png";
+import takeRabbit from '@/asset/img/common/takeRabbit.png';
 
 export interface WithImage {
   imgSrc?: string;
@@ -8,11 +8,28 @@ export interface WithImage {
 
 interface Props extends WithImage {
   onClose: () => void;
+  title?: string;
+  message: string;
+  confirmText?: string;
+  onConfirm?: () => void;
 }
 
-export default function LoginRequiredModal({ onClose, imgSrc, imgAlt }: Props) {
+export default function ConfirmModal({
+  onClose,
+  imgSrc,
+  imgAlt,
+  title = '알림림',
+  message,
+  confirmText = "확인",
+  onConfirm,
+}: Props) {
   const navigate = useNavigate();
   const image = imgSrc ?? takeRabbit;
+
+  const handleConfirm = () => {
+    onConfirm?.(); //선택적으로 실행
+    onClose();
+  }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="relative w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl">
@@ -25,25 +42,29 @@ export default function LoginRequiredModal({ onClose, imgSrc, imgAlt }: Props) {
         </button>
 
         {/* 중앙 이미지 (선택) */}
-          <img
-            src={image}
-            alt={imgAlt ?? 'modal image'}
-            className="mx-auto mb-4 h-28 w-28 object-contain"
-          />
+        <img
+          src={image}
+          alt={imgAlt ?? 'modal image'}
+          className="mx-auto mb-4 h-28 w-28 object-contain"
+        />
 
-        <h3 className="mb-2 text-center text-xl font-semibold">로그인이 필요합니다!</h3>
-        <p className="mb-6 text-center text-gray-600">
-          개인화 로드맵 저장 및 과목 상세 조회는 <br /> 로그인 후 이용하실 수 있어요.
+
+        {/* 제목 */}
+        <h3 className="mb-2 text-center text-xl font-semibold">{title}</h3>
+
+        {/* 본문 메시지 */}
+        <p className="mb-6 text-center text-gray-600 whitespace-pre-wrap">
+          {message}
         </p>
 
         <button
           onClick={() => {
             onClose();
-            navigate('/login');
+            onConfirm?.();
           }}
           className="w-full rounded-lg bg-blue-600 py-2 text-white transition hover:bg-blue-700"
         >
-          로그인 하러가기
+          {confirmText}
         </button>
       </div>
     </div>

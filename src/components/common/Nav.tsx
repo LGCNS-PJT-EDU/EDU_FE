@@ -10,23 +10,30 @@ function Nav() {
   const isLogin = !!accessToken;
   const logout = useLogout();
 
-  const baseBtnClass = 'bg-transparent border-none font-[Figtree] text-[#373F41] text-base hover:text-[#6378EB] hover:text-[17px] transition-all'
+  const baseBtnClass =
+    'bg-transparent border-none font-[Figtree] text-[#373F41] text-base hover:text-[#6378EB] hover:text-[17px] transition-all';
 
   return (
     <header className="flex items-center justify-between h-[70px] w-[800px] mx-auto">
       <div className="w-[100px]">
-        <img src={rabbitImage} alt="takeit" className='w-full' />
+        <img src={rabbitImage} alt="takeit" className="w-full" />
       </div>
 
       <div className="flex items-center gap-[30px]">
         <Link to="/">
-          <button className={`${baseBtnClass} ${location.pathname === '/' ? 'font-semibold' : ''}`}>HOME</button>
+          <button className={`w-[50px] h-[70px]${baseBtnClass} ${location.pathname === '/' ? 'font-semibold' : ''}`}>
+            HOME
+          </button>
         </Link>
         <Link to="/About">
-          <button className={`${baseBtnClass} ${location.pathname === '/About' ? 'font-semibold' : ''}`}>ABOUT</button>
+          <button
+            className={`w-[50px] h-[70px] ${baseBtnClass} ${location.pathname === '/About' ? 'font-semibold' : ''}`}
+          >
+            ABOUT
+          </button>
         </Link>
         <a href="mailto:example@example.com">
-          <button className={baseBtnClass}>CONTACT</button>
+          <button className={`w-[70px] h-[70px]${baseBtnClass}`}>CONTACT</button>
         </a>
       </div>
 
@@ -34,18 +41,32 @@ function Nav() {
         {!isLogin ? (
           <>
             <Link to="/login">
-              <button className={`${baseBtnClass} ${location.pathname === '/login' ? 'font-semibold' : ''}`}>Login</button>
+              <button
+                className={`w-[50px] h-[70px]${baseBtnClass} ${location.pathname === '/login' ? 'font-semibold' : ''}`}
+              >
+                Login
+              </button>
             </Link>
-            <Link to="/signup-refactored">
-              <button className={`${baseBtnClass} ${location.pathname === '/signup' ? 'font-semibold' : ''}`}>Signup</button>
+            <Link to="/signup">
+              <button
+                className={`w-[50px] h-[70px]${baseBtnClass} ${location.pathname === '/signup' ? 'font-semibold' : ''}`}
+              >
+                Signup
+              </button>
             </Link>
           </>
         ) : (
           <>
             <Link to="/mypage">
-              <button className={`${baseBtnClass} ${location.pathname === '/mypage' ? 'font-semibold' : ''}`}>MyPage</button>
+              <button
+                className={`${baseBtnClass} ${location.pathname === '/mypage' ? 'font-semibold' : ''}`}
+              >
+                MyPage
+              </button>
             </Link>
-            <button onClick={logout} className='baseBtnClass'>Logout</button>
+            <button onClick={logout} className="baseBtnClass">
+              Logout
+            </button>
           </>
         )}
       </div>

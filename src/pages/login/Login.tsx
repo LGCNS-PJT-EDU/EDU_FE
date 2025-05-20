@@ -12,24 +12,24 @@ import main from '@/asset/img/common/main.png';
 
 import useLogin from '@/hooks/useLogin';
 
-
+const REDIRECT_BASE = import.meta.env.VITE_REDIRECT_DOMAIN;
 /* 1) 공급자별 고정 파라미터 */
 const OAUTH = {
   naver: {
     authUrl: 'https://nid.naver.com/oauth2.0/authorize',
     clientId: 'bG5y9c7SsXkdkxq2I14X',
-    redirect: 'https://takeit.academy/login/oauth2/code/naver',
+    redirect: `${REDIRECT_BASE}/login/oauth2/code/naver`,
     scope: 'name email',
   },
   kakao: {
     authUrl: 'https://kauth.kakao.com/oauth/authorize',
     clientId: '0257e0d9342333ce55ef60c412d20c5f',
-    redirect: 'https://takeit.academy/login/oauth2/code/kakao',
+    redirect: `${REDIRECT_BASE}/login/oauth2/code/kakao`,
   },
   google: {
     authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
     clientId: '478095454422-f3q1th169ltqv6i6bq5g92oaa7e2l6h8.apps.googleusercontent.com',
-    redirect: 'https://takeit.academy/login/oauth2/code/google',
+    redirect: `${REDIRECT_BASE}/login/oauth2/code/google`,
     scope: 'openid email profile',
   },
 } as const;
@@ -62,9 +62,22 @@ function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const saveAccessToken = useLogin();
 
   const handleLogin = async (): Promise<void> => {
+    setEmailError('');
+    setPasswordError('');
+    setErrorMessage('');
+
+    if (!email) setEmailError('아이디를 입력해 주세요.');
+    if (!password) setPasswordError('비밀번호를 입력해주세요.')
+    if (!email || !password) return;
+
     try {
       const res = await axios.post('/api/user/signin', {
         email,
@@ -79,45 +92,50 @@ function Login() {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     } catch (err: unknown) {
       console.error(err);
-      alert('로그인 중 오류가 발생했습니다.');
+      setErrorMessage('이메일 또는 비밀번호가 잘못되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.');
     }
   };
 
   return (
-    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex justify-center gap-[100px] overflow-hidden">
+    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex justify-center gap-[200px] overflow-hidden">
       <img
         src={pixel_texture}
         alt="pixel texture background"
-        className="absolute top-0 left-0 w-full h-full object-cover z-0 opacity-70"
+        className="absolute bottom-0 left-0 w-full h-[70%] object-cover z-0 opacity-70"
       />
 
       {/* 구름 & 별 장식 */}
       <img
         src={cloud}
         alt="cloud"
-        className="absolute top-20 left-0 w-[200px] opacity-70 z-10"
+        className="absolute top-35 left-0 w-[200px] z-10"
       />
       <img
         src={cloud_down}
         alt="cloud down"
-        className="absolute bottom-30 right-20 w-[250px] opacity-70 z-10"
+        className="absolute bottom-30 right-20 w-[250px] z-20"
       />
       <img
         src={star}
         alt="star"
         className="absolute top-15 left-130 w-[100px] z-10"
       />
+      <img
+        src={star}
+        alt="star"
+        className="absolute top-50 right-80 w-[100px] z-20"
+      />
 
       {/* 배너 */}
       <div className="relative flex justify-center items-center">
         <div className="z-20 text-[#373f41]">
-          <img src={main} alt="main" className='w-[200px] mb-[10px]'/>
+          <img src={main} alt="main" className='w-[200px] mb-[10px]' />
           <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">개발자의 꿈,<br />지금 TakeIT과 시작해보세요</p>
         </div>
       </div>
 
       {/* 로그인 박스 */}
-      <div className="relative max-w-[400px] h-screen z-10 p-[60px_70px] mt-[50px] bg-white flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
+      <div className="relative max-w-[400px] my-6 z-10 p-[60px_70px] bg-white flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
         <h2 className="mt-1 mb-1 text-xl font-semibold">Login</h2>
 
@@ -140,8 +158,9 @@ function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder=" "
-              className="w-full px-3 pt-4 pb-3 text-base border border-gray-400 rounded-md focus:outline-none focus:border-[#6378eb] focus:ring-2 focus:ring-[#6378eb]/20"
+              className={`w-full px-3 pt-4 pb-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6378eb]/20 ${emailError ? 'border-red-500' : 'border-gray-400'}`}
             />
+            {emailError && <p className='text-sm text-red-500 mt-1'>{emailError}</p>}
           </div>
 
           <div className="relative mb-6">
@@ -157,9 +176,15 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder=" "
-              className="w-full px-3 pt-4 pb-3 text-base border border-gray-400 rounded-md focus:outline-none focus:border-[#6378eb] focus:ring-2 focus:ring-[#6378eb]/20"
+              className={`w-full px-3 pt-4 pb-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6378eb]/20 ${passwordError ? 'border-red-500' : 'border-gray-400'}`}
             />
+            {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>}
           </div>
+                  {errorMessage && (
+          <div className="text-sm text-red-500 whitespace-pre-line text-center">
+            {errorMessage}
+          </div>
+        )}
         </form>
 
         <button
@@ -188,14 +213,19 @@ function Login() {
         </div>
 
         <div className="text-center text-xs text-gray-500 mt-3">
-          <a href="/signup" className="text-gray-600 mx-1">회원가입</a>
+          <a href="/signup" className="text-gray-600 mx-1">
+            회원가입
+          </a>
           <span>|</span>
-          <a href="#" className="text-gray-600 mx-1">아이디 찾기</a>
+          <a href="#" className="text-gray-600 mx-1">
+            아이디 찾기
+          </a>
           <span>|</span>
-          <a href="#" className="text-gray-600 mx-1">비밀번호 찾기</a>
+          <a href="#" className="text-gray-600 mx-1">
+            비밀번호 찾기
+          </a>
         </div>
       </div>
-
     </div>
   );
 }

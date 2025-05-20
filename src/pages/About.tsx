@@ -63,11 +63,21 @@ function About() {
         >
           <h2 className="text-2xl font-semibold mb-4">How? — 어떻게 다를까요</h2>
           <ul className="list-disc space-y-2 text-left max-w-xl">
-            <li><strong>성향 분석:</strong> 개발 성향과 관심 분야 파악</li>
-            <li><strong>기술 진단:</strong> 현재 실력 수준 진단</li>
-            <li><strong>맞춤 추천:</strong> 성장 단계별 로드맵 제공</li>
-            <li><strong>학습 코칭:</strong> 학습 이유 구체적 설명</li>
-            <li><strong>지속 피드백:</strong> 학습 진단 → 추천 → 피드백 반복</li>
+            <li>
+              <strong>성향 분석:</strong> 개발 성향과 관심 분야 파악
+            </li>
+            <li>
+              <strong>기술 진단:</strong> 현재 실력 수준 진단
+            </li>
+            <li>
+              <strong>맞춤 추천:</strong> 성장 단계별 로드맵 제공
+            </li>
+            <li>
+              <strong>학습 코칭:</strong> 학습 이유 구체적 설명
+            </li>
+            <li>
+              <strong>지속 피드백:</strong> 학습 진단 → 추천 → 피드백 반복
+            </li>
           </ul>
         </section>
 
@@ -125,6 +135,5 @@ function About() {
     </section>
   );
 }
-
 
 export default About;

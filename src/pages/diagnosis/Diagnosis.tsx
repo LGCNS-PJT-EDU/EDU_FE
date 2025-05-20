@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@/api/axios";
+import { isLoggedIn } from "@/store/authGlobal";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 
 /* ---------- 타입 ---------- */
@@ -48,11 +49,11 @@ const Diagnosis = () => {
   /* 1. 문제 받아오기 */
   useEffect(() => {
     api
-      .get("/api/diagnosis")
+      .get('/api/diagnosis')
       .then((res) => setRaw(res.data as RawData))
       .catch((e) => {
-        console.error("문제 로드 실패:", e);
-        alert("문제를 불러오지 못했습니다.");
+        console.error('문제 로드 실패:', e);
+        alert('문제를 불러오지 못했습니다.');
       });
   }, []);
 
@@ -64,8 +65,8 @@ const Diagnosis = () => {
     const be = raw.BE ?? [];
     const fe = raw.FE ?? [];
 
-    if (track === "BE") return [...common, ...be];
-    if (track === "FE") return [...common, ...fe];
+    if (track === 'BE') return [...common, ...be];
+    if (track === 'FE') return [...common, ...fe];
     return common;
   }, [raw, track]);
 
@@ -83,6 +84,7 @@ const Diagnosis = () => {
   const toPrev = () => currentIdx > 0 && setCurrentIdx((i) => i - 1);
   const toNext = () => currentIdx < questions.length - 1 && setCurrentIdx((i) => i + 1);
 
+
   /* 5. 제출 */
   const submit = async () => {
     if (!isAnswered || submitting) return;
@@ -94,14 +96,19 @@ const Diagnosis = () => {
     }));
 
     try {
-      const { data } = await api.post<RoadmapData>("/api/diagnosis", payload);
+      const { data } = await api.post< RoadmapData & { uuid?: string } >(
+        "/api/diagnosis",
+        payload,
+      );
+      if (!isLoggedIn() && data.uuid) {
+        localStorage.setItem("roadmapUuid", data.uuid);
+      }
       navigate("/roadmap", { state: data });
     } finally {
       setSubmitting(false);
     }
   };
 
-  /* ---------- 뷰 ---------- */
   return (
     <div className="w-full flex flex-col items-center gap-8 py-8 px-4 font-[pretendard] h-[calc(100vh-70px)] justify-center"
       style={{
