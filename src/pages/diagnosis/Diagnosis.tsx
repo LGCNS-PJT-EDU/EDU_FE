@@ -4,6 +4,13 @@ import api from "@/api/axios";
 import { isLoggedIn } from "@/store/authGlobal";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 
+import takeitR from "@/asset/img/diagnosis/takeit_pixel.png";
+import blue_star from "@/asset/img/diagnosis/blue_star.png";
+import gold_star from "@/asset/img/diagnosis/gold_star.png";
+import smallRabbit from "@/asset/img/diagnosis/smallRabbit.png";
+import Isolation from "@/asset/img/diagnosis/Isolation_Mode.png";
+import pixel_texture from '@/asset/img/common/pixel_texture.png';
+
 /* ---------- 타입 ---------- */
 interface Choice {
   choiceId: number;
@@ -44,6 +51,7 @@ const Diagnosis = () => {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [currentIdx, setCurrentIdx] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const navigate = useNavigate();
 
   /* 1. 문제 받아오기 */
@@ -96,7 +104,7 @@ const Diagnosis = () => {
     }));
 
     try {
-      const { data } = await api.post< RoadmapData & { uuid?: string } >(
+      const { data } = await api.post<RoadmapData & { uuid?: string }>(
         "/api/diagnosis",
         payload,
       );
@@ -108,6 +116,50 @@ const Diagnosis = () => {
       setSubmitting(false);
     }
   };
+
+  if (!hasStarted) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-70px)] px-4 font-[pretendard] bg-gradient-to-b from-[#fff] to-[#C6EDF2]">
+        <div className="relative bg-[#E6EEFF] rounded-2xl p-8 w-full h-[50%] max-w-md shadow-lg" 
+        style={{
+          background: 'linear-gradient(to bottom, #ffffff %, #94A5FF 100%)',
+        }}>
+          <img
+            src={pixel_texture}
+            alt="pixel texture background"
+            className="absolute bottom-0 left-0 w-full h-[70%] z-0 object-cover opacity-70 pointer-events-none"
+          />
+          <img
+            src={blue_star}
+            alt="star"
+            className="absolute top-30 right-10 w-[50px] z-10"
+          />
+          <img
+            src={gold_star}
+            alt="star"
+            className="absolute top-50 right-40 w-[100px] z-10"
+          />
+          <p className="text-sm text-gray-600 z-10">⏱ 진단 소요시간 5분, 약 10문제</p>
+          <h2 className="text-xl font-bold mt-4 z-10">문제를 시작해볼까요?</h2>
+          <p className="flex mt-2 text-[#4A4A4A] text-s gap-3 z-10">
+            <img src={Isolation} alt="isolation" className="w-[15px] z-10" />
+            <img src={smallRabbit} alt="smallRabbit" className="w-[30px] z-10" />
+            개발 로드맵 확인하러 가기</p>
+
+          <div className="flex justify-center mt-6 z-10">
+            <img src={takeitR} alt="토끼 이미지" className="w-[150px] absolute bottom-0 right-0" />
+          </div>
+
+          <button
+            onClick={() => setHasStarted(true)}
+            className="mt-6 font-[NeoDunggeunmo] bg-white border border-black text-black font-semibold py-2 px-4 rounded-lg hover:bg-[#f0f0f0] z-20"
+          >
+            시작하기
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="w-full flex flex-col items-center gap-8 py-8 px-4 font-[pretendard] h-[calc(100vh-70px)] justify-center"
@@ -147,8 +199,8 @@ const Diagnosis = () => {
                       key={c.choiceId}
                       onClick={() => choose(c.value)}
                       className={`flex items-center gap-3 w-full px-4 py-3 rounded-[15px] border ${selected
-                          ? "bg-[#C9EBEF] border-[#51BACB]"
-                          : "bg-[#F6F5F8] border-transparent"
+                        ? "bg-[#C9EBEF] border-[#51BACB]"
+                        : "bg-[#F6F5F8] border-transparent"
                         }`}
                     >
                       {/* 체크 아이콘 */}
@@ -174,7 +226,7 @@ const Diagnosis = () => {
                 className={`flex items-center gap-1 px-6 py-3 rounded-[8px] bg-[#6378EB] text-white ${currentIdx === 0 && "opacity-40 cursor-not-allowed"
                   }`}
               >
-              <SlArrowLeft className="w-4 h-4"/> 이전 문제로 
+                <SlArrowLeft className="w-4 h-4" /> 이전 문제로
               </button>
 
               {currentIdx < questions.length - 1 ? (
@@ -185,7 +237,7 @@ const Diagnosis = () => {
                   className={`items-center gap-1 px-6 py-3 rounded-[8px] bg-[#D7DBFF] flex text-[#6378EB] ${!isAnswered && "opacity-40 cursor-not-allowed"
                     }`}
                 >
-                다음 문제로 <SlArrowRight className="w-4 h-4"/>
+                  다음 문제로 <SlArrowRight className="w-4 h-4" />
                 </button>
               ) : (
                 /* 제출 */
