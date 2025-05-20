@@ -62,9 +62,22 @@ function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const saveAccessToken = useLogin();
 
   const handleLogin = async (): Promise<void> => {
+    setEmailError('');
+    setPasswordError('');
+    setErrorMessage('');
+
+    if (!email) setEmailError('아이디를 입력해 주세요.');
+    if (!password) setPasswordError('비밀번호를 입력해주세요.')
+    if (!email || !password) return;
+
     try {
       const res = await axios.post('/api/user/signin', {
         email,
@@ -79,7 +92,7 @@ function Login() {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     } catch (err: unknown) {
       console.error(err);
-      alert('로그인 중 오류가 발생했습니다.');
+      setErrorMessage('이메일 또는 비밀번호가 잘못되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.');
     }
   };
 
@@ -145,8 +158,9 @@ function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder=" "
-              className="w-full px-3 pt-4 pb-3 text-base border border-gray-400 rounded-md focus:outline-none focus:border-[#6378eb] focus:ring-2 focus:ring-[#6378eb]/20"
+              className={`w-full px-3 pt-4 pb-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6378eb]/20 ${emailError ? 'border-red-500' : 'border-gray-400'}`}
             />
+            {emailError && <p className='text-sm text-red-500 mt-1'>{emailError}</p>}
           </div>
 
           <div className="relative mb-6">
@@ -162,9 +176,15 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder=" "
-              className="w-full px-3 pt-4 pb-3 text-base border border-gray-400 rounded-md focus:outline-none focus:border-[#6378eb] focus:ring-2 focus:ring-[#6378eb]/20"
+              className={`w-full px-3 pt-4 pb-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6378eb]/20 ${passwordError ? 'border-red-500' : 'border-gray-400'}`}
             />
+            {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>}
           </div>
+                  {errorMessage && (
+          <div className="text-sm text-red-500 whitespace-pre-line text-center">
+            {errorMessage}
+          </div>
+        )}
         </form>
 
         <button
