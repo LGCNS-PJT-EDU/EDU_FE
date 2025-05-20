@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '@/api/axios';
 import pixel_texture from '@/asset/img/login/pixel texture.png';
 import cloud from '@/asset/img/login/cloud.png';
@@ -12,6 +13,8 @@ function Signup() {
   const [nickname, setNickname] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordCheck, setPasswordCheck] = useState<string>('');
+
+  const navigate = useNavigate();
 
   // 이메일 유효성 검사
   const isValidEmail = (email: string): boolean => {
@@ -89,11 +92,11 @@ function Signup() {
 
       if (res.status === 201 || res.status === 200) {
         alert('회원가입이 완료되었습니다!');
-        // 회원가입 성공 시 추가 처리 가능
+        navigate('/login');
       }
     } catch (err) {
       console.error(err);
-      alert('회원가입 중 오류가 발생했습니다.');
+      alert('다시 확인해주세요.');
     }
   };
 
@@ -135,10 +138,10 @@ function Signup() {
         </div>
       </div>
 
-      <div className="relative max-w-[400px] my-6 z-10 p-[60px_70px] bg-white flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
+      <div className="relative max-w-[400px] my-6 z-10 p-[60px_50px] bg-white flex flex-col shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
       <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
-        <h2 className="mt-1 mb-1 text-xl font-semibold">회원가입</h2>  
-        <div className="flex flex-col gap-4">
+        <h2 className="mt-2 mb-3 text-xl font-semibold">회원가입</h2>  
+        <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-[#373F41]">닉네임</label>
           <input
             type="text"
@@ -160,7 +163,7 @@ function Signup() {
             <button
               type="button"
               onClick={handleCheckEmail}
-              className="px-3 py-2 text-sm bg-[#6378EB] text-white rounded-lg"
+              className="h-[42px] px-3 whitespace-nowrap text-sm bg-[#6378EB] text-white rounded-lg"
             >
               중복확인
             </button>

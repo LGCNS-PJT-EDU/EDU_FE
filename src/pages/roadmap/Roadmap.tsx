@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoadmapStore } from '@/store/roadmapStore';
 import RoadmapCanvas from './RoadmapCanvas';
-import SubjectModal from '@/pages/roadmap/Subject';
+import SubjectModal from '@/components/modal/Subject';
 import { Button } from '@/components/ui/button';
-import LoginRequiredModal from '@/components/modal/LoginRequiredModal';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 import { isLoggedIn } from '@/store/authGlobal';
 import { Check } from 'lucide-react';
 
@@ -76,7 +76,7 @@ export default function Roadmap() {
       )}
 
       {/* 로그인 하러가기 모달 */}
-      {loginModalOpen && <LoginRequiredModal onClose={() => setLoginModalOpen(false)} />}
+      {loginModalOpen && <ConfirmModal onClose={() => setLoginModalOpen(false)} message={''} />}
     </section>
   );
 }
