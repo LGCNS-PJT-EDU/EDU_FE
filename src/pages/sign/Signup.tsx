@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import axios from '@/api/axios';
+import pixel_texture from '@/asset/img/login/pixel texture.png';
+import cloud from '@/asset/img/login/cloud.png';
+import cloud_down from '@/asset/img/login/cloud_down.png';
+import star from '@/asset/img/login/star.png';
+import main from '@/asset/img/common/main.png';
 
 function Signup() {
   const [email, setEmail] = useState<string>('');
@@ -93,67 +98,113 @@ function Signup() {
   };
 
   return (
-    <section id="articles">
-      <h2 className="title_sign">회원가입</h2>
-      <p className="subtitle">회원정보를 입력해주세요</p>
+    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex justify-center gap-[200px] overflow-hidden">
+      <img
+        src={pixel_texture}
+        alt="pixel texture background"
+        className="absolute bottom-0 left-0 w-full h-[70%] object-cover z-0 opacity-70"
+      />
 
-      <div className="formGroup">
-        <label>닉네임</label>
-        <input
-          type="text"
-          placeholder="닉네임"
-          value={nickname}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNickname(e.target.value)}
-        />
+      {/* 구름 & 별 장식 */}
+      <img
+        src={cloud}
+        alt="cloud"
+        className="absolute top-35 left-0 w-[200px] z-10"
+      />
+      <img
+        src={cloud_down}
+        alt="cloud down"
+        className="absolute bottom-30 right-20 w-[250px] z-20"
+      />
+      <img
+        src={star}
+        alt="star"
+        className="absolute top-15 left-130 w-[100px] z-10"
+      />
+      <img
+        src={star}
+        alt="star"
+        className="absolute top-50 right-80 w-[100px] z-20"
+      />
 
-        <label>이메일</label>
-        <div className="repeat">
-          <input
-            type="email"
-            placeholder="이메일"
-            value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-          />
-          <button type="button" className="repeatBtn" onClick={handleCheckEmail}>
-            중복확인
-          </button>
+      {/* 배너 */}
+      <div className="relative flex justify-center items-center">
+        <div className="z-20 text-[#373f41]">
+          <img src={main} alt="main" className='w-[200px] mb-[10px]' />
+          <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">회원가입을 진행해주세요.<br />지금 TakeIT과 시작해보세요</p>
         </div>
-
-        <label>비밀번호</label>
-        <input
-          type="password"
-          placeholder="비밀번호"
-          value={password}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-        />
-
-        <label>비밀번호 확인</label>
-        <input
-          type="password"
-          placeholder="비밀번호 확인"
-          value={passwordCheck}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPasswordCheck(e.target.value)}
-        />
-        <p
-          className="passwordGuide"
-          style={{
-            display: passwordCheck.length > 0 ? 'block' : 'none',
-            color: password === passwordCheck ? 'green' : 'red',
-            fontSize: 13,
-          }}
-        >
-          {password === passwordCheck ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'}
-        </p>
-
-        <p className="passwordconfirm">
-          6-20자 / 영문 대문자, 소문자, 숫자, 특수문자 중 2가지 조합
-        </p>
       </div>
 
-      <button className="submitBtn" onClick={handleSignup}>
-        Join in
-      </button>
-    </section>
+      <div className="relative max-w-[400px] my-6 z-10 p-[60px_70px] bg-white flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
+      <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
+        <h2 className="mt-1 mb-1 text-xl font-semibold">회원가입</h2>  
+        <div className="flex flex-col gap-4">
+          <label className="text-sm font-semibold text-[#373F41]">닉네임</label>
+          <input
+            type="text"
+            value={nickname}
+            placeholder="닉네임"
+            onChange={(e) => setNickname(e.target.value)}
+            className="border border-[#ccc] px-4 py-2 rounded-lg text-sm"
+          />
+
+          <label className="text-sm font-semibold text-[#373F41]">이메일</label>
+          <div className="flex gap-2">
+            <input
+              type="email"
+              value={email}
+              placeholder="이메일"
+              onChange={(e) => setEmail(e.target.value)}
+              className="flex-1 border border-[#ccc] px-4 py-2 rounded-lg text-sm"
+            />
+            <button
+              type="button"
+              onClick={handleCheckEmail}
+              className="px-3 py-2 text-sm bg-[#6378EB] text-white rounded-lg"
+            >
+              중복확인
+            </button>
+          </div>
+
+          <label className="text-sm font-semibold text-[#373F41]">비밀번호</label>
+          <input
+            type="password"
+            value={password}
+            placeholder="비밀번호"
+            onChange={(e) => setPassword(e.target.value)}
+            className="border border-[#ccc] px-4 py-2 rounded-lg text-sm"
+          />
+
+          <label className="text-sm font-semibold text-[#373F41]">비밀번호 확인</label>
+          <input
+            type="password"
+            value={passwordCheck}
+            placeholder="비밀번호 확인"
+            onChange={(e) => setPasswordCheck(e.target.value)}
+            className="border border-[#ccc] px-4 py-2 rounded-lg text-sm"
+          />
+
+          {passwordCheck && (
+            <p
+              className={`text-sm mt-1 ${password === passwordCheck ? 'text-green-600' : 'text-red-500'}`}
+            >
+              {password === passwordCheck ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'}
+            </p>
+          )}
+
+          <p className="text-xs text-[#999] mt-2">
+            6~20자 / 영문 대·소문자, 숫자, 특수문자 중 2가지 이상 조합
+          </p>
+
+          <button
+            className="mt-6 py-3 bg-[#51BACB] text-white rounded-xl font-semibold hover:bg-[#3fa9b8] transition"
+            onClick={handleSignup}
+          >
+            Join In
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 

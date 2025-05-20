@@ -21,19 +21,19 @@ function Nav() {
 
       <div className="flex items-center gap-[30px]">
         <Link to="/">
-          <button className={`${baseBtnClass} ${location.pathname === '/' ? 'font-semibold' : ''}`}>
+          <button className={`w-[50px] h-[70px]${baseBtnClass} ${location.pathname === '/' ? 'font-semibold' : ''}`}>
             HOME
           </button>
         </Link>
         <Link to="/About">
           <button
-            className={`${baseBtnClass} ${location.pathname === '/About' ? 'font-semibold' : ''}`}
+            className={`w-[50px] h-[70px] ${baseBtnClass} ${location.pathname === '/About' ? 'font-semibold' : ''}`}
           >
             ABOUT
           </button>
         </Link>
         <a href="mailto:example@example.com">
-          <button className={baseBtnClass}>CONTACT</button>
+          <button className={`w-[70px] h-[70px]${baseBtnClass}`}>CONTACT</button>
         </a>
       </div>
 
@@ -42,14 +42,14 @@ function Nav() {
           <>
             <Link to="/login">
               <button
-                className={`${baseBtnClass} ${location.pathname === '/login' ? 'font-semibold' : ''}`}
+                className={`w-[50px] h-[70px]${baseBtnClass} ${location.pathname === '/login' ? 'font-semibold' : ''}`}
               >
                 Login
               </button>
             </Link>
-            <Link to="/signup-refactored">
+            <Link to="/signup">
               <button
-                className={`${baseBtnClass} ${location.pathname === '/signup' ? 'font-semibold' : ''}`}
+                className={`w-[50px] h-[70px]${baseBtnClass} ${location.pathname === '/signup' ? 'font-semibold' : ''}`}
               >
                 Signup
               </button>

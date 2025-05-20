@@ -53,7 +53,7 @@ function OAuthCallback() {
     if (!token) throw new Error('token missing');
 
     saveAccessToken(token);
-  }, [provider, search, navigate, setLogin]);
+  }, [provider, search, navigate]);
 
   useEffect(() => {
     if (ranOnce.current) return;
