@@ -21,7 +21,9 @@ function Nav() {
 
       <div className="flex items-center gap-[30px]">
         <Link to="/">
-          <button className={`w-[50px] h-[70px]${baseBtnClass} ${location.pathname === '/' ? 'font-semibold' : ''}`}>
+          <button
+            className={`w-[50px] h-[70px]${baseBtnClass} ${location.pathname === '/' ? 'font-semibold' : ''}`}
+          >
             HOME
           </button>
         </Link>
