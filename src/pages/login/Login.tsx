@@ -11,6 +11,8 @@ import star from '@/asset/img/login/star.png';
 import main from '@/asset/img/common/main.png';
 
 import useLogin from '@/hooks/useLogin';
+import { useLoadingStore } from '@/store/useLoadingStore';
+import { useSnackbarStore } from '@/store/useSnackbarStore';
 
 const REDIRECT_BASE = import.meta.env.VITE_REDIRECT_DOMAIN;
 /* 1) 공급자별 고정 파라미터 */
@@ -67,6 +69,9 @@ function Login() {
   const [passwordError, setPasswordError] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  const { startLoading, stopLoading } = useLoadingStore();
+  const { showSnackbar } = useSnackbarStore();
+
   const saveAccessToken = useLogin();
 
   const handleLogin = async (): Promise<void> => {
@@ -78,6 +83,8 @@ function Login() {
     if (!password) setPasswordError('비밀번호를 입력해주세요.');
     if (!email || !password) return;
 
+    startLoading("로그인 중입니다…");
+
     try {
       const res = await axios.post('/api/user/signin', {
         email,
@@ -88,13 +95,20 @@ function Login() {
       if (!token) throw new Error('token missing');
 
       saveAccessToken(token);
-
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+      showSnackbar("로그인 성공! 환영합니다 🙌", "success");
     } catch (err: unknown) {
       console.error(err);
+<<<<<<< HEAD
       setErrorMessage(
         '이메일 또는 비밀번호가 잘못되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.'
       );
+=======
+      setErrorMessage('이메일 또는 비밀번호가 잘못되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.');
+    } finally {
+      stopLoading();
+>>>>>>> develop
     }
   };
 
