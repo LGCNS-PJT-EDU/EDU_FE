@@ -1,14 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "@/api/axios";
-import { isLoggedIn } from "@/store/authGlobal";
-import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '@/api/axios';
+import { isLoggedIn } from '@/store/authGlobal';
+import { SlArrowLeft, SlArrowRight } from 'react-icons/sl';
 
-import takeitR from "@/asset/img/diagnosis/takeit_pixel.png";
-import blue_star from "@/asset/img/diagnosis/blue_star.png";
-import gold_star from "@/asset/img/diagnosis/gold_star.png";
-import smallRabbit from "@/asset/img/diagnosis/smallRabbit.png";
-import Isolation from "@/asset/img/diagnosis/Isolation_Mode.png";
+import takeitR from '@/asset/img/diagnosis/takeit_pixel.png';
+import blue_star from '@/asset/img/diagnosis/blue_star.png';
+import gold_star from '@/asset/img/diagnosis/gold_star.png';
+import smallRabbit from '@/asset/img/diagnosis/smallRabbit.png';
+import Isolation from '@/asset/img/diagnosis/Isolation_Mode.png';
 import pixel_texture from '@/asset/img/common/pixel_texture.png';
 import startBtn from '@/asset/img/diagnosis/startBtn.png';
 
@@ -93,7 +93,6 @@ const Diagnosis = () => {
   const toPrev = () => currentIdx > 0 && setCurrentIdx((i) => i - 1);
   const toNext = () => currentIdx < questions.length - 1 && setCurrentIdx((i) => i + 1);
 
-
   /* 5. 제출 */
   const submit = async () => {
     if (!isAnswered || submitting) return;
@@ -105,14 +104,11 @@ const Diagnosis = () => {
     }));
 
     try {
-      const { data } = await api.post<RoadmapData & { uuid?: string }>(
-        "/api/diagnosis",
-        payload,
-      );
+      const { data } = await api.post<RoadmapData & { uuid?: string }>('/api/diagnosis', payload);
       if (!isLoggedIn() && data.uuid) {
-        localStorage.setItem("roadmapUuid", data.uuid);
+        localStorage.setItem('roadmapUuid', data.uuid);
       }
-      navigate("/roadmap", { state: data });
+      navigate('/roadmap', { state: data });
     } finally {
       setSubmitting(false);
     }
@@ -122,31 +118,26 @@ const Diagnosis = () => {
   if (!hasStarted) {
     return (
       <div className="flex flex-col items-center justify-center h-[calc(100vh-70px)] px-4 font-[pretendard] bg-gradient-to-b from-[#fff] to-[#C6EDF2]">
-        <div className="relative bg-[#E6EEFF] rounded-2xl p-8 w-full h-[50%] max-w-md shadow-lg font-[pretendard]" 
-        style={{
-          background: 'linear-gradient(to bottom, #ffffff %, #94A5FF 100%)',
-        }}>
+        <div
+          className="relative bg-[#E6EEFF] rounded-2xl p-8 w-full h-[50%] max-w-md shadow-lg font-[pretendard]"
+          style={{
+            background: 'linear-gradient(to bottom, #ffffff %, #94A5FF 100%)',
+          }}
+        >
           <img
             src={pixel_texture}
             alt="pixel texture background"
             className="absolute bottom-0 left-0 w-full h-[70%] z-0 object-cover opacity-70 pointer-events-none"
           />
-          <img
-            src={blue_star}
-            alt="star"
-            className="absolute top-30 right-10 w-[50px] z-10"
-          />
-          <img
-            src={gold_star}
-            alt="star"
-            className="absolute top-50 right-40 w-[100px] z-10"
-          />
+          <img src={blue_star} alt="star" className="absolute top-30 right-10 w-[50px] z-10" />
+          <img src={gold_star} alt="star" className="absolute top-50 right-40 w-[100px] z-10" />
           <p className="text-sm text-gray-600 z-10">⏱ 진단 소요시간 5분, 약 10문제</p>
           <h2 className="text-xl font-bold mt-4 z-10">문제를 시작해볼까요?</h2>
           <p className="flex mt-2 text-[#4A4A4A] text-s gap-3 z-10">
             <img src={Isolation} alt="isolation" className="w-[15px] z-10" />
             <img src={smallRabbit} alt="smallRabbit" className="w-[30px] z-10" />
-            개발 로드맵 확인하러 가기</p>
+            개발 로드맵 확인하러 가기
+          </p>
 
           <div className="flex justify-center mt-6 z-10">
             <img src={takeitR} alt="토끼 이미지" className="w-[150px] absolute bottom-0 right-0" />
@@ -156,23 +147,25 @@ const Diagnosis = () => {
             onClick={() => setHasStarted(true)}
             className=" text-black font-semibold z-20 cursor-pointer"
           >
-            <img src={startBtn} alt="startBtn"  className="w-[150px]"/>
+            <img src={startBtn} alt="startBtn" className="w-[150px]" />
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="w-full flex flex-col items-center gap-8 py-8 px-4 font-[pretendard] h-[calc(100vh-70px)] justify-center"
+    <div
+      className="w-full flex flex-col items-center gap-8 py-8 px-4 font-[pretendard] h-[calc(100vh-70px)] justify-center"
       style={{
         background: 'linear-gradient(to bottom, #ffffff 30%, #C6EDF2 80%)',
-      }}>
+      }}
+    >
       {/* 상단 배너 */}
       <div className="w-full max-w-[800px] flex flex-col lg:flex-row gap-6">
         {/* 왼쪽 통계 박스 */}
-        <div className="flex flex-row lg:flex-col gap-6 " >
-          <StatCard title="전체 질문 갯수" value={totalCount ?? "-"} bgColor="#F2F2F2" />
+        <div className="flex flex-row lg:flex-col gap-6 ">
+          <StatCard title="전체 질문 갯수" value={totalCount ?? '-'} bgColor="#F2F2F2" />
           <StatCard title="현재 응답 갯수" value={Object.keys(answers).length} bgColor="#C6EDF2" />
         </div>
 
@@ -200,17 +193,19 @@ const Diagnosis = () => {
                     <button
                       key={c.choiceId}
                       onClick={() => choose(c.value)}
-                      className={`flex items-center gap-3 w-full px-4 py-3 rounded-[15px] border ${selected
-                        ? "bg-[#C9EBEF] border-[#51BACB]"
-                        : "bg-[#F6F5F8] border-transparent"
-                        }`}
+                      className={`flex items-center gap-3 w-full px-4 py-3 rounded-[15px] border ${
+                        selected
+                          ? 'bg-[#C9EBEF] border-[#51BACB]'
+                          : 'bg-[#F6F5F8] border-transparent'
+                      }`}
                     >
                       {/* 체크 아이콘 */}
                       <span
-                        className={`w-5 h-5 flex items-center justify-center rounded-full text-white ${selected ? "bg-[#51BACB]" : "bg-[#DBDFE3]"
-                          }`}
+                        className={`w-5 h-5 flex items-center justify-center rounded-full text-white ${
+                          selected ? 'bg-[#51BACB]' : 'bg-[#DBDFE3]'
+                        }`}
                       >
-                        {selected && "✔"}
+                        {selected && '✔'}
                       </span>
                       <span className="flex-1 text-left">{c.choice}</span>
                     </button>
@@ -225,8 +220,9 @@ const Diagnosis = () => {
               <button
                 onClick={toPrev}
                 disabled={currentIdx === 0}
-                className={`flex items-center gap-1 px-6 py-3 rounded-[8px] bg-[#6378EB] text-white ${currentIdx === 0 && "opacity-40 cursor-not-allowed"
-                  }`}
+                className={`flex items-center gap-1 px-6 py-3 rounded-[8px] bg-[#6378EB] text-white ${
+                  currentIdx === 0 && 'opacity-40 cursor-not-allowed'
+                }`}
               >
                 <SlArrowLeft className="w-4 h-4" /> 이전 문제로
               </button>
@@ -236,8 +232,9 @@ const Diagnosis = () => {
                 <button
                   onClick={toNext}
                   disabled={!isAnswered}
-                  className={`items-center gap-1 px-6 py-3 rounded-[8px] bg-[#D7DBFF] flex text-[#6378EB] ${!isAnswered && "opacity-40 cursor-not-allowed"
-                    }`}
+                  className={`items-center gap-1 px-6 py-3 rounded-[8px] bg-[#D7DBFF] flex text-[#6378EB] ${
+                    !isAnswered && 'opacity-40 cursor-not-allowed'
+                  }`}
                 >
                   다음 문제로 <SlArrowRight className="w-4 h-4" />
                 </button>
@@ -246,8 +243,9 @@ const Diagnosis = () => {
                 <button
                   onClick={submit}
                   disabled={!isAnswered || submitting}
-                  className={`px-6 py-3 rounded-[8px] bg-[#51BACB] text-white ${(!isAnswered || submitting) && "cursor-not-allowed"
-                    }`}
+                  className={`px-6 py-3 rounded-[8px] bg-[#51BACB] text-white ${
+                    (!isAnswered || submitting) && 'cursor-not-allowed'
+                  }`}
                 >
                   제출
                 </button>
@@ -258,23 +256,19 @@ const Diagnosis = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Diagnosis;
 
 /* ---------- 보조 컴포넌트 ---------- */
-const StatCard = ({ title, value, bgColor = "#F2F2F2" }: StatCardProps) => (
+const StatCard = ({ title, value, bgColor = '#F2F2F2' }: StatCardProps) => (
   <div
     className="w-[200px] h-[70px] px-10 rounded-[15px] flex flex-col items-center justify-center"
     style={{ backgroundColor: bgColor }}
   >
     <div className="flex justify-between w-full">
-      <p className="text-[#333333] font-semibold">
-        {title}
-      </p>
-      <p className="text-[#898989] whitespace-nowrap">
-        {value}
-      </p>
+      <p className="text-[#333333] font-semibold">{title}</p>
+      <p className="text-[#898989] whitespace-nowrap">{value}</p>
     </div>
   </div>
 );
