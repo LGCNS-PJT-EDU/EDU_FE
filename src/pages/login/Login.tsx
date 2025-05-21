@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLoginMutation } from '@/hooks/useMutation';
 import axios from '@/api/axios';
 
 import google from '@/asset/img/login/btn_google.svg';
@@ -68,6 +69,7 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const saveAccessToken = useLogin();
+  const LoginMutation = useLoginMutation();
 
   const handleLogin = async (): Promise<void> => {
     setEmailError('');
@@ -77,25 +79,18 @@ function Login() {
     if (!email) setEmailError('아이디를 입력해 주세요.');
     if (!password) setPasswordError('비밀번호를 입력해주세요.')
     if (!email || !password) return;
-
-    try {
-      const res = await axios.post('/api/user/signin', {
-        email,
-        password,
-      });
-
-      const token = res.headers['authorization']?.split(' ')[1];
-      if (!token) throw new Error('token missing');
+    /* react-query 사용한 쪽 */
+    try{
+      const token = await LoginMutation.mutateAsync({email,password});
+      if(!token) throw new Error('token missing');
 
       saveAccessToken(token);
-
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-    } catch (err: unknown) {
-      console.error(err);
+    }catch(err){
+      console.log(err);
       setErrorMessage('이메일 또는 비밀번호가 잘못되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.');
     }
-  };
-
+  }
   return (
     <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex justify-center gap-[200px] overflow-hidden">
       <img

@@ -1,6 +1,7 @@
 import { getAccessToken } from '@/store/authGlobal';
 import axios, { InternalAxiosRequestConfig } from 'axios';
 
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
