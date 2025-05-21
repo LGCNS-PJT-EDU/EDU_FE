@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:dev": "vite --mode dev",
-    "build": "vite build --mode dev",
+    "build:cloud": "vite build --mode dev",
     "lint": "eslint .",
     "preview": "vite preview",
     "postinstall": "husky install"
