@@ -12,6 +12,8 @@ import star from '@/asset/img/login/star.png';
 import main from '@/asset/img/common/main.png';
 
 import useLogin from '@/hooks/useLogin';
+import { useLoadingStore } from '@/store/useLoadingStore';
+import { useSnackbarStore } from '@/store/useSnackbarStore';
 
 const REDIRECT_BASE = import.meta.env.VITE_REDIRECT_DOMAIN;
 /* 1) 공급자별 고정 파라미터 */
@@ -68,6 +70,9 @@ function Login() {
   const [passwordError, setPasswordError] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  const { startLoading, stopLoading } = useLoadingStore();
+  const { showSnackbar } = useSnackbarStore();
+
   const saveAccessToken = useLogin();
   const LoginMutation = useLoginMutation();
 
@@ -77,18 +82,20 @@ function Login() {
     setErrorMessage('');
 
     if (!email) setEmailError('아이디를 입력해 주세요.');
-    if (!password) setPasswordError('비밀번호를 입력해주세요.')
+    if (!password) setPasswordError('비밀번호를 입력해주세요.');
     if (!email || !password) return;
+
     /* react-query 사용한 쪽 */
     try{
       const token = await LoginMutation.mutateAsync({email,password});
       if(!token) throw new Error('token missing');
-
       saveAccessToken(token);
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-    }catch(err){
-      console.log(err);
+    }catch(e){
+      console.log(e);
       setErrorMessage('이메일 또는 비밀번호가 잘못되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.');
+    } finally {
+      stopLoading();
     }
   }
   return (
@@ -100,32 +107,24 @@ function Login() {
       />
 
       {/* 구름 & 별 장식 */}
-      <img
-        src={cloud}
-        alt="cloud"
-        className="absolute top-35 left-0 w-[200px] z-10"
-      />
+      <img src={cloud} alt="cloud" className="absolute top-35 left-0 w-[200px] z-10" />
       <img
         src={cloud_down}
         alt="cloud down"
         className="absolute bottom-30 right-20 w-[250px] z-20"
       />
-      <img
-        src={star}
-        alt="star"
-        className="absolute top-15 left-130 w-[100px] z-10"
-      />
-      <img
-        src={star}
-        alt="star"
-        className="absolute top-50 right-80 w-[100px] z-20"
-      />
+      <img src={star} alt="star" className="absolute top-15 left-130 w-[100px] z-10" />
+      <img src={star} alt="star" className="absolute top-50 right-80 w-[100px] z-20" />
 
       {/* 배너 */}
       <div className="relative flex justify-center items-center">
         <div className="z-20 text-[#373f41]">
-          <img src={main} alt="main" className='w-[200px] mb-[10px]' />
-          <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">개발자의 꿈,<br />지금 TakeIT과 시작해보세요</p>
+          <img src={main} alt="main" className="w-[200px] mb-[10px]" />
+          <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">
+            개발자의 꿈,
+            <br />
+            지금 TakeIT과 시작해보세요
+          </p>
         </div>
       </div>
 
@@ -155,7 +154,7 @@ function Login() {
               placeholder=" "
               className={`w-full px-3 pt-4 pb-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6378eb]/20 ${emailError ? 'border-red-500' : 'border-gray-400'}`}
             />
-            {emailError && <p className='text-sm text-red-500 mt-1'>{emailError}</p>}
+            {emailError && <p className="text-sm text-red-500 mt-1">{emailError}</p>}
           </div>
 
           <div className="relative mb-6">
@@ -175,11 +174,11 @@ function Login() {
             />
             {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>}
           </div>
-                  {errorMessage && (
-          <div className="text-sm text-red-500 whitespace-pre-line text-center">
-            {errorMessage}
-          </div>
-        )}
+          {errorMessage && (
+            <div className="text-sm text-red-500 whitespace-pre-line text-center">
+              {errorMessage}
+            </div>
+          )}
         </form>
 
         <button

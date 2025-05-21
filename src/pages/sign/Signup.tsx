@@ -96,38 +96,30 @@ function Signup() {
       />
 
       {/* 구름 & 별 장식 */}
-      <img
-        src={cloud}
-        alt="cloud"
-        className="absolute top-35 left-0 w-[200px] z-10"
-      />
+      <img src={cloud} alt="cloud" className="absolute top-35 left-0 w-[200px] z-10" />
       <img
         src={cloud_down}
         alt="cloud down"
         className="absolute bottom-30 right-20 w-[250px] z-20"
       />
-      <img
-        src={star}
-        alt="star"
-        className="absolute top-15 left-130 w-[100px] z-10"
-      />
-      <img
-        src={star}
-        alt="star"
-        className="absolute top-50 right-80 w-[100px] z-20"
-      />
+      <img src={star} alt="star" className="absolute top-15 left-130 w-[100px] z-10" />
+      <img src={star} alt="star" className="absolute top-50 right-80 w-[100px] z-20" />
 
       {/* 배너 */}
       <div className="relative flex justify-center items-center">
         <div className="z-20 text-[#373f41]">
-          <img src={main} alt="main" className='w-[200px] mb-[10px]' />
-          <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">회원가입을 진행해주세요.<br />지금 TakeIT과 시작해보세요</p>
+          <img src={main} alt="main" className="w-[200px] mb-[10px]" />
+          <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">
+            회원가입을 진행해주세요.
+            <br />
+            지금 TakeIT과 시작해보세요
+          </p>
         </div>
       </div>
 
       <div className="relative max-w-[400px] my-6 z-10 p-[60px_50px] bg-white flex flex-col shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
-      <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
-        <h2 className="mt-2 mb-3 text-xl font-semibold">회원가입</h2>  
+        <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
+        <h2 className="mt-2 mb-3 text-xl font-semibold">회원가입</h2>
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-[#373F41]">닉네임</label>
           <input
@@ -178,7 +170,9 @@ function Signup() {
             <p
               className={`text-sm mt-1 ${password === passwordCheck ? 'text-green-600' : 'text-red-500'}`}
             >
-              {password === passwordCheck ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'}
+              {password === passwordCheck
+                ? '비밀번호가 일치합니다.'
+                : '비밀번호가 일치하지 않습니다.'}
             </p>
           )}
 
