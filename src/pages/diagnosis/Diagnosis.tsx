@@ -10,6 +10,7 @@ import gold_star from "@/asset/img/diagnosis/gold_star.png";
 import smallRabbit from "@/asset/img/diagnosis/smallRabbit.png";
 import Isolation from "@/asset/img/diagnosis/Isolation_Mode.png";
 import pixel_texture from '@/asset/img/common/pixel_texture.png';
+import startBtn from '@/asset/img/diagnosis/startBtn.png';
 
 /* ---------- 타입 ---------- */
 interface Choice {
@@ -117,10 +118,11 @@ const Diagnosis = () => {
     }
   };
 
+  /* 초반 start 페이지 */
   if (!hasStarted) {
     return (
       <div className="flex flex-col items-center justify-center h-[calc(100vh-70px)] px-4 font-[pretendard] bg-gradient-to-b from-[#fff] to-[#C6EDF2]">
-        <div className="relative bg-[#E6EEFF] rounded-2xl p-8 w-full h-[50%] max-w-md shadow-lg" 
+        <div className="relative bg-[#E6EEFF] rounded-2xl p-8 w-full h-[50%] max-w-md shadow-lg font-[pretendard]" 
         style={{
           background: 'linear-gradient(to bottom, #ffffff %, #94A5FF 100%)',
         }}>
@@ -152,9 +154,9 @@ const Diagnosis = () => {
 
           <button
             onClick={() => setHasStarted(true)}
-            className="mt-6 font-[NeoDunggeunmo] bg-white border border-black text-black font-semibold py-2 px-4 rounded-lg hover:bg-[#f0f0f0] z-20"
+            className=" text-black font-semibold z-20 cursor-pointer"
           >
-            시작하기
+            <img src={startBtn} alt="startBtn"  className="w-[150px]"/>
           </button>
         </div>
       </div>
@@ -244,7 +246,7 @@ const Diagnosis = () => {
                 <button
                   onClick={submit}
                   disabled={!isAnswered || submitting}
-                  className={`px-6 py-3 rounded-[8px] bg-[#51BACB] text-white ${(!isAnswered || submitting) && "opacity-40 cursor-not-allowed"
+                  className={`px-6 py-3 rounded-[8px] bg-[#51BACB] text-white ${(!isAnswered || submitting) && "cursor-not-allowed"
                     }`}
                 >
                   제출
