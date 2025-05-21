@@ -86,12 +86,12 @@ function Login() {
     if (!email || !password) return;
 
     /* react-query 사용한 쪽 */
-    try{
-      const token = await LoginMutation.mutateAsync({email,password});
-      if(!token) throw new Error('token missing');
+    try {
+      const token = await LoginMutation.mutateAsync({ email, password });
+      if (!token) throw new Error('token missing');
       saveAccessToken(token);
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-    }catch(e){
+    } catch (e) {
       console.log(e);
       setErrorMessage('이메일 또는 비밀번호가 잘못되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.');
     } finally {
