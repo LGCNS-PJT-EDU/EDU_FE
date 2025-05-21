@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoadmapStore } from '@/store/roadmapStore';
 import RoadmapCanvas from './RoadmapCanvas';
-import SubjectModal from '@/pages/roadmap/Subject';
+import SubjectModal from '@/components/modal/Subject';
 import { Button } from '@/components/ui/button';
-import LoginRequiredModal from '@/components/modal/LoginRequiredModal';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 import { isLoggedIn } from '@/store/authGlobal';
 import { Check } from 'lucide-react';
 
@@ -76,7 +76,15 @@ export default function Roadmap() {
       )}
 
       {/* 로그인 하러가기 모달 */}
-      {loginModalOpen && <LoginRequiredModal onClose={() => setLoginModalOpen(false)} />}
+      {loginModalOpen && (
+        <ConfirmModal
+          onClose={() => setLoginModalOpen(false)}
+          title="로그인이 필요합니다!"
+          message={`개인화 로드맵 저장 및 과목 상세 조회는\n로그인 후 이용하실 수 있어요.`}
+          confirmText="로그인 하러가기"
+          onConfirm={() => navigate('/login')}
+        />
+      )}
     </section>
   );
 }
