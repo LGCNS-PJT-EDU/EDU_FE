@@ -26,7 +26,7 @@ export default function Snackbar() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 40, opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className={`fixed bottom-0 left-1/2 -translate-x-1/2 rounded-xl px-6 py-3 text-white shadow-lg ${bg}`}
+          className={`fixed bottom-6 left-1/2 -translate-x-1/2 rounded-xl px-6 py-3 text-white shadow-lg ${bg}`}
         >
           {message}
         </motion.div>
