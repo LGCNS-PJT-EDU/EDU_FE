@@ -4,7 +4,7 @@ import axios from '@/api/axios';
 import google from '@/asset/img/login/btn_google.svg';
 import kakao from '@/asset/img/login/btn_kakao.svg';
 import naver from '@/asset/img/login/btn_naver.svg';
-import pixel_texture from '@/asset/img/login/pixel texture.png';
+import pixel_texture from '@/asset/img/common/pixel_texture.png';
 import cloud from '@/asset/img/login/cloud.png';
 import cloud_down from '@/asset/img/login/cloud_down.png';
 import star from '@/asset/img/login/star.png';
