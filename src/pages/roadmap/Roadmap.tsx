@@ -76,11 +76,15 @@ export default function Roadmap() {
       )}
 
       {/* 로그인 하러가기 모달 */}
-      {loginModalOpen && <ConfirmModal onClose={() => setLoginModalOpen(false)}
-        title="로그인이 필요합니다!"
-        message={`개인화 로드맵 저장 및 과목 상세 조회는\n로그인 후 이용하실 수 있어요.`}
-        confirmText="로그인 하러가기"
-        onConfirm={() => navigate('/login')} />}
+      {loginModalOpen && (
+        <ConfirmModal
+          onClose={() => setLoginModalOpen(false)}
+          title="로그인이 필요합니다!"
+          message={`개인화 로드맵 저장 및 과목 상세 조회는\n로그인 후 이용하실 수 있어요.`}
+          confirmText="로그인 하러가기"
+          onConfirm={() => navigate('/login')}
+        />
+      )}
     </section>
   );
 }
