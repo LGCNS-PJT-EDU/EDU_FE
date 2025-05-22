@@ -36,15 +36,29 @@ interface Subject {
   subjectName: string;
 }
 
-interface RoadmapData {
-  subjects: Subject[];
-}
-
 interface StatCardProps {
   title: string;
   value: number | string;
   bgColor?: string;
 }
+
+interface DiagnosisAnswerRequest {
+  questionId: number;
+  answer: string;
+}
+
+interface ApiResponse<T> {
+  stateCode: number;
+  message: string;
+  data: T;
+}
+
+interface RoadmapPayload {
+  uuid: string;
+  userLocationSubjectId: number;
+  subjects: Subject[];
+}
+
 
 /* ---------- 컴포넌트 ---------- */
 const Diagnosis = () => {
@@ -59,7 +73,7 @@ const Diagnosis = () => {
   useEffect(() => {
     api
       .get('/api/diagnosis')
-      .then((res) => setRaw(res.data as RawData))
+      .then((res) => setRaw(res.data.data as RawData))
       .catch((e) => {
         console.error('문제 로드 실패:', e);
         alert('문제를 불러오지 못했습니다.');
@@ -81,6 +95,11 @@ const Diagnosis = () => {
 
   const totalCount = track ? questions.length : undefined;
   const currentQ = questions[currentIdx];
+  console.log({
+  currentIdx,
+  questionsLength: questions.length,
+  currentQ,
+  });
   const isAnswered = answers[currentQ?.diagnosisId ?? -1] !== undefined;
 
   /* 3. 선택지 클릭 */
@@ -94,25 +113,35 @@ const Diagnosis = () => {
   const toNext = () => currentIdx < questions.length - 1 && setCurrentIdx((i) => i + 1);
 
   /* 5. 제출 */
-  const submit = async () => {
-    if (!isAnswered || submitting) return;
-    setSubmitting(true);
+const submit = async () => {
+  if (!isAnswered || submitting) return;
+  setSubmitting(true);
 
-    const payload = Object.entries(answers).map(([id, val]) => ({
+  const payload: DiagnosisAnswerRequest[] = Object.entries(answers).map(
+    ([id, val]) => ({
       questionId: Number(id),
       answer: val,
-    }));
+    }),
+  );
 
-    try {
-      const { data } = await api.post<RoadmapData & { uuid?: string }>('/api/diagnosis', payload);
-      if (!isLoggedIn() && data.uuid) {
-        localStorage.setItem('roadmapUuid', data.uuid);
-      }
-      navigate('/roadmap', { state: data });
-    } finally {
-      setSubmitting(false);
+  try {
+    // 응답 타입을 ApiResponse<RoadmapPayload> 로 지정
+    const res = await api.post<ApiResponse<RoadmapPayload>>("/api/diagnosis", payload,);
+
+    const roadmap = res.data.data;           // 2차 data 추출 ✅
+    const { uuid } = roadmap;
+
+    if (!isLoggedIn() && uuid) {
+      localStorage.setItem("roadmapUuid", uuid);
     }
-  };
+
+    // roadmap(= { uuid, userLocationSubjectId, subjects }) 만 넘김 ✅
+    navigate("/roadmap", { state: roadmap });
+  } finally {
+    setSubmitting(false);
+  }
+};
+
 
   /* 초반 start 페이지 */
   if (!hasStarted) {
