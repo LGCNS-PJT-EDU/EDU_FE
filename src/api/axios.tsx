@@ -1,5 +1,5 @@
 import { getAccessToken } from '@/store/authGlobal';
-import axios, { InternalAxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
 
 const api = axios.create({
@@ -13,11 +13,12 @@ const api = axios.create({
 /* 로컬 스토리지에 accesstoken 있으면 헤더에 추가 */
 api.interceptors.request.use((config) => {
   const token = getAccessToken();
-  console.debug('[interceptor] token:', token); // 추가
 
   if (token) {
     config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${token}`;
+  } else if (config.headers?.Authorization) {
+    delete config.headers.Authorization;
   }
   return config;
 });
