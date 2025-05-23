@@ -12,6 +12,7 @@ import { usePromoteGuestRoadmap } from "@/hooks/usePromoteGuestRoadmap";
 import { useUserRoadmapQuery } from "@/hooks/useUserRoadmapQuery";
 import { useGuestUuidStore } from "@/store/useGuestUuidStore";
 import { useLoadingStore } from "@/store/useLoadingStore";
+import useRoadmapEdit from "@/hooks/useRoadmapEdit";
 
 export default function Roadmap() {
   /* 로딩 스토어 */
@@ -25,6 +26,7 @@ export default function Roadmap() {
   const setInitial = useRoadmapStore((s) => s.setInitial);
   const toggleEditing = useRoadmapStore((s) => s.toggleEditing);
   const editing = useRoadmapStore((s) => s.editing);
+  const { save, saving } = useRoadmapEdit();
   const selected = useRoadmapStore((s) => s.selected);
   const modalOpen = useRoadmapStore((s) => s.modalOpen);
   const closeModal = useRoadmapStore((s) => s.closeModal);
@@ -78,12 +80,13 @@ export default function Roadmap() {
 
         {editing ? (
           <Button
-            onClick={toggleEditing}
+            onClick={ () => save() }
+            disabled={saving}
             variant="default"
             size="sm"
             className="absolute left-96 top-4 gap-1"
           >
-            <Check size={16} /> 완료
+            <Check size={16} /> {saving ? '저장 중' : '완료'}
           </Button>
         ) : (
           <Button

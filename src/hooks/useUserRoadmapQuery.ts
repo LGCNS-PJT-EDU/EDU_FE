@@ -15,7 +15,7 @@ export function useUserRoadmapQuery() {
       try {
         return await fetchUserRoadmap();            // 로드맵 반환
       } catch (err) {
-        /* 404 = 로드맵 없음 → null 반환 (오류 처리 X) */
+        /* 404 나중에 오류 처리 해줘야 함 */
         if (axios.isAxiosError(err) && err.response?.status === 404) {
           return null;
         }
