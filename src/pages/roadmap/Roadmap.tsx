@@ -103,7 +103,10 @@ export default function Roadmap() {
       {/* 과목 상세 모달 */}
       {modalOpen && selected && (
         <SubjectModal
-          subject={{ subjectId: selected.id, subjectName: selected.label }}
+          subject={{
+            subjectId: selected.id,
+            subjectName: selected.label
+          }}
           onClose={closeModal}
         />
       )}

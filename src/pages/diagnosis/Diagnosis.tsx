@@ -82,6 +82,11 @@ export default function Diagnosis() {
   }, [loadingQuestions, startLoading, stopLoading]);
 
   const currentQ = questions[currentIdx];
+  console.log({
+  currentIdx,
+  questionsLength: questions.length,
+  currentQ,
+  });
   const isAnswered = answers[currentQ?.diagnosisId ?? -1] !== undefined;
 
   /* ---------- 이벤트 핸들러 ---------- */

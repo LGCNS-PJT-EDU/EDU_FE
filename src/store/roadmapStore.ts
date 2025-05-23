@@ -3,6 +3,7 @@ import { create } from 'zustand';
 export interface NodeData {
   id: number;
   label: string;
+  subject_overview?: string;
 }
 
 export interface RoadmapStore {
@@ -14,7 +15,7 @@ export interface RoadmapStore {
   addNode: (label: string) => void;
   deleteNode: (index: number) => void;
   reorderNode: (from: number, to: number) => void;
-  setInitial: (subjects: { subjectId: number; subjectName: string }[]) => void;
+  setInitial: (subjects: { subjectId: number; subjectName: string;}[]) => void;
   openModal: (index: number) => void;
   closeModal: () => void;
 }
