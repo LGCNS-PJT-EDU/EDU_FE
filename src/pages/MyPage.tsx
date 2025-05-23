@@ -1,5 +1,6 @@
 import useLogout from '@/hooks/useLogout';
 import { useState } from 'react';
+import { useProgress } from '@/hooks/useProgress';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 
 type TabType = 'favorite' | 'report';
@@ -7,6 +8,8 @@ type TabType = 'favorite' | 'report';
 function MyPage() {
   const logout = useLogout();
   const [activeTab, setActiveTab] = useState<TabType>('favorite');
+  const { data: progressData, isLoading: isProgressLoading } = useProgress();
+  const percent = Math.min(100, Math.round((progressData?.percent || 0)));
 
   return (
     <div className="flex flex-col min-h-screen font-[pretendard]">
@@ -19,11 +22,14 @@ function MyPage() {
         {/* 상태 툴바 */}
         <div className="w-full mb-13">
           <div className="mb-4 text-[20px] font-medium">
-            식호경님, 어디까지 학습을 진행하셨나요?
-            <span className="ml-2 font-bold">2/10</span>
+            {progressData?.nickname}님, 어디까지 학습을 진행하셨나요?
+            <span className="ml-2 font-bold">{percent}%</span>
           </div>
           <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-            <div className="w-[30%] h-full bg-[#6378EB] rounded-l-full transition-all duration-300" />
+            <div
+              className="h-full bg-[#6378EB] rounded-l-full transition-all duration-300"
+              style={{ width: `${percent}%` }}
+            />
           </div>
         </div>
 
@@ -31,21 +37,19 @@ function MyPage() {
         <div className="inline-flex rounded-lg bg-[#f3f6fb] p-1 mb-5">
           <button
             onClick={() => setActiveTab('favorite')}
-            className={`px-4 py-2 text-sm rounded-md transition-all ${
-              activeTab === 'favorite'
+            className={`px-4 py-2 text-sm rounded-md transition-all ${activeTab === 'favorite'
                 ? 'bg-white text-gray-900 font-semibold shadow-sm'
                 : 'text-gray-500'
-            }`}
+              }`}
           >
             추천 콘텐츠
           </button>
           <button
             onClick={() => setActiveTab('report')}
-            className={`px-4 py-2 text-sm rounded-md transition-all ${
-              activeTab === 'report'
+            className={`px-4 py-2 text-sm rounded-md transition-all ${activeTab === 'report'
                 ? 'bg-white text-gray-900 font-semibold shadow-sm'
                 : 'text-gray-500'
-            }`}
+              }`}
           >
             평가 리포트
           </button>

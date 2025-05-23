@@ -3,6 +3,7 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
+  font-family: 'Pretendard';
 }
 
 /* 오버레이 */
@@ -49,7 +50,7 @@
 }
 #subject-modal .overview {
   line-height: 1.6;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 #subject-modal .subtitle {
   font-weight: 600;
@@ -58,7 +59,7 @@
 #subject-modal .video-list {
   list-style: disc;
   padding-left: 20px;
-  margin: 0 0 32px 0;
+  margin-bottom: 15px;
 }
 #subject-modal .length {
   margin-left: 6px;
@@ -69,23 +70,34 @@
   color: #878787;
   text-decoration: underline;
 }
-
+.body {
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+.overview {
+  white-space: pre-line;
+}
+.chapter-list{
+  margin-bottom: 20px;
+}
 /* 하단 버튼 */
 #subject-modal .footer {
-  display: flex;
-  justify-content: flex-end;
+  border: 1px solid #34ABB9;
+  color: #34ABB9;
+  border-radius: 10px;
+  background-color: #D8F2F3;
+  text-align: center;
 }
 #subject-modal .action {
-  background: #16a34a;
   border: none;
-  color: #fff;
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 #subject-modal .action:hover {
-  background: #0f8b3c;
 }
 
 /* 로딩 */
