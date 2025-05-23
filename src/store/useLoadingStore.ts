@@ -10,9 +10,9 @@ interface LoadingState {
 
 export const useLoadingStore = create<LoadingState>((set) => ({
   isLoading: false,
-  message: "로딩 중입니다...",
+  message: "로딩 중...",
   imgSrc: undefined,
   startLoading: (msg, imgSrc) =>
-    set({ isLoading: true, message: msg ?? "로딩 중입니다...", imgSrc }),
+    set({ isLoading: true, message: msg ?? "로딩 중...", imgSrc }),
   stopLoading: () => set({ isLoading: false, imgSrc: undefined }),
 }));
