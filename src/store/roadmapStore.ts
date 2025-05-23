@@ -3,18 +3,20 @@ import { create } from 'zustand';
 export interface NodeData {
   id: number;
   label: string;
+  subject_overview?: string;
 }
 
 export interface RoadmapStore {
   nodes: NodeData[];
   editing: boolean;
+  setEditing: (flag:boolean) => void;
   selected: NodeData | null;
   modalOpen: boolean;
   toggleEditing: () => void;
   addNode: (label: string) => void;
   deleteNode: (index: number) => void;
   reorderNode: (from: number, to: number) => void;
-  setInitial: (subjects: { subjectId: number; subjectName: string }[]) => void;
+  setInitial: (subjects: { subjectId: number; subjectName: string;}[]) => void;
   openModal: (index: number) => void;
   closeModal: () => void;
 }
@@ -22,6 +24,7 @@ export interface RoadmapStore {
 export const useRoadmapStore = create<RoadmapStore>((set) => ({
   nodes: [],
   editing: false,
+  setEditing: (flag  => set({ editing: flag})), 
   selected: null,
   modalOpen: false,
 

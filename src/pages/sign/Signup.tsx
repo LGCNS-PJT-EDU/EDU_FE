@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '@/api/axios';
-import pixel_texture from '@/asset/img/common/pixel_texture.png';
+
+import pixel_texture from "@/asset/img/common/pixel_texture.png"
 import cloud from '@/asset/img/login/cloud.png';
 import cloud_down from '@/asset/img/login/cloud_down.png';
 import star from '@/asset/img/login/star.png';
 import main from '@/asset/img/common/main.png';
+import { useCheckEmailMutation,useSignupMutation } from '@/hooks/useMutation';
 
 function Signup() {
   const [email, setEmail] = useState<string>('');
@@ -15,6 +17,8 @@ function Signup() {
   const [passwordCheck, setPasswordCheck] = useState<string>('');
 
   const navigate = useNavigate();
+  const checkEmailMutation = useCheckEmailMutation();
+  const signupMutation = useSignupMutation();
 
   // 이메일 유효성 검사
   const isValidEmail = (email: string): boolean => {
@@ -23,7 +27,7 @@ function Signup() {
   };
 
   // 이메일 중복 확인
-  const handleCheckEmail = async (): Promise<void> => {
+  const handleCheckEmail = async () => {
     if (!email) {
       alert('이메일을 입력해주세요.');
       return;
@@ -33,20 +37,11 @@ function Signup() {
       return;
     }
     try {
-      const res = await axios.get('/api/user/check-email', {
-        params: { email },
-      });
-      console.log('서버 응답:', res.data);
-      if (res.data) {
-        alert('사용 가능한 이메일입니다.');
-        setIsEmailAvailable(true);
-      } else {
-        alert('이미 사용 중인 이메일입니다.');
-        setIsEmailAvailable(false);
-      }
-    } catch (err) {
-      console.error(err);
-      alert('이메일 중복 확인 중 오류가 발생했습니다.');
+      const isAvailable  = await checkEmailMutation.mutateAsync(email);
+      setIsEmailAvailable(isAvailable);
+      alert(isAvailable ? '사용 가능한 이메일입니다.':'이미 사용 중인 이메일입니다.');
+    } catch{
+      alert('중복 확인을 다시 해주세요!')
     }
   };
 
@@ -65,7 +60,7 @@ function Signup() {
   };
 
   // 회원가입 처리
-  const handleSignup = async (): Promise<void> => {
+  const handleSignup = async () => {
     if (!isEmailAvailable) {
       alert('이메일 중복 확인을 해주세요.');
       return;
@@ -84,18 +79,10 @@ function Signup() {
     }
 
     try {
-      const res = await axios.post('/api/user/signup', {
-        email,
-        nickname,
-        password,
-      });
-
-      if (res.status === 201 || res.status === 200) {
-        alert('회원가입이 완료되었습니다!');
-        navigate('/login');
-      }
-    } catch (err) {
-      console.error(err);
+      await signupMutation.mutateAsync({ email, nickname, password });
+      alert('회원가입 완료되었습니다!');
+      navigate('/login');
+    } catch (e) {
       alert('다시 확인해주세요.');
     }
   };

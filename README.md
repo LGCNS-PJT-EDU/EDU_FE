@@ -124,5 +124,3 @@ ex) 베이스 브랜치에 포함되기 위한 코드는 모두 정상적으로 
 - Footer:
   Breaking Point 가 있을 때
   특정 이슈에 대한 해결 작업일 때
-
-- [Gitmoji](https://gitmoji.dev/)를 이용하여 Type을 대신하기도 합니다.

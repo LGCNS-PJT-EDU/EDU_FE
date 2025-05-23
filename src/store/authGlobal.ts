@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -12,8 +13,14 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       accessToken: null,
-      setLogin: (token) => set({ accessToken: token }),
-      setLogout: () => set({ accessToken: null }),
+      setLogin: (token) => {
+        set({ accessToken: token });
+        axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+      },
+      setLogout: () => {
+        set({ accessToken: null });
+        delete axios.defaults.headers.common.Authorization;
+      },
     }),
     {
       name: 'auth-storage',
@@ -22,8 +29,8 @@ export const useAuthStore = create<AuthState>()(
   )
 );
 
-/** ②  전역 util – 컴포넌트 밖에서 토큰을 읽을 때 사용 */
+/* 전역 util – 컴포넌트 밖에서 토큰을 읽을 때 사용 */
 export const getAccessToken = () => useAuthStore.getState().accessToken;
 
-/** ③ 로그인 여부 one-liner */
+/* 로그인 여부 one-liner */
 export const isLoggedIn = () => !!useAuthStore.getState().accessToken;
