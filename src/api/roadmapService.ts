@@ -30,3 +30,15 @@ export async function fetchGuestRoadmap(
   });
   return res.data.data;
 }
+
+export interface SubjectUpdateReq {
+  subjectId: number;
+  subjectName: string;
+  subjectOrder: number;
+}
+
+export async function updateRoadmap(
+  payload: SubjectUpdateReq[],
+): Promise<void> {
+  await api.put<ApiResp<unknown>>('/api/roadmap/user', payload);
+}

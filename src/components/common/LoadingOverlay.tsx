@@ -11,7 +11,7 @@ export default function LoadingOverlay() {
       <img
         src={imgSrc ?? takeRabbit}
         alt="loading"
-        className="mb-4 h-24 w-24 animate-bounce"
+        className="mb-4 h-30 w-24 animate-spin"
       />
       <p className="text-lg text-white">{message}</p>
     </div>

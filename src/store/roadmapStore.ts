@@ -9,6 +9,7 @@ export interface NodeData {
 export interface RoadmapStore {
   nodes: NodeData[];
   editing: boolean;
+  setEditing: (flag:boolean) => void;
   selected: NodeData | null;
   modalOpen: boolean;
   toggleEditing: () => void;
@@ -23,6 +24,7 @@ export interface RoadmapStore {
 export const useRoadmapStore = create<RoadmapStore>((set) => ({
   nodes: [],
   editing: false,
+  setEditing: (flag  => set({ editing: flag})), 
   selected: null,
   modalOpen: false,
 
