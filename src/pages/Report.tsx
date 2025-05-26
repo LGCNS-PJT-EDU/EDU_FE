@@ -1,176 +1,147 @@
 import weakness from '@/asset/img/report/weakness.png';
-import good from '@/asset/img/report/good.png';
-import RadarChart from '@/components/chart/chart';
-import leftArrow from '@/asset/img/report/left.png';
+import good     from '@/asset/img/report/good.png';
+import leftArrow  from '@/asset/img/report/left.png';
 import rightArrow from '@/asset/img/report/right.png';
 
+import RadarChart from '@/components/chart/chart';   
+import BarChart   from '@/components/chart/Barchart';
+
 import { useState, useRef } from 'react';
+import { useFeedback } from '@/hooks/useReport';        
 
-function Report() {
-  const [slideIndex, setSlideIndex] = useState<number>(0);
-  const startX = useRef<number>(0);
-  const endX = useRef<number>(0);
+export default function Report() {
+  const { data, isLoading, isError } = useFeedback();
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>): void => {
-    startX.current = e.touches[0].clientX;
+  /* ---------- 슬라이드 상태 ---------- */
+  const [idx, setIdx] = useState(0);
+  const startX = useRef(0);
+  const swipeStart = (e: React.TouchEvent<HTMLDivElement>) =>
+    (startX.current = e.touches[0].clientX);
+  const swipeEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    const delta = startX.current - e.changedTouches[0].clientX;
+    if (delta > 50 && idx < 2) setIdx(idx + 1);
+    else if (delta < -50 && idx > 0) setIdx(idx - 1);
   };
 
-  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>): void => {
-    endX.current = e.changedTouches[0].clientX;
-    const delta = startX.current - endX.current;
-    if (delta > 50 && slideIndex < 1) setSlideIndex(1);
-    else if (delta < -50 && slideIndex > 0) setSlideIndex(0);
-  };
-  const goPrev = (): void => {
-    if (slideIndex > 0) setSlideIndex(slideIndex - 1);
-  };
+  /* ---------- 로딩 / 에러 ---------- */
+  if (isLoading) return <p className="py-20 text-center">불러오는 중…</p>;
+  if (isError || !data?.length) return <p className="py-20 text-center">데이터 없음</p>;
 
-  const goNext = (): void => {
-    if (slideIndex < 1) setSlideIndex(slideIndex + 1);
-  };
+  /* ---------- 사전·사후 분리 ---------- */
+  const sorted = [...data].sort(
+    (a, b) => +new Date(a.info.date) - +new Date(b.info.date)
+  );
+  const pre  = sorted[0];                      // 가장 오래된
+  const post = sorted[sorted.length - 1];      // 가장 최신
+
+  /* ---------- 공통 데이터 ---------- */
+  const labels      = Object.keys(pre.scores);
+  const preScores   = Object.values(pre.scores);
+  const postScores  = Object.values(post.scores);
+  const strengthArr = Object.values((idx === 0 ? pre : post).feedback.strength);
+  const weaknessArr = Object.values((idx === 0 ? pre : post).feedback.weakness);
 
   return (
-    <div className="flex font-[pretendard] flex-col items-center justify-center px-4 py-10 text-center">
+    <div className="relative flex flex-col items-center px-4 py-10 font-[pretendard]">
       {/* 제목 */}
-      <h2 className="text-2xl font-bold text-[#5B7CFF] mb-2">Education Evaluation</h2>
-      <p className="text-lg font-semibold text-black">
-        TakeIT과 함께한 학습 여정,
-        <br />
-        이제 더 나은 방향을 향해 나아갑니다.
-      </p>
-      <p className="text-sm text-gray-500 mt-1">
-        We’ve wrapped up the evaluation phase to prepare for what’s next.
-      </p>
+      <h2 className="mb-2 text-2xl font-bold text-[#5B7CFF]">Education Evaluation</h2>
+      <p className="text-center text-gray-600">사전·사후 학습 결과 비교</p>
 
-      {/* 버튼 */}
-      <button onClick={goPrev} className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10">
-        <img src={leftArrow} alt="Previous" className="w-8 h-8" />
-      </button>
-      <button onClick={goNext} className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10">
-        <img src={rightArrow} alt="Next" className="w-8 h-8" />
-      </button>
+      {/* 화살표 */}
+      {idx > 0 && (
+        <button onClick={() => setIdx(idx - 1)} className="absolute left-2 top-1/2 -translate-y-1/2">
+          <img src={leftArrow} alt="prev" className="h-8 w-8" />
+        </button>
+      )}
+      {idx < 2 && (
+        <button onClick={() => setIdx(idx + 1)} className="absolute right-2 top-1/2 -translate-y-1/2">
+          <img src={rightArrow} alt="next" className="h-8 w-8" />
+        </button>
+      )}
 
-      {/* 슬라이드 영역 */}
+      {/* ---------- 차트 슬라이드 ---------- */}
       <div
-        className="relative w-full max-w-[500px] overflow-hidden mt-10"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+        className="relative mt-10 w-full max-w-[500px] overflow-hidden"
+        onTouchStart={swipeStart}
+        onTouchEnd={swipeEnd}
       >
         <div
           className="flex transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${slideIndex * 100}%)` }}
+          style={{ transform: `translateX(-${idx * 100}%)` }}
         >
+          {/* 0 : 사전 */}
           <div className="w-full flex-shrink-0">
-            <RadarChart />
+            <RadarChart labels={labels} values={preScores} label="Pre" color="#5b7cff" />
           </div>
+
+          {/* 1 : 사후 */}
           <div className="w-full flex-shrink-0">
-            <RadarChart />
+            <RadarChart labels={labels} values={postScores} label="Post" color="#ff6ab0" />
+          </div>
+
+          {/* 2 : 막대 + 종합평 */}
+          <div className="w-full flex-shrink-0">
+            <BarChart
+              labels={labels}
+              pre={preScores}
+              post={postScores}
+              final={post.feedback.final}
+            />
           </div>
         </div>
       </div>
 
-      {/* 범례 */}
-      <div className="flex justify-center space-x-4 mt-4 text-sm text-gray-600">
-        <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-blue-500"></span> 2020
+      {/* ---------- 범례 (슬라이드 0·1 기준) ---------- */}
+      {idx < 2 && (
+        <div className="mt-4 flex justify-center gap-4 text-sm text-gray-600">
+          <div className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-[#5b7cff]"></span> Pre
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-[#ff6ab0]"></span> Post
+          </div>
         </div>
-        <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-pink-500"></span> 2021
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-cyan-400"></span> 2022
-        </div>
-      </div>
+      )}
 
-      {/* 표 영역 */}
-
-      <table className=" mt-10 w-full table-fixed border-separate border-spacing-0 text-center text-sm text-gray-800">
-        <thead>
-          <tr>
-            <th className="w-[60px]"></th>
-            <th className="border-l border-b border-blue-200">
-              <div className="font-bold">학습용이성</div>
-              <div className="text-xs text-gray-400">Learnability</div>
-            </th>
-            <th className="border-l border-b border-blue-200">
-              <div className="font-bold">효율성</div>
-              <div className="text-xs text-gray-400">Usefulness</div>
-            </th>
-            <th className="border-l border-b border-blue-200">
-              <div className="font-bold">유용성</div>
-              <div className="text-xs text-gray-400">Efficiency</div>
-            </th>
-            <th className="border-l border-b border-blue-200">
-              <div className="font-bold">호감도/재미</div>
-              <div className="text-xs text-gray-400">Likability/fun</div>
-            </th>
-            <th className="border-l border-b border-blue-200">
-              <div className="font-bold">심미성</div>
-              <div className="text-xs text-gray-400">Aesthetics</div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="align-top">
-            <td className="border-t border-b border-blue-200">
-              <img src={good} alt="good" className="w-6 h-6 mx-auto" />
-            </td>
-            <td className="border-l border-b border-blue-200 px-2 py-3 text-left">
-              팀원 간의 대화가 잘 이루어졌으며
-              <br />
-              전달력도 좋았습니다.
-            </td>
-            <td className="border-l border-b border-blue-200 px-2 py-3 text-left">
-              효율성과 몰입도가 높았습니다.
-            </td>
-            <td className="border-l border-b border-blue-200 px-2 py-3 text-left">
-              다양한 정보를 빠르게 이해하고
-              <br />
-              흥미 있게 접근할 수 있었습니다.
-            </td>
-            <td className="border-l border-b border-blue-200 px-2 py-3 text-left">
-              사용자 중심적인 UI/UX가
-              <br />
-              긍정적인 인상을 남겼습니다.
-            </td>
-            <td className="border-l border-b border-blue-200 px-2 py-3 text-left">
-              깔끔한 스타일이
-              <br />
-              전체적인 분위기와 잘 어울렸습니다.
-            </td>
-          </tr>
-          <tr className="align-top">
-            <td>
-              <img src={weakness} alt="good" className="w-6 h-6 mx-auto" />
-            </td>
-            <td className="border-l px-2 py-3 text-left border-blue-200">
-              일부 UI 요소의 의미 전달이
-              <br />
-              모호한 부분이 있었습니다.
-            </td>
-            <td className="border-l px-2 py-3 text-left border-blue-200">
-              조작 동선이 다소 복잡하게
-              <br />
-              느껴졌습니다.
-            </td>
-            <td className="border-l px-2 py-3 text-left border-blue-200">
-              핵심 기능 접근성이
-              <br />
-              조금 더 직관적이면 좋겠습니다.
-            </td>
-            <td className="border-l px-2 py-3 text-left border-blue-200">
-              개성이 부족해 보일 수 있습니다.
-            </td>
-            <td className="border-l px-2 py-3 text-left border-blue-200">
-              비슷한 톤의 색이 반복되어
-              <br />
-              구분이 어려웠습니다.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      {/* ---------- 표 : 슬라이드 0,1 만 표시 ---------- */}
+      {idx < 2 && (
+        <table className="mt-10 w-full table-fixed border-separate border-spacing-0 text-sm text-gray-800">
+          <thead>
+            <tr>
+              <th className="w-[60px]" />
+              {labels.map((k) => (
+                <th key={k} className="border-l border-b border-blue-200">
+                  <div className="font-bold">{k}</div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {/* 장점 */}
+            <tr className="align-top">
+              <td className="border-t border-b border-blue-200">
+                <img src={good} alt="good" className="mx-auto h-6 w-6" />
+              </td>
+              {labels.map((_, i) => (
+                <td key={i} className="border-l border-b border-blue-200 px-2 py-3 text-left">
+                  {strengthArr[i] ?? '—'}
+                </td>
+              ))}
+            </tr>
+            {/* 단점 */}
+            <tr className="align-top">
+              <td>
+                <img src={weakness} alt="bad" className="mx-auto h-6 w-6" />
+              </td>
+              {labels.map((_, i) => (
+                <td key={i} className="border-l border-blue-200 px-2 py-3 text-left">
+                  {weaknessArr[i] ?? '—'}
+                </td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
-
-export default Report;
