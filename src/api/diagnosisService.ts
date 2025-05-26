@@ -50,5 +50,6 @@ export async function submitDiagnosis(
     "/api/diagnosis",
     payload,
   );
+  console.log("진단 결과 로드맵:", res.data);
   return res.data.data;
 }

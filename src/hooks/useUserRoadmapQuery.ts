@@ -2,12 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { fetchUserRoadmap } from "@/api/roadmapService";
 import { RoadmapPayload } from "@/api/diagnosisService";
-import { isLoggedIn } from "@/store/authGlobal";
+import { useIsLoggedIn } from "@/store/authGlobal";
+import { useEffect } from "react";
 
 export function useUserRoadmapQuery() {
-  const enabled = isLoggedIn();
+  const enabled = useIsLoggedIn();
 
-  return useQuery<RoadmapPayload | null, Error>({
+  const query = useQuery<RoadmapPayload | null, Error>({
     queryKey : ["userRoadmap"],
     enabled,
     retry    : false,
@@ -24,4 +25,10 @@ export function useUserRoadmapQuery() {
     },
     staleTime: 0,
   });
+  
+  useEffect(() => {
+    console.log("[useUserRoadmapQuery] data →", query.data);
+  }, [query.data]);
+
+  return query;
 }

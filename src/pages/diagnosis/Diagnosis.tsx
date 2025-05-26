@@ -1,17 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import {
-  fetchDiagnosisQuestions,
-  submitDiagnosis,
-  DiagnosisAnswerReq,
-  Question,
-  RawData,
-  RoadmapPayload,
-  Subject,
-} from "@/api/diagnosisService";
-import { isLoggedIn } from "@/store/authGlobal";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
+import { useLoadingStore } from "@/store/useLoadingStore";
+import { useDiagnosis } from "@/hooks/useDiagnosis";
 
 import takeitR from "@/asset/img/diagnosis/takeit_pixel.png";
 import blue_star from "@/asset/img/diagnosis/blue_star.png";
@@ -20,95 +11,50 @@ import smallRabbit from "@/asset/img/diagnosis/smallRabbit.png";
 import Isolation from "@/asset/img/diagnosis/Isolation_Mode.png";
 import pixel_texture from "@/asset/img/common/pixel_texture.png";
 import startBtn from "@/asset/img/diagnosis/startBtn.png";
-import { useGuestUuidStore } from "@/store/useGuestUuidStore";
-import { useLoadingStore } from "@/store/useLoadingStore";
+import { DiagnosisAnswerReq } from "@/api/diagnosisService";
 
-/* 로컬 UI 전용 타입 */
 interface StatCardProps {
   title: string;
   value: number | string;
   bgColor?: string;
 }
 
-/* 컴포넌트 */
+const StatCard = ({ title, value, bgColor = "#F2F2F2" }: StatCardProps) => (
+  <div
+    className="flex h-[70px] w-[200px] flex-col items-center justify-center rounded-[15px] px-10"
+    style={{ backgroundColor: bgColor }}
+  >
+    <div className="flex w-full justify-between">
+      <p className="font-semibold text-[#333333]">{title}</p>
+      <p className="whitespace-nowrap text-[#898989]">{value}</p>
+    </div>
+  </div>
+);
+
 export default function Diagnosis() {
   const { startLoading, stopLoading } = useLoadingStore();
+  const {
+    raw,
+    isQuestionsLoading,
+    isQuestionsError,
+    questions,
+    currentIdx,
+    setCurrentIdx,
+    answers,
+    isSubmitting,
+    choose,
+    submit,
+  } = useDiagnosis();
+
   const [hasStarted, setHasStarted] = useState(false);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [currentIdx, setCurrentIdx] = useState(0);
   const navigate = useNavigate();
 
-  /* 문제 로드 (react-query 사용) */
-  const {
-    data: raw,
-    isLoading: loadingQuestions,
-    isError: loadError,
-  } = useQuery<RawData, Error>({
-    queryKey: ["diagnosisQuestions"],
-    queryFn: fetchDiagnosisQuestions,
-  });
-
-  const trackQuestionId = raw?.COMMON?.[0]?.diagnosisId;
-  const track = answers[trackQuestionId ?? -1];
-  const questions: Question[] = useMemo(() => {
-    if (!raw) return [];
-    const { COMMON = [], BE = [], FE = [] } = raw;
-    if (track === "BE") return [...COMMON, ...BE];
-    if (track === "FE") return [...COMMON, ...FE];
-    return COMMON;
-  }, [raw, track]);
-
-  /* 제출 mutation */
-  const { mutate: submitDiagnosisMutate, isPending } = useMutation<
-    RoadmapPayload,
-    Error,
-    DiagnosisAnswerReq[]
-  >({
-    mutationFn: submitDiagnosis,
-    onSuccess: (roadmap) => {
-      if (!isLoggedIn() && roadmap.uuid) {
-        useGuestUuidStore.getState().setUuid(roadmap.uuid);
-      }
-      navigate("/roadmap", { state: roadmap });
-    },
-    onSettled: () => stopLoading(),
-    onError: () => alert("로드맵 생성에 실패했습니다."),
-  });
-
-  /* 로드 실패/로딩 UI */
   useEffect(() => {
-    if (loadingQuestions) startLoading("문제 불러오는 중…");
-    else                  stopLoading();
-  }, [loadingQuestions, startLoading, stopLoading]);
+    if (isQuestionsLoading) startLoading("문제 불러오는 중…");
+    else stopLoading();
+  }, [isQuestionsLoading, startLoading, stopLoading]);
 
-  const currentQ = questions[currentIdx];
-  console.log({
-  currentIdx,
-  questionsLength: questions.length,
-  currentQ,
-  });
-  const isAnswered = answers[currentQ?.diagnosisId ?? -1] !== undefined;
-
-  /* ---------- 이벤트 핸들러 ---------- */
-  const choose = (value: string) => {
-    if (!currentQ) return;
-    setAnswers((prev) => ({ ...prev, [currentQ.diagnosisId]: value }));
-  };
-  const toPrev = () => currentIdx > 0 && setCurrentIdx((i) => i - 1);
-  const toNext = () =>
-    currentIdx < questions.length - 1 && setCurrentIdx((i) => i + 1);
-  const submit = () => {
-    const payload: DiagnosisAnswerReq[] = Object.entries(answers).map(
-      ([id, val]) => ({
-        questionId: Number(id),
-        answer: val,
-      }),
-    );
-    startLoading("진단 제출하는 중…"); 
-    submitDiagnosisMutate(payload);
-  };
-
-  /* ---------- Start 화면 ---------- */
+  /* Start 화면 */
   if (!hasStarted) {
     return (
       <div className="flex h-[calc(100vh-70px)] flex-col items-center justify-center bg-gradient-to-b from-[#fff] to-[#C6EDF2] px-4 font-[pretendard]">
@@ -166,62 +112,54 @@ export default function Diagnosis() {
     );
   }
 
-  /* ---------- 본문 ---------- */
-  const totalCount = track ? questions.length : undefined;
+  /* 본문 모습 */
+  const totalCount   = questions.length;
+  const currentQ     = questions[currentIdx];
+  const isAnswered   = currentQ && answers[currentQ.diagnosisId] !== undefined;
   const payloadReady = Object.keys(answers).length > 0;
 
+  const toPrev = () => currentIdx > 0 && setCurrentIdx(idx => idx - 1);
+  const toNext = () => currentIdx < totalCount - 1 && setCurrentIdx(idx => idx + 1);
+
+  const handleSubmit = () => {
+    const payload: DiagnosisAnswerReq[] = Object.entries(answers).map(
+      ([id, val]) => ({ questionId: Number(id), answer: val })
+    );
+    submit(payload);
+  };
+
   return (
-    <div
-      className="flex h-[calc(100vh-70px)] w-full flex-col items-center justify-center gap-8 px-4 py-8 font-[pretendard]"
-      style={{
-        background: "linear-gradient(to bottom, #ffffff 30%, #C6EDF2 80%)",
-      }}
-    >
+    <div className="flex h-[calc(100vh-70px)] w-full flex-col items-center justify-center gap-8 px-4 py-8 font-[pretendard]" style={{
+      background: "linear-gradient(to bottom, #ffffff 30%, #C6EDF2 80%)",
+    }}>
       <div className="flex w-full max-w-[800px] flex-col gap-6 lg:flex-row">
-        {/* 왼쪽 통계 박스 */}
         <div className="flex flex-row gap-6 lg:flex-col">
-          <StatCard title="전체 질문 갯수" value={totalCount ?? "-"} />
-          <StatCard
-            title="현재 응답 갯수"
-            value={Object.keys(answers).length}
-            bgColor="#C6EDF2"
-          />
+          <StatCard title="전체 질문 갯수" value={totalCount} />
+          <StatCard title="현재 응답 갯수" value={Object.keys(answers).length} bgColor="#C6EDF2" />
         </div>
 
-        {/* 오른쪽 질문 카드 */}
         {currentQ && (
-          <div
-            className="flex h-full flex-1 flex-col justify-between rounded-[15px] bg-white p-8"
-            style={{
-              boxShadow:
-                "0 4px 6px rgba(0, 0, 0, 0.1), 0 -4px 6px rgba(0, 0, 0, 0.05)",
-            }}
-          >
-            {/* 질문 + 선택지 */}
+          <div className="flex h-full flex-1 flex-col justify-between rounded-[15px] bg-white p-8" style={{
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1), 0 -4px 6px rgba(0, 0, 0, 0.05)",
+          }}>
             <div className="flex flex-col gap-4">
               <p className="text-lg font-semibold">
                 {currentIdx + 1}. {currentQ.question}
                 <span className="text-red-500"> *</span>
               </p>
 
-              {currentQ.choices.map((c) => {
+              {currentQ.choices.map(c => {
                 const selected = answers[currentQ.diagnosisId] === c.value;
                 return (
                   <button
                     key={c.choiceId}
                     onClick={() => choose(c.value)}
-                    className={`flex w-full items-center gap-3 rounded-[15px] border px-4 py-3 ${
-                      selected
-                        ? "bg-[#C9EBEF] border-[#51BACB]"
-                        : "bg-[#F6F5F8] border-transparent"
-                    }`}
+                    className={`flex w-full items-center gap-3 rounded-[15px] border px-4 py-3 ${selected
+                      ? "bg-[#C9EBEF] border-[#51BACB]"
+                      : "bg-[#F6F5F8] border-transparent"}
+                    `}
                   >
-                    <span
-                      className={`flex h-5 w-5 items-center justify-center rounded-full text-white ${
-                        selected ? "bg-[#51BACB]" : "bg-[#DBDFE3]"
-                      }`}
-                    >
-                      {selected && "✔"}
+                    <span className={`flex h-5 w-5 items-center justify-center rounded-full text-white ${selected ? "bg-[#51BACB]" : "bg-[#DBDFE3]"}`}>              {selected && "✔"}
                     </span>
                     <span className="flex-1 text-left">{c.choice}</span>
                   </button>
@@ -229,37 +167,30 @@ export default function Diagnosis() {
               })}
             </div>
 
-            {/* 네비게이션 */}
             <div className="mt-8 flex justify-between">
               <button
                 onClick={toPrev}
                 disabled={currentIdx === 0}
-                className={`flex items-center gap-1 rounded-[8px] bg-[#6378EB] px-6 py-3 text-white ${
-                  currentIdx === 0 && "cursor-not-allowed opacity-40"
-                }`}
+                className={`flex items-center gap-1 rounded-[8px] bg-[#6378EB] px-6 py-3 text-white ${currentIdx === 0 && "cursor-not-allowed opacity-40"}`}
               >
                 <SlArrowLeft className="h-4 w-4" /> 이전 문제로
               </button>
 
-              {currentIdx < questions.length - 1 ? (
+              {currentIdx < totalCount - 1 ? (
                 <button
                   onClick={toNext}
                   disabled={!isAnswered}
-                  className={`flex items-center gap-1 rounded-[8px] bg-[#D7DBFF] px-6 py-3 text-[#6378EB] ${
-                    !isAnswered && "cursor-not-allowed opacity-40"
-                  }`}
+                  className={`flex items-center gap-1 rounded-[8px] bg-[#D7DBFF] px-6 py-3 text-[#6378EB] ${!isAnswered && "cursor-not-allowed opacity-40"}`}
                 >
                   다음 문제로 <SlArrowRight className="h-4 w-4" />
                 </button>
               ) : (
                 <button
-                  onClick={submit}
-                  disabled={!isAnswered || isPending || !payloadReady}
-                  className={`rounded-[8px] bg-[#51BACB] px-6 py-3 text-white ${
-                    (!isAnswered || isPending) && "cursor-not-allowed"
-                  }`}
+                  onClick={handleSubmit}
+                  disabled={!isAnswered || !payloadReady || isSubmitting}
+                  className={`rounded-[8px] bg-[#51BACB] px-6 py-3 text-white ${(!isAnswered || isSubmitting) && "cursor-not-allowed"}`}
                 >
-                  {isPending ? "제출 중…" : "제출"}
+                  {isSubmitting ? "제출 중…" : "제출"}
                 </button>
               )}
             </div>
@@ -269,16 +200,3 @@ export default function Diagnosis() {
     </div>
   );
 }
-
-/* ---------- 보조 컴포넌트 ---------- */
-const StatCard = ({ title, value, bgColor = "#F2F2F2" }: StatCardProps) => (
-  <div
-    className="flex h-[70px] w-[200px] flex-col items-center justify-center rounded-[15px] px-10"
-    style={{ backgroundColor: bgColor }}
-  >
-    <div className="flex w-full justify-between">
-      <p className="font-semibold text-[#333333]">{title}</p>
-      <p className="whitespace-nowrap text-[#898989]">{value}</p>
-    </div>
-  </div>
-);
