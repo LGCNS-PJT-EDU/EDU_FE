@@ -61,6 +61,17 @@ export function useDiagnosis() {
     onError: () => alert("로드맵 생성에 실패했습니다."),
   });
 
+  /* 제출 함수 래핑 */
+  const submitAnswers = () => {
+    const payload: DiagnosisAnswerReq[] = Object.entries(answers).map(
+      ([id, val]) => ({
+        questionId: Number(id),
+        answer: val,
+      }),
+    );
+    submit(payload);
+  };
+
   return {
     /* 상태 */
     raw,
@@ -70,6 +81,7 @@ export function useDiagnosis() {
     currentIdx,
     setCurrentIdx,
     answers,
+    submitAnswers,
     isSubmitting,
     /* 메서드 */
     choose,
