@@ -7,8 +7,7 @@ import OAuthCallback from '@/pages/login/OAuthCallback';
 import Layout from '@/components/layout/Layouts';
 import Roadmap from '@/pages/roadmap/Roadmap';
 import Signup from '@/pages/sign/Signup';
-import Diagnosis from '@/pages/diagnosis/Diagnosis';
-import DiagnosisPage from '@/pages/test/DiagnosisPage';
+import Diagnosis from  '@/pages/test/DiagnosisPage';
 import FullLayouts from '@/components/layout/FullLayouts';
 import Report from '@/pages/Report';
 import PretestPage from '@/pages/test/PretestPage';
@@ -23,7 +22,6 @@ const router = createBrowserRouter([
       { path: 'login', element: <Login /> },
       { path: 'signup', element: <Signup /> },
       { path: 'diagnosis', element: <Diagnosis /> },
-      { path: 'diagnosiss', element: <DiagnosisPage /> },
       { path: 'pretest', element: <PretestPage /> }
     ],
   },

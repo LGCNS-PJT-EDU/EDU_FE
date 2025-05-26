@@ -51,7 +51,9 @@ export const useRoadmapStore = create<RoadmapStore>((set) => ({
       nodes: subjects.map((s) => ({ id: s.subjectId, label: s.subjectName })),
     })),
 
-  openModal: (index) => set((s) => ({ modalOpen: true, selected: s.nodes[index] })),
+  openModal: (index) => set((s) => ({
+    modalOpen: true, selected: s.nodes[index] ?? null
+  })),
 
   closeModal: () => set(() => ({ modalOpen: false, selected: null })),
 }));

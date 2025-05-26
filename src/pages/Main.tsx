@@ -25,7 +25,7 @@ function Main() {
           <p className="text-s text-[#5E5E5E]">🕐 진단 소요시간: 약 7분, 약 20문제</p>
         </div>
 
-        <Link to="/diagnosiss" className="mt-[20px]">
+        <Link to="/diagnosis" className="mt-[20px]">
           <button className="text-lg bg-transparent border-none cursor-pointer font-['Press_Start_2P'] text-[#fff]">
             <img src={startBtn} alt="startBtn" className="w-[167px]" />
           </button>

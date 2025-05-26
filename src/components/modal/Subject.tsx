@@ -9,13 +9,28 @@ export interface SubjectRef {
 }
 
 interface SubjectModalProps {
-  subject: SubjectRef;
+  subject: {
+    subjectId: number;
+    subjectName: string;
+  }
   onClose: () => void;
 }
 
 export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
   const navigate = useNavigate();
-  
+  const { subjectId, subjectName } = subject;
+
+  /** 사전평가로 이동 **/
+  const goPreTest = () => {
+    navigate(`/pretest?subjectId=${subjectId}`);   
+    onClose();
+  };
+
+  /** 사후평가로 이동 **/
+  const goPostTest = () => {
+    navigate(`/posttest?subjectId=${subjectId}`); 
+    onClose();
+  };
   const {
     data: detail,
     isLoading,
@@ -69,9 +84,13 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
           <div className="footer">
             <button
               className="action"
-              onClick={() =>
-                navigate(`/diagnosis/prete`)
-              }
+              onClick={goPreTest}
+            >
+              사전평가 보러가기
+            </button>
+                        <button
+              className="action"
+              onClick={goPostTest}
             >
               사전평가 보러가기
             </button>
