@@ -36,10 +36,14 @@ interface ApiSubjectResponse {
 }
 
 async function fetchSubjectDetail(subjectId: number): Promise<SubjectDetail> {
-  const { data } = await api.get<ApiSubjectResponse>('/api/roadmap/subject', {
-    params: { subjectId },
-  });
+  const response = await api.get<{ stateCode: number; message: string; data: ApiSubjectResponse }>(
+    '/api/roadmap/subject',
+    {
+      params: { subjectId },
+    }
+  );
 
+  const data = response.data.data; 
   return {
     subjectId,
     overview: data.subject_overview,
@@ -58,5 +62,6 @@ export function useSubjectDetail(subjectId: number) {
   return useQuery({
     queryKey: ['subjectDetail', subjectId],
     queryFn: () => fetchSubjectDetail(subjectId),
+    enabled: !!subjectId,
   })
 }
