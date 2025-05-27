@@ -6,6 +6,7 @@ import smallRabbit from "@/asset/img/diagnosis/smallRabbit.png";
 import Isolation from "@/asset/img/diagnosis/Isolation_Mode.png";
 import pixel_texture from "@/asset/img/common/pixel_texture.png";
 import startBtn from "@/asset/img/diagnosis/startBtn.png";
+import { Options } from "../ui/option";
 
 export type AssesmentKind = "diagnosis" | "pre" | "post";
 
@@ -135,31 +136,19 @@ export default function TestTemplate({
                 <span className="text-red-500"> *</span>
               </p>
 
-              {currentQ.choices.map((c) => {
-                const selected = answers[currentQ.diagnosisId] === c.value;
-                return (
-                  <button
-                    key={c.choiceId}
-                    onClick={() => choose(c.value)}
-                    className={`flex w-full items-center gap-3 rounded-[15px] border px-4 py-3 ${
-                      selected ? "bg-[#C9EBEF] border-[#51BACB]" : "bg-[#F6F5F8] border-transparent"
-                    }`}
-                  >
-                    <span className={`flex h-5 w-5 items-center justify-center rounded-full text-white ${
-                      selected ? "bg-[#51BACB]" : "bg-[#DBDFE3]"
-                    }`}>{selected && "✔"}</span>
-                    <span className="flex-1 text-left">{c.choice}</span>
-                  </button>
-                );
-              })}
-            </div>
+            <Options
+              choices={currentQ.choices as Choice[]}
+              selectedValue={answers[currentQ.diagnosisId]}
+              onChoose={choose}
+            />
+          </div>
 
             {/* 내비게이션 / 제출 */}
             <div className="mt-8 flex justify-between">
               <button
                 onClick={() => setCurrentIdx(currentIdx - 1)}
                 disabled={currentIdx === 0}
-                className={`flex items-center gap-1 rounded-[8px]  bg-[#51BACB] px-6 py-3 text-white ${
+                className={`flex items-center gap-1 rounded-[8px] bg-[#6378EB] px-6 py-3 text-white ${
                   currentIdx === 0 && "cursor-not-allowed opacity-40"
                 }`}
               >
@@ -180,7 +169,7 @@ export default function TestTemplate({
                 <button
                   onClick={submit}
                   disabled={!isAnswered || isSubmitting}
-                  className={`rounded-[8px] bg-[#6378EB] px-6 py-3 text-white ${
+                  className={`rounded-[8px] bg-[#51BACB] px-6 py-3 text-white ${
                     (!isAnswered || isSubmitting) && "cursor-not-allowed"
                   }`}
                 >
