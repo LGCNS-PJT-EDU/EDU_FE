@@ -69,6 +69,17 @@ export function useDiagnosis() {
     onSettled: () => stopLoading(),
   });
 
+  /* 제출 함수 래핑 */
+  const submitAnswers = () => {
+    const payload: DiagnosisAnswerReq[] = Object.entries(answers).map(
+      ([id, val]) => ({
+        questionId: Number(id),
+        answer: val,
+      }),
+    );
+    submit(payload);
+  };
+
   return {
     raw,
     isQuestionsLoading,
@@ -77,6 +88,7 @@ export function useDiagnosis() {
     currentIdx,
     setCurrentIdx,
     answers,
+    submitAnswers,
     isSubmitting,
     choose,
     submit,
