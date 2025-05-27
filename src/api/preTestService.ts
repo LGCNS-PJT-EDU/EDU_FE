@@ -15,12 +15,6 @@ export interface PreTestChoice {
   value: string;
 }
 
-export interface PreTestQuestion {
-  id: number;
-  question: string;
-  choices: PreTestChoice[];
-}
-
 export interface PreTestAnswer {
   id: number;
   chapterNum: number;

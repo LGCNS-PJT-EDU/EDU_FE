@@ -23,7 +23,8 @@ const router = createBrowserRouter([
       { path: 'login', element: <Login /> },
       { path: 'signup', element: <Signup /> },
       { path: 'diagnosis', element: <Diagnosis /> },
-      { path: 'pretest', element: <PretestPage /> }
+      { path: 'pretest', element: <PretestPage /> },
+      { path: 'posttest', element: <PretestPage /> }
     ],
   },
   {

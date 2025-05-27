@@ -1,6 +1,6 @@
 import usePretest from "@/hooks/usePretest";
 import TestTemplate from "@/components/test/TestTemplate";
-import { useEffect, useState, } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function PretestPage() {
@@ -39,7 +39,7 @@ export default function PretestPage() {
       choices: choiceArr,
     };
   });
-  useEffect(() => console.log(questions), [questions]);
+  
   return (
     <TestTemplate
       kind="pre"
