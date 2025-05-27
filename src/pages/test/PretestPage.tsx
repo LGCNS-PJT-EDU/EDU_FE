@@ -15,7 +15,7 @@ export default function PretestPage() {
   }, [subjectId, navigate]);
 
   const {
-    questions,
+    questions = [],
     currentIdx,
     setCurrentIdx,
     answers,
@@ -24,17 +24,22 @@ export default function PretestPage() {
     isSubmitting,
   } = usePretest(subjectId);
 
-  const mappedQuestions = questions.map((q) => ({
-    diagnosisId: q.id,
-    question: q.question,
-    questionType: "객관식",
-    choices: q.choices.map((c, idx) => ({
-      choiceId: c.id,
-      choiceNum: idx + 1,
-      choice: c.text,
-      value: c.value,
-    })),
-  }));
+  const mappedQuestions = questions.map((q) => {
+    const choiceArr = q.choices.map((c, idx) => ({
+      choiceId: c.id,          
+      choiceNum: idx + 1,   
+      choice: c.text,       
+      value: c.value,       
+    }));
+
+    return {
+      diagnosisId: q.id,
+      question: q.question,
+      questionType: "객관식",
+      choices: choiceArr,
+    };
+  });
+  useEffect(() => console.log(questions), [questions]);
   return (
     <TestTemplate
       kind="pre"
@@ -49,4 +54,5 @@ export default function PretestPage() {
       setHasStarted={setHasStarted}
     />
   );
+
 }
