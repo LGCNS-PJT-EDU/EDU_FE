@@ -1,7 +1,5 @@
 import api from '@/api/axios';
 
-const token = localStorage.getItem("accessToken");
-
 export interface PreTestChoice {
   id: number;
   text: string;
