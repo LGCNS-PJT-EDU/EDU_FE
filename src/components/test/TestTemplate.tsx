@@ -159,7 +159,7 @@ export default function TestTemplate({
               <button
                 onClick={() => setCurrentIdx(currentIdx - 1)}
                 disabled={currentIdx === 0}
-                className={`flex items-center gap-1 rounded-[8px] bg-[#6378EB] px-6 py-3 text-white ${
+                className={`flex items-center gap-1 rounded-[8px]  bg-[#51BACB] px-6 py-3 text-white ${
                   currentIdx === 0 && "cursor-not-allowed opacity-40"
                 }`}
               >
@@ -180,7 +180,7 @@ export default function TestTemplate({
                 <button
                   onClick={submit}
                   disabled={!isAnswered || isSubmitting}
-                  className={`rounded-[8px] bg-[#51BACB] px-6 py-3 text-white ${
+                  className={`rounded-[8px] bg-[#6378EB] px-6 py-3 text-white ${
                     (!isAnswered || isSubmitting) && "cursor-not-allowed"
                   }`}
                 >

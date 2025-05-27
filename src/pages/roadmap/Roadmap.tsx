@@ -5,7 +5,7 @@ import RoadmapCanvas from "./RoadmapCanvas";
 import SubjectModal from "@/components/modal/Subject";
 import ConfirmModal from "@/components/modal/ConfirmModal";
 import { Button } from "@/components/ui/button";
-import { isLoggedIn } from "@/store/authGlobal";
+import { useIsLoggedIn } from "@/store/authGlobal";
 import { Check } from "lucide-react";
 import { RoadmapPayload } from "@/api/diagnosisService";
 import { usePromoteGuestRoadmap } from "@/hooks/usePromoteGuestRoadmap";
@@ -17,10 +17,22 @@ import useRoadmapEdit from "@/hooks/useRoadmapEdit";
 export default function Roadmap() {
   /* 로딩 스토어 */
   const { startLoading, stopLoading } = useLoadingStore(); 
+  /* 라우터 */
+  const { state } = useLocation();
+  const navigate = useNavigate();
   /* 정식 로드맵 있으면 있는거 가져오기 */
-  const { data: userRoadmap, isLoading } = useUserRoadmapQuery();
+  const roadmapFromState = state as RoadmapPayload | undefined;
+  const { data: userRoadmap, isLoading: loadingUser } = useUserRoadmapQuery();
   /* 정식 로드맵 없고, Uuid 있고, 로그인한 상태면 guest 로드맵 정식으로 승격 */
-  usePromoteGuestRoadmap();
+  const uuid     = useGuestUuidStore((s) => s.uuid);
+  const isLoggedIn = useIsLoggedIn(); 
+  const shouldPromote = 
+    !loadingUser && 
+    userRoadmap === null && 
+    isLoggedIn && 
+    Boolean(uuid);
+
+  const promote = usePromoteGuestRoadmap(shouldPromote);
 
   /* Zustand 상태 */
   const setInitial = useRoadmapStore((s) => s.setInitial);
@@ -31,30 +43,25 @@ export default function Roadmap() {
   const modalOpen = useRoadmapStore((s) => s.modalOpen);
   const closeModal = useRoadmapStore((s) => s.closeModal);
 
-  /* 라우터 */
-  const { state } = useLocation();
-  const navigate = useNavigate();
-
-  /* uuid 상태 */
-  const uuid = useGuestUuidStore((s) => s.uuid); 
-
   /* 로컬 모달 상태 */
   const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   /* 진입 시 로드맵 주입 */
-  const roadmapFromState = state as RoadmapPayload | undefined;
+  console.log("[Roadmap.tsx] ▶️ fromState:", roadmapFromState, "  /  userRoadmap:", userRoadmap);
   const roadmap = userRoadmap ?? roadmapFromState;
 
   /* 로드맵 보여주기 */
   useEffect(() => {
-    if (roadmap?.subjects) {
-      setInitial(roadmap.subjects);
+    const source = userRoadmap ?? roadmapFromState;
+    console.log("[Roadmap.tsx] initializing subjects from →", source);
+    if (source?.subjects) {
+      setInitial(source.subjects);
     }
-  }, [roadmap, setInitial]);
+  }, [userRoadmap, roadmapFromState, setInitial]);
 
   /* 로그인 안 한 상태에서 모달 열면 로그인 유도 */
   useEffect(() => {
-    if (modalOpen && !isLoggedIn()) {
+    if (modalOpen && !isLoggedIn) {
       closeModal();
       setLoginModalOpen(true);
     }
@@ -62,18 +69,29 @@ export default function Roadmap() {
 
   /* 로딩 */
   useEffect(() => {
-    if (isLoading) startLoading("로드맵 불러오는 중…");
+    if (loadingUser) startLoading("로드맵 불러오는 중…");
     else           stopLoading();
-  }, [isLoading, startLoading, stopLoading]);
+  }, [loadingUser, startLoading, stopLoading]);
 
-  /* 로드맵도 uuid도 없으면 → 진단 */
-  if (!roadmap && !uuid && !isLoading) {
-    navigate("/diagnosis", { replace: true });
+  /* 로드맵 없고, uuid도 없고, 승격도 필요 없으면 → 진단 페이지로 */
+  const promoteLoading = promote.status === "pending";
+  const promoteSuccess = promote.status === "success";
+  const noRoadmap = !roadmap && !uuid;
+  const noLoading = !loadingUser;
+  const noPromote = !promoteLoading && !promoteSuccess;
+  
+  useEffect(() => {
+    if (noRoadmap && noLoading && noPromote) {
+      navigate("/diagnosis", { replace: true });
+    }
+  }, [noRoadmap, noLoading, noPromote, navigate]);
+
+  if (noRoadmap && noLoading && noPromote) {
     return null;
   }
 
   return (
-    <section className="relative">
+    <section className="relative">  
       {/* 헤더 */}
       <header className="absolute left-1/2 top-6 z-20 flex -translate-x-1/2 flex-col items-center gap-2">
         <h1 className="drop-shadow text-2xl font-bold">맞춤 로드맵</h1>

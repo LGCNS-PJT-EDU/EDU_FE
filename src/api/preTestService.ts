@@ -1,5 +1,14 @@
 import api from '@/api/axios';
 
+interface RawPreQuestion {
+  questionId: number;
+  question: string;
+  choice1?: string;
+  choice2?: string;
+  choice3?: string;
+  choice4?: string;
+  answerNum: number;
+}
 export interface PreTestChoice {
   id: number;
   text: string;
@@ -43,15 +52,32 @@ interface ApiResp<T> {
   data: T;
 }
 
-export async function fetchPreTestQuestions(subjectId: number): Promise<PreTestQuestion[]> {
-  const res = await api.get<ApiResp<PreTestQuestion[]>>("/api/exam/pre", {
+export async function fetchPreTestQuestions(
+  subjectId: number,
+): Promise<PreTestQuestion[]> {
+  const res = await api.get<ApiResp<RawPreQuestion[]>>("/api/exam/pre", {
     params: { subjectId },
   });
-  console.log(res.data)
-  return res.data.data;
+
+
+  return (res.data.data ?? []).map<PreTestQuestion>((q) => {
+    const choices = [q.choice1, q.choice2, q.choice3, q.choice4]
+      .filter(Boolean)
+      .map((text, idx) => ({
+        id: idx + 1,
+        text: text as string,
+        value: String(idx + 1),
+      }));
+
+    return {
+      id: q.questionId,
+      question: q.question,
+      choices,
+    };
+  });
 }
 
 export async function submitPreTest(payload: PreTestSubmitPayload) {
-  const res = await api.post<ApiResp<any>>("/api/exam/pre", payload); 
+  const res = await api.post<ApiResp<any>>("/api/exam/pre", payload);
   return res.data;
 }

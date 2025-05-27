@@ -22,13 +22,13 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
 
   /** 사전평가로 이동 **/
   const goPreTest = () => {
-    navigate(`/pretest?subjectId=${subjectId}`);   
+    navigate(`/pretest?subjectId=${subjectId}`);
     onClose();
   };
 
   /** 사후평가로 이동 **/
   const goPostTest = () => {
-    navigate(`/posttest?subjectId=${subjectId}`); 
+    navigate(`/posttest?subjectId=${subjectId}`);
     onClose();
   };
   const {
@@ -54,7 +54,7 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
           ) : (
             <div className="body">
               <p className="overview">{detail.overview.replace(/([.!?])\s*/g, '$1\n')}</p>
-
+    
               <ol className="chapter-list">
                 {detail.chapters
                   .sort((a, b) => a.chapterOrder - b.chapterOrder)
@@ -81,22 +81,23 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
             </div>
           )}
 
-          <div className="footer">
+          <div className="Btn">
             <button
-              className="action"
+              className="pretest"
               onClick={goPreTest}
             >
               사전평가 보러가기
             </button>
-                        <button
-              className="action"
+            <button
+              className="posttest"
               onClick={goPostTest}
             >
-              사전평가 보러가기
+              사후평가 보러가기
             </button>
           </div>
+
         </div>
       </div>
-    </div>
+    </div >
   );
 }
