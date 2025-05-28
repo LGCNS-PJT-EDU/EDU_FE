@@ -52,7 +52,7 @@ export async function fetchPostTestQuestions(
   const res = await api.get<ApiResp<RawPostQuestion[]>>("/api/exam/post", {
     params: { subjectId },
   })
-
+  console.log("post 응답 확인:", res.data); // 응답 구조 확인용
   return (res.data.data ?? []).map<PostTestQuestion>((q) => {
     const choices = [q.choice1, q.choice2, q.choice3, q.choice4]
       .filter(Boolean)
