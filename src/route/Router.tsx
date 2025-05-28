@@ -25,7 +25,9 @@ const router = createBrowserRouter([
       { path: 'signup', element: <Signup /> },
       { path: 'diagnosis', element: <Diagnosis /> },
       { path: 'pretest', element: <PretestPage /> },
-       { path: 'testspeech', element: <TestSpeech /> },
+      { path: 'testspeech', element: <TestSpeech /> },
+      { path: 'posttest', element: <PretestPage /> }
+
     ],
   },
   {
