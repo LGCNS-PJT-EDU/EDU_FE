@@ -12,10 +12,11 @@ interface UserRoadmapResp {
   roadmapName: string;
   userLocationSubjectId: number;
 }
-export async function fetchUserRoadmap(): Promise<RoadmapPayload> {
+
+export async function fetchUserRoadmap(): Promise<RoadmapPayload | null> {
   const res = await api.get<ApiResp<UserRoadmapResp>>("/api/roadmap/user");
   const { subjects, userLocationSubjectId } = res.data.data;
-
+  if (!subjects || subjects.length === 0) return null;
   return {
     userLocationSubjectId,
     subjects,
