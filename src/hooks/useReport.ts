@@ -14,13 +14,17 @@ export interface FeedbackItem {
     final: string;
   }
 }
-
+interface ApiResponse<T> {
+  stateCode: number;
+  message: string;
+  data: T;
+}
 export const useFeedback = () =>
   useQuery<FeedbackItem[]>({            
     queryKey: ['feedback'],
     queryFn: async () => {
-      const { data } = await axios.get<FeedbackItem[]>('/api/feedback/retrieve');
-      return data;
+      const res = await axios.get<ApiResponse<FeedbackItem[]>>('/api/feedback/retrieve');
+      return res.data.data;
     }
   });
 

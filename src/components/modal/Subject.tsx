@@ -33,6 +33,11 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
     onClose();
   };
 
+  const goReport = () => {
+    navigate('/report');
+    onClose();
+  }
+
   const toggleContent = () => setIsOpen(!isOpen);
 
   /* overview 문장 분리  */
@@ -122,6 +127,12 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
               onClick={goPostTest}
             >
               사후평가 보러가기
+            </button>
+            <button
+              className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg"
+              onClick={goReport}
+            >
+              평가 리포트 보러가기
             </button>
           </div>
         </div>
