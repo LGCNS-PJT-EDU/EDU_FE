@@ -9,14 +9,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  plugins: [
-    react(), // ⚛️ React Refresh + JSX transform
-    tailwindcss(), // 🐾 Tailwind v4 전용 Vite 플러그인
-  ],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
+  },
+  define: {
+    global: {}, // 🔧 여기 추가!
   },
   server: {
     proxy: {
@@ -28,3 +28,4 @@ export default defineConfig({
     },
   },
 });
+

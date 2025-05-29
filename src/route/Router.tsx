@@ -14,6 +14,7 @@ import PretestPage from '@/pages/test/PretestPage';
 import PosttestPage from '@/pages/test/PosttestPage';
 import Solution from '@/pages/solution/Solution';
 import TestSpeech from '@/pages/TestSpeech';
+import ChatbotPage from '@/pages/chat/ChatbotPage';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: 'report', element: <Report /> },
       { path: 'roadmap', element: <Roadmap /> },
       { path: 'solution', element: <Solution /> },
+      { path: 'chatbot', element: <ChatbotPage /> },
       { path: 'login/oauth2/code/:provider', element: <OAuthCallback /> },
     ],
   },

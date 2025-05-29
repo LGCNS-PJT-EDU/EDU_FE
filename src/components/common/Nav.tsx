@@ -20,6 +20,13 @@ function Nav() {
       </div>
 
       <div className="flex items-center gap-[30px]">
+        <Link to="/chatbot">
+    <button
+      className={`w-[70px] h-[70px] ${baseBtnClass} ${location.pathname === '/chatbot' ? 'font-semibold' : ''}`}
+    >
+      CHATBOT
+    </button>
+  </Link>
         <Link to="/">
           <button
             className={`w-[50px] h-[70px]${baseBtnClass} ${location.pathname === '/' ? 'font-semibold' : ''}`}
