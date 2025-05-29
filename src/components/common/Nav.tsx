@@ -15,10 +15,11 @@ function Nav() {
 
   return (
     <header className="flex items-center justify-between h-[70px] w-[800px] mx-auto">
-      <div className="w-[100px]">
-        <img src={rabbitImage} alt="takeit" className="w-full" />
-      </div>
-
+      <Link to="/">
+        <div className="w-[100px]">
+          <img src={rabbitImage} alt="takeit" className="w-full" />
+        </div>
+      </Link>
       <div className="flex items-center gap-[30px]">
         <Link to="/">
           <button
