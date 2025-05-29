@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Aurora2 from '@/components/Aurora/Particles';
 import simbol from '@/asset/img/common/takeitlogo.png';
@@ -8,6 +8,7 @@ import startBtn from '@/asset/img/main/BTN style 1.png';
 
 export default function Main() {
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -36,7 +37,7 @@ export default function Main() {
         </h1>
         <p className='mb-14 font-[NeoDunggeunmo] leading-relaxed text-[#373f41]'>진단부터 로드맵, 사후평가까지 AI 기반 맞춤형 학습 플랜</p>
         <div className="flex justify-center items-center">
-          <button className="px-4 py-3 text-white bg-[#6378EB] rounded-lg mb-30">
+          <button className="px-4 py-3 text-white bg-[#6378EB] rounded-lg mb-30" onClick={() => navigate("/diagnosis")}>
             진단평가 보러가기
           </button>
         </div>
