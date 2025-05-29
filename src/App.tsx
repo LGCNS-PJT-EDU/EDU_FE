@@ -35,7 +35,7 @@ export default function App() {
           onClose={() => setSessionExpired(false)}
           onConfirm={() => {
             setSessionExpired(false);
-            router.navigate('/login');   // ← useNavigate 대신
+            router.navigate('/login', { replace: true });
           }}
         />
       )}
