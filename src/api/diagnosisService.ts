@@ -16,6 +16,7 @@ export interface RawData {
   COMMON: Question[];
   BE: Question[];
   FE: Question[];
+  roadmap_exist: boolean;
 }
 export interface DiagnosisAnswerReq {
   questionId: number;
