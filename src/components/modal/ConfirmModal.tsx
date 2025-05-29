@@ -18,9 +18,9 @@ export default function ConfirmModal({
   onClose,
   imgSrc,
   imgAlt,
-  title,
+  title = "알림",
   message,
-  confirmText,
+  confirmText = "확인",
   onConfirm,
 }: Props) {
   const navigate = useNavigate();

@@ -17,3 +17,4 @@ export default function useLogout() {
     navigate('/', { replace: true });
   }, [navigate, setLogout]);
 }
+ 
