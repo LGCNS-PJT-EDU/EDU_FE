@@ -42,7 +42,7 @@ function OAuthCallback() {
     if (!code || !provider) return navigate('/login');
 
     const body = buildBody({ code, state, provider });
-    const res = await api.post(`/api/auth/${provider}/login`, body);
+    const res = await api.post(`/api/oauth/${provider}/login`, body);
 
     /* stateCode 200인지 확인. 추후에 에러코드에 따라 에러팝업 출력 예정 */
     const { stateCode } = res.data ?? {};
@@ -70,3 +70,4 @@ function OAuthCallback() {
 }
 
 export default OAuthCallback;
+ 
