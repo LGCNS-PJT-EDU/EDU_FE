@@ -8,51 +8,47 @@ import {
   Legend,
 } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
+import { useMemo } from 'react';
 
-// ✅ 반드시 ChartJS.register로 요소 등록
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-// ✅ 컴포넌트 바깥에서 정의
-const data = {
-  labels: ['HTML', 'CSS', 'React', 'Python', 'SCSS'],
-  datasets: [
-    {
-      label: '2020',
-      data: [65, 59, 90, 81, 56],
-      backgroundColor: 'rgba(91, 124, 255, 0.2)',
-      borderColor: 'rgba(91, 124, 255, 1)',
-      borderWidth: 1,
-    },
-  ],
-};
+interface Props {
+  labels: string[];      // 과목 5개
+  values: number[];      // 점수 5개
+  label?: string;        // 범례(Pre, Post 등)
+  color?: string;        // 선 색
+}
 
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-  },
-  scales: {
-    r: {
-      min: 0,
-      max: 100,
-      ticks: {
-        stepSize: 20,
-        color: '#6b7280',
+export default function RadarChart({
+  labels,
+  values,
+  label = 'score',
+  color = 'rgba(91,124,255,1)',
+}: Props) {
+  const { data, options } = useMemo(() => {
+    const bg  = color.replace(/rgb(a?)\((.+)\)/, 'rgba($2,0.15)');
+    return {
+      data: {
+        labels,
+        datasets: [
+          { label, data: values, backgroundColor: bg, borderColor: color, borderWidth: 1 },
+        ],
       },
-      grid: {
-        color: '#d1d5db',
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          r: {
+            min: 0,
+            max: 100,
+            ticks: { stepSize: 20 },
+            grid: { color: '#d1d5db' },
+            pointLabels: { font: { size: 14 }, color: '#374151' },
+          },
+        },
       },
-      pointLabels: {
-        font: { size: 14 },
-        color: '#374151',
-      },
-    },
-  },
-};
+    };
+  }, [labels, values, label, color]);
 
-// ✅ 정상 export
-export default function RadarChart() {
   return <Radar data={data} options={options} />;
 }

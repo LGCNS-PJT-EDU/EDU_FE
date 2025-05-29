@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSpeech } from '../hooks/useSpeech';
+import { useSpeech } from '@/hooks/useSpeech';
 
 const TestSpeech: React.FC = () => {
   const { transcript, listening, startListening, speak, resetTranscript } = useSpeech();

@@ -13,7 +13,7 @@ import Report from '@/pages/report/Report';
 import PretestPage from '@/pages/test/PretestPage';
 import PosttestPage from '@/pages/test/PosttestPage';
 import Solution from '@/pages/solution/Solution';
-import TestSpeech from '@/pages/TestSpeech';
+import TestSpeech from '@/pages/speech/TestSpeech';
 
 const router = createBrowserRouter([
   {
