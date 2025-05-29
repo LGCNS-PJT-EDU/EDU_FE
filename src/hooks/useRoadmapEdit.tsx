@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { updateRoadmap, SubjectUpdateReq } from '@/api/roadmapService';
+import { updateRoadmap } from '@/api/roadmapService';
 import { useRoadmapStore } from '@/store/roadmapStore';
 import { useSnackbarStore } from '@/store/useSnackbarStore';
 

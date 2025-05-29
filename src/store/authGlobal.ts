@@ -33,4 +33,6 @@ export const useAuthStore = create<AuthState>()(
 export const getAccessToken = () => useAuthStore.getState().accessToken;
 
 /* 로그인 여부 one-liner */
-export const isLoggedIn = () => !!useAuthStore.getState().accessToken;
+export function useIsLoggedIn() {
+  return useAuthStore(state => Boolean(state.accessToken));
+}

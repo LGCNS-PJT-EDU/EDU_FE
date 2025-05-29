@@ -16,6 +16,7 @@ export interface RawData {
   COMMON: Question[];
   BE: Question[];
   FE: Question[];
+  roadmap_exist: boolean;
 }
 export interface DiagnosisAnswerReq {
   questionId: number;
@@ -50,5 +51,6 @@ export async function submitDiagnosis(
     "/api/diagnosis",
     payload,
   );
+  console.log("진단 결과 로드맵:", res.data);
   return res.data.data;
 }
