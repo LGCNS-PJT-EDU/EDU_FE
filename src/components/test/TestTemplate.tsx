@@ -41,6 +41,7 @@ export interface AssesmentProps {
   isSubmitting: boolean;
   hasStarted: boolean;
   setHasStarted: (started: boolean) => void;
+  isLoadingQuestions?: boolean;
 }
 
 const introCopy = {
@@ -75,6 +76,7 @@ export default function TestTemplate({
   isSubmitting,
   hasStarted,
   setHasStarted,
+  isLoadingQuestions = false,
 }: AssesmentProps) {
  const { time, headline, sub, submitLabel } = introCopy[kind];
   const currentQ = questions[currentIdx];
@@ -107,7 +109,7 @@ export default function TestTemplate({
           <div className="z-10 mt-6 flex justify-center">
             <img src={takeitR} alt="토끼 이미지" className="absolute bottom-0 right-0 w-[150px]" />
           </div>
-          <button onClick={() => setHasStarted(true)} className="z-20 cursor-pointer font-semibold text-black">
+          <button onClick={() => setHasStarted(true)} disabled={isLoadingQuestions} className="z-20 cursor-pointer font-semibold text-black">
             <img src={startBtn} alt="startBtn" className="w-[150px]" />
           </button>
         </div>
