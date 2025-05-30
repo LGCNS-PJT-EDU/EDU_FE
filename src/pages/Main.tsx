@@ -99,8 +99,25 @@ export default function Main() {
               </Link>
             </div>
           ))}
+          </div>
+          {/* 프론트엔드 백엔드 기본 로드맵 보기 */}
+          <div className="flex flex-wrap justify-center gap-5 max-w-[800px] mx-auto mt-16 mb-20 px-5">
+            <div
+              className="bg-gray-50 border border-gray-200 rounded-2xl shadow-sm p-6 max-w-[350px] w-full text-center cursor-pointer transition-all hover:bg-blue-100 hover:-translate-y-1 hover:border-none"
+            >
+              <h3 className="text-lg font-semibold text-[#6378EB] mb-2">프론트엔드 기본 로드맵</h3>
+              <p className="text-sm text-gray-600">프론트엔드 기초부터 차근차근 보기 →</p>
+            </div>
+            <div
+              className="bg-gray-50 border border-gray-200 rounded-2xl shadow-sm p-6 max-w-[350px] w-full text-center cursor-pointer transition-all hover:bg-blue-100 hover:-translate-y-1 hover:border-none"
+            >
+              <h3 className="text-lg font-semibold text-[#6378EB] mb-2">백엔드 기본 로드맵</h3>
+              <p className="text-sm text-gray-600">백엔드 기초부터 쭉 따라가기 →</p>
+            </div>
+          </div>
+
           <div ref={bottomRef} className="h-10" />
-        </div>
+        
       </div>
     </div>
   );

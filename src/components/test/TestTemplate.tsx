@@ -161,7 +161,7 @@ export default function TestTemplate({
                 <button
                   onClick={() => setCurrentIdx(currentIdx + 1)}
                   disabled={!isAnswered}
-                  className={`flex items-center gap-1 rounded-[8px] bg-[#6378EB] px-6 py-3 text-white${
+                  className={`flex items-center gap-1 rounded-[8px] bg-[#6378EB] px-6 py-3 text-white ${
                     !isAnswered && "cursor-not-allowed opacity-40"
                   }`}
                 >
