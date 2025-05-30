@@ -69,7 +69,7 @@ export default function RoadmapNode({ index, x, y, showLabel }: Props) {
             left: x,
             top: y + NODE_SIZE / 2 + LABEL_OFFSET,
           }}
-          className="absolute -translate-x-1/2 w-28 text-center text-sm font-bold break-words"
+          className="absolute -translate-x-1/2 w-28 text-center text-sm font-bold break-words bg-white px-1"
         >
           {node.label}
         </p>
