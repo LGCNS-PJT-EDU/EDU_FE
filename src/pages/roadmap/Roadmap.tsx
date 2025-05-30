@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRoadmapStore } from "@/store/roadmapStore";
-import RoadmapCanvas from "./RoadmapCanvas";
+import RoadmapTemplate from "./RoadmapTemplate";
 import SubjectModal from "@/components/modal/Subject";
 import ConfirmModal from "@/components/modal/ConfirmModal";
 import { Button } from "@/components/ui/button";
@@ -108,7 +108,7 @@ export default function Roadmap() {
       </header>
 
       {/* 로드맵 그래프 */}
-      <RoadmapCanvas />
+      <RoadmapTemplate />
 
       {/* 과목 상세 모달 */}
       {modalOpen && selected && (
