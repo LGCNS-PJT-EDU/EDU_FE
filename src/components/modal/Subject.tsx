@@ -18,7 +18,7 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
   const navigate = useNavigate();
   const { subjectId } = subject;
 
-  const { data: detail, isLoading, isError } = useSubjectDetail(subject.subjectId);
+  const { data: detail, isLoading, isError } = useSubjectDetail(subjectId);
 
   const goPreTest = () => {
     navigate(`/pretest?subjectId=${subjectId}`);
@@ -34,6 +34,7 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
     navigate('/report');
     onClose();
   };
+
   const goSolution = () => {
     navigate('/solution');
     onClose();
@@ -67,7 +68,7 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
           ) : (
             <div className="border border-slate-300 rounded-md p-2 mb-4 whitespace-pre-line custom-scroll transition-all duration-300 ease-in-out overflow-y-auto max-h-[400px]">
               <p className="leading-relaxed mb-2">{firstPart}</p>
-              <p className='leading-relaxed mb-5'>{remainingOverview}</p>
+              <p className="leading-relaxed mb-5">{remainingOverview}</p>
 
               <h4 className="font-semibold mb-2">챕터</h4>
               <ol className="mb-5 list-decimal pl-5">
@@ -78,20 +79,27 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
                   ))}
               </ol>
 
-              <h4 className="font-semibold mb-2">추천 강의</h4>
+              <h4 className="font-semibold mb-2">추천 콘텐츠</h4>
               <ul className="list-disc pl-5 mb-4">
-                {detail.videos.map((video) => (
-                  <li key={video.title}>
-                    <a
-                      href={video.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-500 underline"
-                    >
-                      {video.title}
-                    </a>
-                  </li>
-                ))}
+                {detail.recommendContents && detail.recommendContents.length > 0 ? (
+                  detail.recommendContents.map((item) => (
+                    <li key={item.contentId} className="mb-1">
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-500 underline"
+                      >
+                        {item.title}
+                      </a>
+                      {item.comment && (
+                        <p className="text-sm text-gray-400">{item.comment}</p>
+                      )}
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-sm text-gray-500">사전평가 완료 후 추천 콘텐츠가 제공됩니다.</li>
+                )}
               </ul>
             </div>
           )}
@@ -101,16 +109,34 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
             <p>로딩 중...</p>
           ) : isError || !detail ? (
             <p>불러오기 실패</p>
+          ) : detail.preSubmitCount < 1 ? (
+            <button
+              className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg"
+              onClick={goPreTest}
+            >
+              사전평가 보러가기
+            </button>
           ) : (
-            detail.preSubmitCount < 1 ? (
-              <>
-                <button className = "w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2" onClick={goPostTest}>사후평가 보러가기</button>
-                <button className = "w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2" onClick={goReport}>평가 리포트 보러가기</button>
-                <button className = "w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2" onClick={goSolution}>오답 보러가기</button>
-              </>
-            ) : (
-              <button className = "w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg" onClick={goPreTest}>사전평가 보러가기</button>
-            )
+            <>
+              <button
+                className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                onClick={goPostTest}
+              >
+                사후평가 보러가기
+              </button>
+              <button
+                className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                onClick={goReport}
+              >
+                평가 리포트 보러가기
+              </button>
+              <button
+                className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                onClick={goSolution}
+              >
+                오답 보러가기
+              </button>
+            </>
           )}
         </div>
       </div>

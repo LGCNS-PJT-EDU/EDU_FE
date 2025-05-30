@@ -8,6 +8,9 @@ interface RawPreQuestion {
   choice3?: string;
   choice4?: string;
   answerNum: number;
+  chapterNum: number;
+  chapterName: string;
+  difficulty: string;
 }
 export interface PreTestChoice {
   id: number;
@@ -16,7 +19,7 @@ export interface PreTestChoice {
 }
 
 export interface PreTestAnswer {
-  id: number;
+  examId: number;
   chapterNum: number;
   chapterName: string;
   difficulty: string;
@@ -28,10 +31,13 @@ export interface PreTestQuestion {
   id: number;
   question: string;
   choices: { id: number; text: string; value: string }[];
+  chapterNum: number;
+  chapterName: string;
+  difficulty: string;
+  answerNum: number;
 }
 
 export interface PreTestSubmitPayload {
-  roadmapId: number;
   subjectId: number;
   startDate: string;
   duration: number;
@@ -53,6 +59,7 @@ export async function fetchPreTestQuestions(
     params: { subjectId },
   });
 
+console.log("subjectId from URL:", subjectId); // ✅ 로그 찍어보세요
 
   return (res.data.data ?? []).map<PreTestQuestion>((q) => {
     const choices = [q.choice1, q.choice2, q.choice3, q.choice4]
@@ -67,6 +74,10 @@ export async function fetchPreTestQuestions(
       id: q.questionId,
       question: q.question,
       choices,
+      chapterNum: q.chapterNum,
+      chapterName: q.chapterName,
+      difficulty: q.difficulty,
+      answerNum: q.answerNum,
     };
   });
 }

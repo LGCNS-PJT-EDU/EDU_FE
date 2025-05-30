@@ -2,7 +2,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {
   fetchPreTestQuestions,
-  PreTestAnswer,
   PreTestQuestion,
   PreTestSubmitPayload,
   submitPreTest,
@@ -11,28 +10,29 @@ import { getAccessToken } from "@/store/authGlobal";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function usePretest(subjectId: number) {
-
-  const {state} = useLocation() as {state: {subjectId?: number}};
   const navigate = useNavigate();
-  
+
   /* 토큰 없으면 로그인 페이지로 강제 이동 */
   useEffect(() => {
-    if(!getAccessToken()) navigate("/login");
-  },[navigate])
+    if (!getAccessToken()) navigate("/login");
+  }, [navigate])
 
 
-  const { 
+  const {
     data: questions = [], isLoading
-   } = useQuery<PreTestQuestion[]>({
+  } = useQuery<PreTestQuestion[]>({
     queryKey: ["preTestQuestions", subjectId],
     queryFn: () => fetchPreTestQuestions(subjectId),
-    enabled: !!subjectId && !! getAccessToken(),
+    enabled: !!subjectId && !!getAccessToken(),
   });
 
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [startDate] = useState(() => new Date().toISOString());
+  const [answers, setAnswers] = useState<Record<number, string>>({}); // 사용자 선택
+  const [currentIdx, setCurrentIdx] = useState(0); //현재 보고 있는 문제의 인덱스
+  const [startDate] = useState(() => new Date().toISOString()); //사전평가 시작 시간
+  const [startTime] = useState(() => Date.now());
 
+  const duration = Math.floor((Date.now() - startTime) / 1000);
+  //제출함수
   const { mutate: submit, isPending: isSubmitting } = useMutation({
     mutationFn: submitPreTest,
     onSuccess: () => {
@@ -43,34 +43,38 @@ export default function usePretest(subjectId: number) {
     onError: () => alert("사전평가 제출 실패"),
   });
 
+  //선택지 저장 
   const choose = (value: string) => {
     const q = questions[currentIdx];
     if (!q) return;
     setAnswers((prev) => ({ ...prev, [q.id]: value }));
   };
 
-/* 제출 */
+  /* 제출 함수*/
   const submitAnswers = () => {
 
-    if(Object.keys(answers).length !== questions.length){
+    if (Object.keys(answers).length !== questions.length) {
       alert("모든 문항에 응답 해주세요.");
       return;
     }
     const payload: PreTestSubmitPayload = {
-      roadmapId: 1, // TODO: 동적 설정
       subjectId,
       startDate,
-      duration: 300,
+      duration,
       submitCnt: 1,
-      answers: Object.entries(answers).map(([id, val]) => ({
-        id: Number(id),
-        chapterNum: 0, 
-        chapterName: "", 
-        difficulty: "",
-        answerTF: true, 
-        userAnswer: Number(val),
-      })),
+      answers: questions.map((q) => {
+        const isCorrect = Number(answers[q.id]) === q.answerNum;
+        return {
+          examId: q.id,
+          chapterNum: q.chapterNum,
+          chapterName: q.chapterName,
+          difficulty: q.difficulty,
+          userAnswer: Number(answers[q.id]),
+          answerTF: isCorrect,
+        };
+      }),
     };
+
     submit(payload);
   };
 

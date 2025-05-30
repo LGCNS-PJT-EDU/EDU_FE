@@ -7,6 +7,7 @@ export default function PretestPage() {
   const [hasStarted, setHasStarted] = useState(false);
   const [params] = useSearchParams();
   const subjectId = Number(params.get("subjectId") || 0);
+  console.log("subjectId 확인:", subjectId);
 
   const navigate = useNavigate();
 
