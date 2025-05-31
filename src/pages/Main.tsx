@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Link, useNavigate } from 'react-router-dom';
 
 import Aurora2 from '@/components/Aurora/Particles';
 import simbol from '@/asset/img/common/takeitlogo.png';
@@ -8,7 +7,6 @@ import chevron from '@/asset/img/main/chevron-down.png';
 
 export default function Main() {
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
   const navigate = useNavigate();
 
   const scrollToBottom = () => {

@@ -7,7 +7,6 @@ export default function PosttestPage() {
   const [hasStarted, setHasStarted] = useState(false);
   const [params] = useSearchParams();
   const subjectId = Number(params.get("subjectId") || 0);
-
   const navigate = useNavigate();
 
   useEffect(() => {
