@@ -41,6 +41,7 @@ export interface AssesmentProps {
   isSubmitting: boolean;
   hasStarted: boolean;
   setHasStarted: (started: boolean) => void;
+  isLoadingQuestions?: boolean;
 }
 
 const introCopy = {
@@ -57,7 +58,7 @@ const introCopy = {
     submitLabel: "제출",
   },
   post: {
-    time: "⏱ 약 5분, 10문제",
+    time: "⏱ 약 5분, 15문제",
     headline: "학습 후 실력이 얼마나 향상됐을까요?",
     sub: "변화를 숫자로 확인해보세요",
     submitLabel: "제출",
@@ -75,6 +76,7 @@ export default function TestTemplate({
   isSubmitting,
   hasStarted,
   setHasStarted,
+  isLoadingQuestions = false,
 }: AssesmentProps) {
  const { time, headline, sub, submitLabel } = introCopy[kind];
   const currentQ = questions[currentIdx];
@@ -107,7 +109,7 @@ export default function TestTemplate({
           <div className="z-10 mt-6 flex justify-center">
             <img src={takeitR} alt="토끼 이미지" className="absolute bottom-0 right-0 w-[150px]" />
           </div>
-          <button onClick={() => setHasStarted(true)} className="z-20 cursor-pointer font-semibold text-black">
+          <button onClick={() => setHasStarted(true)} disabled={isLoadingQuestions} className="z-20 cursor-pointer font-semibold text-black">
             <img src={startBtn} alt="startBtn" className="w-[150px]" />
           </button>
         </div>
@@ -148,7 +150,7 @@ export default function TestTemplate({
               <button
                 onClick={() => setCurrentIdx(currentIdx - 1)}
                 disabled={currentIdx === 0}
-                className={`flex items-center gap-1 rounded-[8px] bg-[#6378EB] px-6 py-3 text-white ${
+                className={`flex items-center gap-1 rounded-[8px] bg-[#D7DBFF] px-6 py-3 text-[#6378EB] ${
                   currentIdx === 0 && "cursor-not-allowed opacity-40"
                 }`}
               >
@@ -159,7 +161,7 @@ export default function TestTemplate({
                 <button
                   onClick={() => setCurrentIdx(currentIdx + 1)}
                   disabled={!isAnswered}
-                  className={`flex items-center gap-1 rounded-[8px] bg-[#D7DBFF] px-6 py-3 text-[#6378EB] ${
+                  className={`flex items-center gap-1 rounded-[8px] bg-[#6378EB] px-6 py-3 text-white ${
                     !isAnswered && "cursor-not-allowed opacity-40"
                   }`}
                 >

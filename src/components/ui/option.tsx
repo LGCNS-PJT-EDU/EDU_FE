@@ -87,7 +87,7 @@ export const Options: React.FC<OptionsProps> = ({
           >
             <span
               className={`
-                flex h-5 w-5 items-center justify-center rounded-full text-white
+                flex h-5 w-5 items-center justify-center rounded-full text-white bg-[#51BACB] p-3
                 ${isCorrect || isWrong || (!showResult && isSelected)
                   ? ''
                   : 'bg-[#DBDFE3]'}

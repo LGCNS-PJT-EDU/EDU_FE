@@ -7,27 +7,11 @@ interface ApiResp<T> {
   data: T;
 }
 
-interface UserRoadmapResp {
-  subjects: Subject[];
-  roadmapName: string;
-  userLocationSubjectId: number;
-}
-
-export async function fetchUserRoadmap(): Promise<RoadmapPayload | null> {
-  const res = await api.get<ApiResp<UserRoadmapResp>>("/api/roadmap/user");
-  const { subjects, userLocationSubjectId } = res.data.data;
-  if (!subjects || subjects.length === 0) return null;
-  return {
-    userLocationSubjectId,
-    subjects,
-  };
-}
-
-export async function fetchGuestRoadmap(
-  uuid: string,
-): Promise<RoadmapPayload> {
-  const res = await api.post<ApiResp<RoadmapPayload>>("/api/roadmap/guest", {
-    uuid,
+export async function fetchRoadmap(uuid?: string): Promise<RoadmapPayload> {
+  // uuid 없으면 takeit으로 보냄
+  const uuidParam = uuid ?? "takeit";
+  const res = await api.get<ApiResp<RoadmapPayload>>("/api/roadmap", {
+    params: { uuid: uuidParam },
   });
   return res.data.data;
 }
@@ -43,3 +27,11 @@ export async function updateRoadmap(
 ): Promise<void> {
   await api.put<ApiResp<unknown>>('/api/roadmap/user', payload);
 }
+
+export const fetchDefaultRoadmap = (roadmap: 1 | 2) =>
+  api
+    .get<RoadmapPayload>('/roadmap/default', { params: { roadmap } })
+    .then((res) => res.data);
+
+// 타입이 필요할 경우 여기서 재수출해도 편리합니다.
+export type { RoadmapPayload };

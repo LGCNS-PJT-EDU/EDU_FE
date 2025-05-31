@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRoadmapStore } from "@/store/roadmapStore";
-import RoadmapCanvas from "./RoadmapCanvas";
+import RoadmapTemplate from "./RoadmapTemplate";
 import SubjectModal from "@/components/modal/Subject";
 import ConfirmModal from "@/components/modal/ConfirmModal";
 import { Button } from "@/components/ui/button";
 import { useIsLoggedIn } from "@/store/authGlobal";
 import { Check } from "lucide-react";
 import { RoadmapPayload } from "@/api/diagnosisService";
-import { usePromoteGuestRoadmap } from "@/hooks/usePromoteGuestRoadmap";
-import { useUserRoadmapQuery } from "@/hooks/useUserRoadmapQuery";
 import { useGuestUuidStore } from "@/store/useGuestUuidStore";
 import { useLoadingStore } from "@/store/useLoadingStore";
 import useRoadmapEdit from "@/hooks/useRoadmapEdit";
+import { useRoadmapQuery } from "@/hooks/useRoadmapQuery";
 
 export default function Roadmap() {
   /* 로딩 스토어 */
@@ -22,17 +21,11 @@ export default function Roadmap() {
   const navigate = useNavigate();
   /* 정식 로드맵 있으면 있는거 가져오기 */
   const roadmapFromState = state as RoadmapPayload | undefined;
-  const { data: userRoadmap, isLoading: loadingUser } = useUserRoadmapQuery();
-  /* 정식 로드맵 없고, Uuid 있고, 로그인한 상태면 guest 로드맵 정식으로 승격 */
-  const uuid     = useGuestUuidStore((s) => s.uuid);
-  const isLoggedIn = useIsLoggedIn(); 
-  const shouldPromote = 
-    !loadingUser && 
-    userRoadmap === null && 
-    isLoggedIn && 
-    Boolean(uuid);
+  const { data: userRoadmap, isLoading: loadingUser, isError, error } = useRoadmapQuery();
 
-  const promote = usePromoteGuestRoadmap(shouldPromote);
+  /* uuid, 로그인 여부 */
+  const uuid = useGuestUuidStore((s) => s.uuid);
+  const isLoggedIn = useIsLoggedIn();
 
   /* Zustand 상태 */
   const setInitial = useRoadmapStore((s) => s.setInitial);
@@ -73,22 +66,18 @@ export default function Roadmap() {
     else           stopLoading();
   }, [loadingUser, startLoading, stopLoading]);
 
-  /* 로드맵 없고, uuid도 없고, 승격도 필요 없으면 → 진단 페이지로 */
-  const promoteLoading = promote.status === "pending";
-  const promoteSuccess = promote.status === "success";
-  const noRoadmap = !roadmap && !uuid;
-  const noLoading = !loadingUser;
-  const noPromote = !promoteLoading && !promoteSuccess;
-  
-  useEffect(() => {
-    if (noRoadmap && noLoading && noPromote) {
-      navigate("/diagnosis", { replace: true });
-    }
-  }, [noRoadmap, noLoading, noPromote, navigate]);
-
-  if (noRoadmap && noLoading && noPromote) {
-    return null;
+  if (isError) {
+    return (
+    <ConfirmModal
+      title="로드맵이 없습니다"
+      message="진단을 먼저 해주세요!"
+      confirmText="진단하러 가기"
+      onClose={() => {}}
+      onConfirm={() => navigate("/diagnosis", { replace: true })}
+      />
+    );
   }
+  if (!roadmap) return null;
 
   return (
     <section className="relative">  
@@ -119,7 +108,7 @@ export default function Roadmap() {
       </header>
 
       {/* 로드맵 그래프 */}
-      <RoadmapCanvas />
+      <RoadmapTemplate />
 
       {/* 과목 상세 모달 */}
       {modalOpen && selected && (
