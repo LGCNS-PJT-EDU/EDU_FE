@@ -13,10 +13,10 @@ import { useMemo } from 'react';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 interface Props {
-  labels: string[];      // 과목 5개
-  values: number[];      // 점수 5개
-  label?: string;        // 범례(Pre, Post 등)
-  color?: string;        // 선 색
+  labels: string[];
+  values: number[];
+  label?: string;
+  color?: string;
 }
 
 export default function RadarChart({
@@ -26,29 +26,68 @@ export default function RadarChart({
   color = 'rgba(91,124,255,1)',
 }: Props) {
   const { data, options } = useMemo(() => {
-    const bg  = color.replace(/rgb(a?)\((.+)\)/, 'rgba($2,0.15)');
     return {
       data: {
         labels,
         datasets: [
-          { label, data: values, backgroundColor: bg, borderColor: color, borderWidth: 1 },
+          {
+            label,
+            data: values,
+            borderColor: color,
+            borderWidth: 2,
+            pointBackgroundColor: color,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            fill: false, // ✅ 배경 제거
+          },
         ],
       },
       options: {
         responsive: true,
-        plugins: { legend: { display: false } },
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top' as const,
+            labels: {
+              color: '#1f2937',
+              font: { size: 14 },
+            },
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context: any) {
+                return `${context.label}: ${context.raw}`;
+              },
+            },
+          },
+        },
         scales: {
           r: {
             min: 0,
             max: 100,
-            ticks: { stepSize: 20 },
-            grid: { color: '#d1d5db' },
-            pointLabels: { font: { size: 14 }, color: '#374151' },
+            ticks: {
+              stepSize: 20,
+              color: '#6b7280',
+              backdropColor: 'transparent',
+            },
+            grid: {
+              color: '#e5e7eb',
+              circular: true,
+            },
+            pointLabels: {
+              font: { size: 14 },
+              color: '#374151',
+            },
           },
         },
       },
     };
   }, [labels, values, label, color]);
 
-  return <Radar data={data} options={options} />;
+  return (
+    <div style={{ width: '100%', maxWidth: 500, height: 500, margin: 'auto' }}>
+      <Radar data={data} options={options} />
+    </div>
+  );
 }

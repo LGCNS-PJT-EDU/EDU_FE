@@ -7,7 +7,6 @@ export default function PretestPage() {
   const [hasStarted, setHasStarted] = useState(false);
   const [params] = useSearchParams();
   const subjectId = Number(params.get("subjectId") || 0);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,10 +25,10 @@ export default function PretestPage() {
 
   const mappedQuestions = questions.map((q) => {
     const choiceArr = q.choices.map((c, idx) => ({
-      choiceId: c.id,          
-      choiceNum: idx + 1,   
-      choice: c.text,       
-      value: c.value,       
+      choiceId: c.id,
+      choiceNum: idx + 1,
+      choice: c.text,
+      value: c.value,
     }));
 
     return {
@@ -39,7 +38,7 @@ export default function PretestPage() {
       choices: choiceArr,
     };
   });
-  
+
   return (
     <TestTemplate
       kind="pre"
@@ -54,5 +53,4 @@ export default function PretestPage() {
       setHasStarted={setHasStarted}
     />
   );
-
 }

@@ -1,13 +1,14 @@
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Aurora2 from '@/components/Aurora/Particles';
 import simbol from '@/asset/img/common/takeitlogo.png';
 import chevron from '@/asset/img/main/chevron-down.png';
-import startBtn from '@/asset/img/main/BTN style 1.png';
 
 export default function Main() {
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
   const navigate = useNavigate();
 
   const scrollToBottom = () => {
@@ -101,7 +102,7 @@ export default function Main() {
           ))}
           </div>
           {/* 프론트엔드 백엔드 기본 로드맵 보기 */}
-          <div className="flex flex-wrap justify-center gap-5 max-w-[800px] mx-auto mt-16 mb-20 px-5">
+          <div className="flex flex-wrap justify-center gap-5 max-w-[800px] mx-auto mt-16 mb-20 px-5 font-[Pretendard]">
             <div
               className="bg-gray-50 border border-gray-200 rounded-2xl shadow-sm p-6 max-w-[350px] w-full text-center cursor-pointer transition-all hover:bg-blue-100 hover:-translate-y-1 hover:border-none"
             >
