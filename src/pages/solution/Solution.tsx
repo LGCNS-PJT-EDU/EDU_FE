@@ -3,37 +3,43 @@ import { useQuery } from '@tanstack/react-query'
 import { Options, Choice } from '@/components/ui/option'
 import { fetchSolutions, SolutionResDto } from '@/api/solutionService'
 import { EvalType, useSolutionStore } from '@/store/useSolutionStore'
+import { useSearchParams } from 'react-router-dom'
 
 const Solution: React.FC = () => {
   const { evalType, setEvalType } = useSolutionStore()
 
-const {
+  const [searchParams] = useSearchParams()
+  const numericId = Number(searchParams.get('subjectId'))
+
+  const {
     data: list = [],
     isLoading,
     isError,
   } = useQuery<SolutionResDto[], Error>({
-    queryKey: ['solutions', evalType],
-    queryFn: () => fetchSolutions(evalType),
+    queryKey: ['solutions', numericId, evalType],
+    queryFn: () => fetchSolutions(numericId, evalType),
+    enabled: Number.isFinite(numericId) && numericId > 0,
   })
-
-  // 해설 토글
-  const [showExp, setShowExp] = React.useState<boolean[]>([])
-  React.useEffect(() => {
-    if (list.length) setShowExp(Array(list.length).fill(false))
-  }, [list])
-
-  const toggleExp = (i: number) =>
-    setShowExp(prev => {
-      const next = [...prev]
-      next[i] = !next[i]
-      return next
-    })
 
   if (isLoading) return <div>로딩 중…</div>
   if (isError)   return <div>문항을 불러오지 못했습니다.</div>
   if (!list.length) return <div>표시할 문항이 없습니다.</div>
 
   const subjectName = list[0].subNm
+  
+  // 해설 토글
+  const [showExp, setShowExp] = React.useState<boolean[]>([])
+  React.useEffect(() => {
+    if (list.length) setShowExp(Array(list.length).fill(false))
+  }, [list])
+
+  const toggleExp = (i: number) => {
+    setShowExp(prev => {
+      const next = [...prev]
+      next[i] = !next[i]
+      return next
+    })
+  }
 
   return (
     <div className="p-6">

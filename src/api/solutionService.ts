@@ -16,10 +16,12 @@ export interface SolutionResDto {
 
 /** evalType 은 'pre' 또는 'post' */
 export async function fetchSolutions(
-  evalType: "pre" | "post"
-): Promise<SolutionResDto[]> {
-  const res = await api.get<SolutionResDto[]>(
-    `/api/solutions?type=${evalType}`
-  );
-  return res.data;
+  subjectId: number,
+  evalType?: 'pre' | 'post'
+) {
+  const params = new URLSearchParams({ subjectId: String(subjectId) })
+  if (evalType) params.append('type', evalType)
+
+  const res = await api.get(`/api/solutions?${params}`)
+  return res.data  
 }
