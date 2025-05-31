@@ -2,12 +2,12 @@ import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useDrag, useDrop } from 'react-dnd';
 import { useRoadmapStore } from '@/store/roadmapStore';
-import { SLOTS } from '@/pages/roadmap/slots';
+import { SLOTS } from '@/pages/roadmap_old/slots';
 import { X } from 'lucide-react';
-import { SUBJECT_IMAGES } from '@/pages/roadmap/subjectImages';
+import { SUBJECT_IMAGES } from '@/pages/roadmap_old/subjectImages';
 
 interface NodeItemProps {
-  node: { id: number; label: string; subjectOverview: string};
+  node: { id: number; label: string; subjectOverview: string;};
   index: number;
 }
 

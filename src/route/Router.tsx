@@ -26,7 +26,7 @@ const router = createBrowserRouter([
       { path: 'diagnosis', element: <Diagnosis /> },
       { path: 'pretest', element: <PretestPage /> },
       { path: 'testspeech', element: <TestSpeech /> },
-      { path: 'posttest', element: <PretestPage /> }
+      { path: 'posttest', element: <PosttestPage /> }
     ],
   },
   {

@@ -7,9 +7,16 @@ export interface Chapter {
 }
 
 interface ApiRecommendContent {
-  contentName: string;
+  contentId: number;
+  subjectId: number;
+  title: string;
   url: string;
-  contentType: string;
+  type: string;
+  platform: string;
+  duration: string;
+  price: string;
+  isAiRecommendation: boolean;
+  comment: string;
 }
 
 export interface Video {
@@ -20,10 +27,10 @@ export interface Video {
 export interface SubjectDetail {
   subjectId: number;
   overview: string;
-  videos: Video[];
   chapters: Chapter[];
   preSubmitCount: number;
   postSubmitCount: number;
+  recommendContents?: ApiRecommendContent[];
 }
 
 interface ApiSubjectResponse {
@@ -48,12 +55,9 @@ async function fetchSubjectDetail(subjectId: number): Promise<SubjectDetail> {
     subjectId,
     overview: data.subject_overview,
     chapters: data.chapters,
-    videos: (data.recommendContents as ApiRecommendContent[]).map((item) => ({
-      title: item.contentName,
-      url: item.url,
-    })),
     preSubmitCount: data.preSubmitCount,
     postSubmitCount: data.postSubmitCount,
+    recommendContents: data.recommendContents ?? [],
   }
 
 }
