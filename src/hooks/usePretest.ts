@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 export default function usePretest(subjectId: number) {
   const navigate = useNavigate();
 
+  /* 토큰 없으면 로그인 페이지로 강제 이동 */
   useEffect(() => {
     if (!getAccessToken()) navigate("/login");
   }, [navigate]);
@@ -85,7 +86,6 @@ export default function usePretest(subjectId: number) {
         userAnswer: Number(answers[q.id]),
       })),
     };
-
     submit(payload);
   };
 
