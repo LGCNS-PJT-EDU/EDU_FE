@@ -23,10 +23,10 @@ const LABEL_W          = 112;         // w-28 = 7rem
 const LABEL_H          = 40;          // 2줄 × 20px
 const STROKE           = 4;           // 선 두께
 
-/* ────── 과목 수를 3~5개/줄로 분배 — 줄 수 최소, 윗줄 우선 ────── */
+/* 과목 수를 3~5개/줄로 분배 */
 function splitIntoRows(total: number): number[] {
   let rows = Math.ceil(total / MAX_COLS);
-  const arr = Array(rows).fill(MAX_COLS);       // [5,5,5 …]
+  const arr = Array(rows).fill(MAX_COLS);       // [5,5,5 …] 채우기
   let excess = rows * MAX_COLS - total;         // 빼야 하는 개수
 
   // 아랫줄부터 1개씩 빼되, 최소 3개 유지
@@ -40,11 +40,11 @@ function splitIntoRows(total: number): number[] {
 export default function RoadmapTemplate() {
   const nodes = useRoadmapStore(s => s.nodes);
 
-  /* ① 줄별 노드 수 계산 */
+  /* 줄별 노드 수 계산 */
   const rowCounts = useMemo(() => splitIntoRows(nodes.length), [nodes.length]);
   const rows      = rowCounts.length;
 
-  /* ② 좌표 계산 — 균등 분배(step) */
+  /* 간격 같도록 좌표 계산 */
   const positions = useMemo(() => {
     const pts: { x:number; y:number }[] = [];
     rowCounts.forEach((cnt, r) => {
@@ -61,7 +61,7 @@ export default function RoadmapTemplate() {
     return pts;
   }, [rowCounts]);
 
-  /* ③ 컨테이너 크기 (실제 좌표 기반) */
+  /* 컨테이너 크기 (실제 좌표 기반) */
   const maxX = Math.max(...positions.map(p => p.x));
   const maxY = Math.max(...positions.map(p => p.y));
 
