@@ -1,71 +1,64 @@
 import React from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Options, Choice } from '@/components/ui/option'
 import { fetchSolutions, SolutionResDto } from '@/api/solutionService'
-import { EvalType, useSolutionStore } from '@/store/useSolutionStore'
-import { useSearchParams } from 'react-router-dom'
+import { useSolutionStore, EvalType } from '@/store/useSolutionStore'
 
 const Solution: React.FC = () => {
+  /* subjectId 읽기 */
+  const [sp] = useSearchParams()
+  const subjectId = Number(sp.get('subjectId')) || 0
+
   const { evalType, setEvalType } = useSolutionStore()
 
-  const [searchParams] = useSearchParams()
-  const numericId = Number(searchParams.get('subjectId'))
-
-  const {
-    data: list = [],
-    isLoading,
-    isError,
-  } = useQuery<SolutionResDto[], Error>({
-    queryKey: ['solutions', numericId, evalType],
-    queryFn: () => fetchSolutions(numericId, evalType),
-    enabled: Number.isFinite(numericId) && numericId > 0,
+  /* 모든 문제를 한 번에 가져옴 */
+  const { data: rawList = [], isLoading, isError } = useQuery<
+    SolutionResDto[],
+    Error
+  >({
+    queryKey: ['solutions', subjectId],
+    queryFn: () => fetchSolutions(subjectId),
+    enabled: subjectId > 0,
   })
 
-  if (isLoading) return <div>로딩 중…</div>
-  if (isError)   return <div>문항을 불러오지 못했습니다.</div>
-  if (!list.length) return <div>표시할 문항이 없습니다.</div>
+  /* isPre 값으로 필터 */
+  const list = React.useMemo(
+    () => rawList.filter((q) => q.isPre === (evalType === 'pre')),
+    [rawList, evalType]
+  )
 
-  const subjectName = list[0].subNm
-  
-  // 해설 토글
+  /* 해설 토글 배열은 필터된 리스트 길이에 맞춰 초기화 */
   const [showExp, setShowExp] = React.useState<boolean[]>([])
   React.useEffect(() => {
-    if (list.length) setShowExp(Array(list.length).fill(false))
+    setShowExp(Array(list.length).fill(false))
   }, [list])
 
-  const toggleExp = (i: number) => {
-    setShowExp(prev => {
+  const toggleExp = (i: number) =>
+    setShowExp((prev) => {
       const next = [...prev]
       next[i] = !next[i]
       return next
     })
-  }
+
+  /* 로딩/빈 데이터 처리 */
+  if (isLoading) return <div>로딩 중…</div>
+  if (isError) return <div>문항을 불러오지 못했습니다.</div>
+  if (!list.length) return <div>표시할 문항이 없습니다.</div>
+
+  const subjectName = list[0].subNm
 
   return (
     <div className="p-6">
-      {/* 과목명 */}
-      <h1 className="text-2xl font-bold mb-1">{subjectName}</h1>
+      {/* 과목명 + 탭(좌측 상단) */}
+      <div className="flex items-center mb-6">
+        <h1 className="text-2xl font-bold mr-6">{subjectName}</h1>
 
-      {/* 헤더: 총 문항 + 평가 타입 셀렉트 */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">총 {list.length}문항</h2>
-        <select
-          className="border border-gray-300 rounded px-2 py-1"
-          value={evalType}
-          onChange={e => setEvalType(e.target.value as EvalType)}
-        >
-          <option value="pre">사전평가</option>
-          <option value="post">사후평가</option>
-        </select>
-      </div>
-
-      {/* 탭 */}
-      <div className="flex space-x-2 mb-6">
-        {(['pre', 'post'] as EvalType[]).map(t => (
+        {(['pre', 'post'] as EvalType[]).map((t) => (
           <button
             key={t}
             onClick={() => setEvalType(t)}
-            className={`px-4 py-2 rounded ${
+            className={`mr-2 px-4 py-2 rounded ${
               evalType === t ? 'bg-blue-600 text-white' : 'bg-gray-100'
             }`}
           >
@@ -74,45 +67,26 @@ const Solution: React.FC = () => {
         ))}
       </div>
 
-      {/* 문항 리스트 */}
+      {/* 총 문항 수 */}
+      <h2 className="text-xl font-semibold mb-4">총 {list.length}문항</h2>
+
+      {/* 문항 카드 */}
       <div className="space-y-8">
         {list.map((q, idx) => {
-        const choices: Choice[] = [
-          {
-            choiceId: idx * 4 + 1,
-            choiceNum: 1,
-            choice: q.option1,
-            value: '1',
-          },
-          {
-            choiceId: idx * 4 + 2,
-            choiceNum: 2,
-            choice: q.option2,
-            value: '2',
-          },
-          {
-            choiceId: idx * 4 + 3,
-            choiceNum: 3,
-            choice: q.option3,
-            value: '3',
-          },
-          {
-            choiceId: idx * 4 + 4,
-            choiceNum: 4,
-            choice: q.option4,
-            value: '4',
-          },
-        ]
+          const choices: Choice[] = [
+            { choiceId: idx * 4 + 1, choiceNum: 1, choice: q.option1, value: '1' },
+            { choiceId: idx * 4 + 2, choiceNum: 2, choice: q.option2, value: '2' },
+            { choiceId: idx * 4 + 3, choiceNum: 3, choice: q.option3, value: '3' },
+            { choiceId: idx * 4 + 4, choiceNum: 4, choice: q.option4, value: '4' },
+          ]
 
           return (
             <div key={idx} className="border border-black rounded-lg p-5">
-              {/* 문항 헤더 + 레벨 */}
+              {/* 문제 헤더 */}
               <div className="flex justify-between items-center mb-2">
                 <h3 className="font-medium">
                   {idx + 1}. {q.examContent}
-                  <span className="ml-3 text-sm text-gray-500">
-                    Lv. {q.examLevel}
-                  </span>
+                  <span className="ml-3 text-sm text-gray-500">Lv. {q.examLevel}</span>
                 </h3>
                 <button
                   onClick={() => toggleExp(idx)}
@@ -129,17 +103,17 @@ const Solution: React.FC = () => {
                 </div>
               )}
 
-              {/* Options: 오답노트 모드 */}
+              {/* 보기 리스트 */}
               <Options
                 choices={choices}
                 selectedValue={q.userAnswer.toString()}
-                showResult={true}
+                showResult
                 correctValue={q.examAnswer.toString()}
                 indicatorType="number"
                 stateColors={{
-                  normalBg:    '#F6F5F8',
-                  selectedBg:  '#C9EBEF',
-                  correctBg:   '#A3E55C',
+                  normalBg: '#F6F5F8',
+                  selectedBg: '#C9EBEF',
+                  correctBg: '#A3E55C',
                   incorrectBg: '#F87171',
                 }}
               />
@@ -150,4 +124,5 @@ const Solution: React.FC = () => {
     </div>
   )
 }
+
 export default Solution

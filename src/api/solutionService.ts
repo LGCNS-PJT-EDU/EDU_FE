@@ -14,14 +14,17 @@ export interface SolutionResDto {
   examLevel: string;    // 문제 레벨
 }
 
-/** evalType 은 'pre' 또는 'post' */
-export async function fetchSolutions(
-  subjectId: number,
-  evalType?: 'pre' | 'post'
-) {
-  const params = new URLSearchParams({ subjectId: String(subjectId) })
-  if (evalType) params.append('type', evalType)
+interface ApiWrapper<T> {
+  stateCode: number
+  message: string
+  data: T
+}
 
-  const res = await api.get(`/api/solutions?${params}`)
-  return res.data  
+export async function fetchSolutions(
+  subjectId: number
+): Promise<SolutionResDto[]> {
+  const res = await api.get<ApiWrapper<SolutionResDto[]>>(
+    `/api/solution?subjectId=${subjectId}`
+  )
+  return res.data.data
 }
