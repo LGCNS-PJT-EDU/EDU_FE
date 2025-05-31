@@ -4,7 +4,7 @@ import carrot from '@/asset/img/roadmap/background/roadmap_carrot_final.png';
 import { useRoadmapStore } from '@/store/roadmapStore';
 import NodeItem from './NodeItem';
 import SlotPlaceholder from './SlotPlaceholder';
-import { SLOTS } from '@/pages/roadmap/slots';
+import { SLOTS } from '@/pages/roadmap_old/slots';
 
 export default function RoadmapCanvas() {
   const nodes = useRoadmapStore((s) => s.nodes);

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useDrop } from 'react-dnd';
 import { useRoadmapStore } from '@/store/roadmapStore';
-import { SLOTS } from '@/pages/roadmap/slots';
+import { SLOTS } from '@/pages/roadmap_old/slots';
 
 export default function SlotPlaceholder({ index }: { index: number }) {
   const editing = useRoadmapStore((s) => s.editing);
