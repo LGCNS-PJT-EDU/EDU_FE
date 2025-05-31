@@ -27,3 +27,11 @@ export async function updateRoadmap(
 ): Promise<void> {
   await api.put<ApiResp<unknown>>('/api/roadmap/user', payload);
 }
+
+export const fetchDefaultRoadmap = (roadmap: 1 | 2) =>
+  api
+    .get<RoadmapPayload>('/roadmap/default', { params: { roadmap } })
+    .then((res) => res.data);
+
+// 타입이 필요할 경우 여기서 재수출해도 편리합니다.
+export type { RoadmapPayload };
