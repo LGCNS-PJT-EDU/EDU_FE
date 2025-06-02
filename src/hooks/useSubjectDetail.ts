@@ -13,9 +13,9 @@ interface ApiRecommendContent {
   url: string;
   type: string;
   platform: string;
-  duration: string;
+  duaration: string;
   price: string;
-  isAiRecommendation: boolean;
+  isAiRecommendation: true;
   comment: string;
 }
 
@@ -51,6 +51,7 @@ async function fetchSubjectDetail(subjectId: number): Promise<SubjectDetail> {
   );
 
   const data = response.data.data; 
+
   return {
     subjectId,
     overview: data.subject_overview,

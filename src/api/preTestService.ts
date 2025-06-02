@@ -7,7 +7,7 @@ interface RawPreQuestion {
   choice2?: string;
   choice3?: string;
   choice4?: string;
-  answerNum: number;
+  answerNum: number; // 원래 정답은 1~4 중 하나
   chapterNum: number;
   chapterName: string;
   difficulty: string;
@@ -31,11 +31,11 @@ export interface PreTestAnswer {
 export interface PreTestQuestion {
   id: number;
   question: string;
-  choices: { id: number; text: string; value: string }[];
+  choices: PreTestChoice[]; // 셔플된 choices
   chapterNum: number;
   chapterName: string;
   difficulty: string;
-  answerNum: number;
+  answerNum: number; // 셔플된 choices 기준 정답 번호 (1~N)
 }
 
 export interface PreTestSubmitPayload {
@@ -53,45 +53,68 @@ interface ApiResp<T> {
   data: T;
 }
 
-// 사전 평가 문제 조회
+// ✅ Fisher-Yates 셔플 유틸
+function shuffleArray<T>(arr: T[]): T[] {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+// ✅ 사전 평가 문제 조회
 export async function fetchPreTestQuestions(
   subjectId: number,
 ): Promise<PreTestQuestion[]> {
   const res = await api.get<ApiResp<RawPreQuestion[]>>("/api/exam/pre", {
     params: { subjectId },
-  });
+  }
+
+  );
 
   return (res.data.data ?? []).map<PreTestQuestion>((q) => {
-    const choices = [q.choice1, q.choice2, q.choice3, q.choice4]
-      .filter(Boolean)
+    // 1. 원본 choices 구성
+    const originalChoices: PreTestChoice[] = [q.choice1, q.choice2, q.choice3, q.choice4]
+      .filter((c): c is string => Boolean(c))
       .map((text, idx) => ({
-        id: idx + 1,
-        text: text as string,
-        value: String(idx + 1),
+        id: idx + 1,            // 원본 key (1~4)
+        text,
+        value: String(idx + 1), // 서버로 보낼 값
       }));
+
+    // 2. 셔플
+    const shuffledChoices = shuffleArray(originalChoices);
+
+    // 3. 원래 answerNum에 해당하는 choice가 셔플된 배열의 몇 번째인지 다시 계산
+    const originalAnswerId = q.answerNum;
+    const correctChoice = shuffledChoices.find((c) => c.id === originalAnswerId);
+    const shuffledAnswerNum = correctChoice
+      ? shuffledChoices.indexOf(correctChoice) + 1
+      : 1; // fallback
 
     return {
       id: q.questionId,
       question: q.question,
-      choices,
+      choices: shuffledChoices,
       chapterNum: q.chapterNum,
       chapterName: q.chapterName,
       difficulty: q.difficulty,
-      answerNum: q.answerNum,
+      answerNum: shuffledAnswerNum, // 셔플된 정답 번호
     };
   });
 }
 
-// 사전 평가 결과 제출
+// ✅ 사전 평가 결과 제출
 export async function submitPreTest(payload: PreTestSubmitPayload) {
   const res = await api.post<ApiResp<any>>("/api/exam/pre", payload);
   return res.data;
 }
 
-//  로드맵 ID 포함된 서브젝트 상세 정보 조회
+// ✅ 로드맵 ID 포함된 서브젝트 상세 정보 조회
 export async function fetchSubjectDetail(subjectId: number): Promise<any> {
   const res = await api.get<ApiResp<any>>("/api/roadmap/subject", {
     params: { subjectId },
   });
-  return res.data.data; // roadmapId 포함되어 있어야 함
+  return res.data.data;
 }
