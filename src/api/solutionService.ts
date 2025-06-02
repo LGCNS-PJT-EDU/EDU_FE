@@ -2,6 +2,7 @@ import api from "@/api/axios";
 
 export interface SolutionResDto {
   isPre: boolean;
+  nth: number;
   subNm: string;        // 과목명
   examContent: string;  // 문제 텍스트
   option1: string;
@@ -14,12 +15,17 @@ export interface SolutionResDto {
   examLevel: string;    // 문제 레벨
 }
 
-/** evalType 은 'pre' 또는 'post' */
+interface ApiWrapper<T> {
+  stateCode: number
+  message: string
+  data: T
+}
+
 export async function fetchSolutions(
-  evalType: "pre" | "post"
+  subjectId: number
 ): Promise<SolutionResDto[]> {
-  const res = await api.get<SolutionResDto[]>(
-    `/api/solutions?type=${evalType}`
-  );
-  return res.data;
+  const res = await api.get<ApiWrapper<SolutionResDto[]>>(
+    `/api/solution?subjectId=${subjectId}`
+  )
+  return res.data.data
 }
