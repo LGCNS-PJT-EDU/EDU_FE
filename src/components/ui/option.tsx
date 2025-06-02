@@ -77,21 +77,31 @@ export const Options: React.FC<OptionsProps> = ({
           }
         })();
 
+        // 선택지 테두리 색: 정답(녹색), 오답(빨강), 기본(투명)
+        const borderColor = isCorrect
+          ? '#5CAA51'
+          : isWrong
+          ? '#FF0000'
+          : 'transparent';
+
+        // prefix 배경색
+        let prefixBgColor = '#DBDFE3';
+        if (isCorrect)           prefixBgColor = '#5CAA51';
+        else if (isWrong)        prefixBgColor = '#FF0000';
+        else if (!showResult && isSelected) prefixBgColor = '#51BACB';
+
+
         return (
           <button
             key={c.choiceId}
             onClick={() => onChoose?.(c.value)}
             disabled={showResult}
             className="flex w-full items-center gap-3 rounded-[15px] border border-transparent px-4 py-3"
-            style={{ backgroundColor: bgColor }}
+            style={{ backgroundColor: bgColor, border: `2px solid ${borderColor}`, }}
           >
             <span
-              className={`
-                flex h-5 w-5 items-center justify-center rounded-full text-white bg-[#51BACB] p-3
-                ${isCorrect || isWrong || (!showResult && isSelected)
-                  ? ''
-                  : 'bg-[#DBDFE3]'}
-              `}
+              className='flex h-5 w-5 items-center justify-center rounded-full text-white p-3'
+              style={{ backgroundColor: prefixBgColor }}
             >
               {indicator}
             </span>
