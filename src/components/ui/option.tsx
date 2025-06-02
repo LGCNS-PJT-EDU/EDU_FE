@@ -1,5 +1,6 @@
 // src/component/ui/Options.tsx
 import React from 'react';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 
 export interface Choice {
   choiceId: number;
@@ -66,14 +67,14 @@ export const Options: React.FC<OptionsProps> = ({
             // quiz 모드
             return indicatorType === 'number'
               ? c.choiceNum
-              : (isSelected ? '✔' : '');
+              : (isSelected ? <FaCheck size={14}/> : null);
           } else {
             // 오답노트 모드
-            if (isCorrect) return '✔';
-            if (isWrong)   return '✖';
+            if (isCorrect) return <FaCheck size={14}/>;
+            if (isWrong)   return <FaTimes size={14}/>;
             return indicatorType === 'number'
               ? c.choiceNum
-              : '';
+              : null;
           }
         })();
 
@@ -100,7 +101,7 @@ export const Options: React.FC<OptionsProps> = ({
             style={{ backgroundColor: bgColor, border: `2px solid ${borderColor}`, }}
           >
             <span
-              className='flex h-5 w-5 items-center justify-center rounded-full text-white p-3'
+              className='flex h-5 w-5 items-center justify-center rounded-full text-white'
               style={{ backgroundColor: prefixBgColor }}
             >
               {indicator}
