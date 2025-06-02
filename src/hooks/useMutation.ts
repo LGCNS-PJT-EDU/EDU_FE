@@ -40,7 +40,7 @@ export const useCheckEmailMutation = () =>
   useMutation<boolean, Error, string>({
     mutationFn: async (email) => {
       const res = await axios.get('/api/user/check-email', { params: { email } });
-      return res.data; // true or false
+      return res.data;
     },
   });
 
