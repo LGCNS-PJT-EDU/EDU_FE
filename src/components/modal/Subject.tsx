@@ -36,7 +36,7 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
   };
 
   const goSolution = () => {
-    navigate('/solution');
+    navigate(`/solution?subjectId=${subjectId}`);
     onClose();
   };
 
