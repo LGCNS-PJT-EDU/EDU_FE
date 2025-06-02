@@ -7,7 +7,7 @@ import cloud from '@/asset/img/login/cloud.png';
 import cloud_down from '@/asset/img/login/cloud_down.png';
 import star from '@/asset/img/login/star.png';
 import main from '@/asset/img/common/main.png';
-import { useCheckEmailMutation,useSignupMutation } from '@/hooks/useMutation';
+import { useCheckEmailMutation, useSignupMutation } from '@/hooks/useMutation';
 
 function Signup() {
   const [email, setEmail] = useState<string>('');
@@ -37,10 +37,10 @@ function Signup() {
       return;
     }
     try {
-      const isAvailable  = await checkEmailMutation.mutateAsync(email);
+      const isAvailable = await checkEmailMutation.mutateAsync(email);
       setIsEmailAvailable(isAvailable);
-      alert(isAvailable ? '사용 가능한 이메일입니다.':'이미 사용 중인 이메일입니다.');
-    } catch{
+      alert(isAvailable ? '사용 가능한 이메일입니다.' : '이미 사용 중인 이메일입니다.');
+    } catch {
       alert('중복 확인을 다시 해주세요!')
     }
   };
@@ -136,7 +136,10 @@ function Signup() {
               type="email"
               value={email}
               placeholder="이메일"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setIsEmailAvailable(null);
+              }}
               className="flex-1 border border-[#ccc] px-4 py-2 rounded-lg text-sm"
             />
             <button
