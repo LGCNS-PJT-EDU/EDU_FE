@@ -11,12 +11,12 @@ import { useFeedback } from '@/hooks/useReport';
 
 export default function Report() {
   const { data = [], isLoading, isError } = useFeedback();
-  console.log(data)
-
   const [idx, setIdx] = useState(0);
   const startX = useRef(0);
+
   const swipeStart = (e: React.TouchEvent<HTMLDivElement>) =>
     (startX.current = e.touches[0].clientX);
+
   const swipeEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     const delta = startX.current - e.changedTouches[0].clientX;
     if (delta > 50 && idx < 2) setIdx(idx + 1);
@@ -27,12 +27,13 @@ export default function Report() {
   if (isError || !data.length) return <p className="py-20 text-center">데이터 없음</p>;
 
   const sorted = [...data].sort((a, b) => +new Date(a.info.date) - +new Date(b.info.date));
-  console.log(sorted);
+
   // ✅ 사전 평가만 있을 때
   if (sorted.length === 1) {
     const pre = sorted[0];
-    const labels = Object.keys(pre.scores);
-    const preScores = Object.values(pre.scores);
+    const labels = Object.keys(pre.scores).slice(1); // total 제외
+    const preScores = Object.values(pre.scores).slice(1); // total 제외
+    const totalScore = pre.scores['total']; // 총점 따로 저장
     const strengthArr = Object.values(pre.feedback.strength);
     const weaknessArr = Object.values(pre.feedback.weakness);
 
@@ -41,7 +42,9 @@ export default function Report() {
         <h2 className="mb-2 text-2xl font-bold text-[#5B7CFF]">Education Evaluation</h2>
         <p className="text-gray-600">사전 평가 결과</p>
 
-        <div className="mt-10">
+        <p className="mt-6 text-gray-700 font-medium">총점: {totalScore}점</p>
+
+        <div className="mt-4">
           <RadarChart labels={labels} values={preScores} label="Pre" color="#5b7cff" />
         </div>
 
@@ -85,13 +88,15 @@ export default function Report() {
     );
   }
 
-  // ✅ 사전 + 사후 평가 모두 있을 때
+  // ✅ 사전 + 사후 평가 있을 때
   const pre = sorted[0];
   const post = sorted[sorted.length - 1];
 
-  const labels = Object.keys(pre.scores);
-  const preScores = Object.values(pre.scores);
-  const postScores = Object.values(post.scores);
+  const labels = Object.keys(pre.scores).slice(1); // total 제외
+  const preScores = Object.values(pre.scores).slice(1); // total 제외
+  const postScores = Object.values(post.scores).slice(1); // total 제외
+  const preTotal = pre.scores['total'];
+  const postTotal = post.scores['total'];
   const strengthArr = Object.values((idx === 0 ? pre : post).feedback.strength);
   const weaknessArr = Object.values((idx === 0 ? pre : post).feedback.weakness);
 
@@ -99,6 +104,10 @@ export default function Report() {
     <div className="relative flex flex-col items-center px-4 py-10 font-[pretendard]">
       <h2 className="mb-2 text-2xl font-bold text-[#5B7CFF]">Education Evaluation</h2>
       <p className="text-center text-gray-600">사전·사후 학습 결과 비교</p>
+
+      <p className="mt-4 text-sm text-gray-700">
+        사전 총점: {preTotal}점 / 사후 총점: {postTotal}점
+      </p>
 
       {idx > 0 && (
         <button onClick={() => setIdx(idx - 1)} className="absolute left-2 top-1/2 -translate-y-1/2">

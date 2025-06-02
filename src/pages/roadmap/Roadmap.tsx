@@ -115,7 +115,7 @@ export default function Roadmap() {
         <SubjectModal
           subject={{
             subjectId: selected.id,
-            subjectName: selected.label
+            subjectName: selected.label,
           }}
           onClose={closeModal}
         />
