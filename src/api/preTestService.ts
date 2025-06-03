@@ -7,7 +7,7 @@ interface RawPreQuestion {
   choice2?: string;
   choice3?: string;
   choice4?: string;
-  answerNum: number; // 원래 정답은 1~4 중 하나
+  answerNum: number; 
   chapterNum: number;
   chapterName: string;
   difficulty: string;
@@ -21,6 +21,7 @@ export interface PreTestChoice {
 
 export interface PreTestAnswer {
   examId: number;
+  examContent: string;
   chapterNum: number;
   chapterName: string;
   difficulty: string;
