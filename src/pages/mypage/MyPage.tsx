@@ -35,10 +35,12 @@ function MyPage() {
   // 추천 콘텐츠 card 변환
 const cardList = subjectDetailsResults
   .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
-    r.status === 'success' && !!r.data?.recommendContents?.length
+    r.status === 'success' &&
+    !!r.data?.recommendContents?.length &&
+    r.data.preSubmitCount > 0  //사전평가 했는지 확인
   )
   .flatMap((r) =>
-    (r.data.recommendContents!).map((content) => ({
+    r.data.recommendContents!.map((content) => ({
       title: content.title,
       detailUrl: content.url,
       button1: '바로가기',
