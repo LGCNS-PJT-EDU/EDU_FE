@@ -79,6 +79,7 @@ export default function usePretest(subjectId: number) {
       submitCnt: 1,
       answers: questions.map((q) => ({
         examId: q.id,
+        examContent: q.question,
         chapterNum: q.chapterNum,
         chapterName: q.chapterName,
         difficulty: q.difficulty,
