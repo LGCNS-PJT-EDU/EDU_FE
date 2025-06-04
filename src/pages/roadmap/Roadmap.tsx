@@ -12,6 +12,7 @@ import { useGuestUuidStore } from "@/store/useGuestUuidStore";
 import { useLoadingStore } from "@/store/useLoadingStore";
 import useRoadmapEdit from "@/hooks/useRoadmapEdit";
 import { useRoadmapQuery } from "@/hooks/useRoadmapQuery";
+import axios from "axios";
 
 export default function Roadmap() {
   /* 로딩 스토어 */
@@ -35,6 +36,7 @@ export default function Roadmap() {
   const selected = useRoadmapStore((s) => s.selected);
   const modalOpen = useRoadmapStore((s) => s.modalOpen);
   const closeModal = useRoadmapStore((s) => s.closeModal);
+  const setCurrentOrder = useRoadmapStore((s) => s.setCurrentOrder);
 
   /* 로컬 모달 상태 */
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -52,6 +54,15 @@ export default function Roadmap() {
     }
   }, [userRoadmap, roadmapFromState, setInitial]);
 
+  /* 현재 과목 order 계산하기 */
+  useEffect(() => {
+    if (!roadmap) return;
+    const cur = roadmap.subjects.find(
+      (s) => s.subjectId === roadmap.userLocationSubjectId
+    );
+    setCurrentOrder(cur?.subjectOrder ?? 0);
+  }, [roadmap, setCurrentOrder]); 
+
   /* 로그인 안 한 상태에서 모달 열면 로그인 유도 */
   useEffect(() => {
     if (modalOpen && !isLoggedIn) {
@@ -62,22 +73,38 @@ export default function Roadmap() {
 
   /* 로딩 */
   useEffect(() => {
-    if (loadingUser) startLoading("로드맵 불러오는 중…");
-    else           stopLoading();
+    if (!loadingUser) return;
+    startLoading("로드맵 불러오는 중…");
+    return () => stopLoading();
   }, [loadingUser, startLoading, stopLoading]);
 
-  if (isError) {
+  if (loadingUser && !roadmap) {
+    return <div style={{ height:"100vh" }} />;
+  }
+
+  const is404Error =
+    isError &&
+    axios.isAxiosError(error) &&
+    error.response?.status === 404;
+
+  if (is404Error) {
     return (
-    <ConfirmModal
-      title="로드맵이 없습니다"
-      message="진단을 먼저 해주세요!"
-      confirmText="진단하러 가기"
-      onClose={() => {}}
-      onConfirm={() => navigate("/diagnosis", { replace: true })}
+      <ConfirmModal
+        title="로드맵이 없습니다"
+        message="진단을 먼저 해주세요!"
+        confirmText="진단하러 가기"
+        onClose={() => navigate("/", { replace: true })}
+        onConfirm={() => navigate("/diagnosis", { replace: true })}
       />
     );
   }
+
   if (!roadmap) return null;
+
+  /* 진척도 계산 */
+  const total         = roadmap.subjects.length;
+  const currentOrder  = useRoadmapStore.getState().currentOrder ?? 0;
+  const percent       = total ? Math.round(((currentOrder - 1) / total) * 100) : 0;
 
   return (
     <section className="relative">  
@@ -107,13 +134,27 @@ export default function Roadmap() {
         )}
       </header>
 
+      {/* 진척도 바 */}
+      <div className="w-full pt-24 px-8 mb-10">
+        <div className="mb-4 text-[20px] font-bold">
+          오늘의 학습을 시작해볼까요?
+          <span className="ml-2 font-bold">{percent}%</span>
+        </div>
+        <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-[#6378EB] rounded-l-full transition-all duration-300"
+            style={{ width: `${percent}%` }}
+          />
+        </div>
+      </div>
+
       {/* 로드맵 그래프 */}
       <RoadmapTemplate />
 
       {/* 과목 상세 모달 */}
       {modalOpen && selected && (
         <SubjectModal
-          subject={{
+          subject={{  
             subjectId: selected.id,
             subjectName: selected.label,
           }}
