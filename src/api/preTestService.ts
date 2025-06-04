@@ -32,11 +32,11 @@ export interface PreTestAnswer {
 export interface PreTestQuestion {
   id: number;
   question: string;
-  choices: PreTestChoice[]; // 셔플된 choices
+  choices: { id: number; text: string; value: string }[];
   chapterNum: number;
   chapterName: string;
   difficulty: string;
-  answerNum: number; // 셔플된 choices 기준 정답 번호 (1~N)
+  answerNum: number; 
 }
 
 export interface PreTestSubmitPayload {
@@ -54,7 +54,7 @@ interface ApiResp<T> {
   data: T;
 }
 
-// ✅ Fisher-Yates 셔플 유틸
+// 셔플 유틸
 function shuffleArray<T>(arr: T[]): T[] {
   const result = [...arr];
   for (let i = result.length - 1; i > 0; i--) {
@@ -64,7 +64,7 @@ function shuffleArray<T>(arr: T[]): T[] {
   return result;
 }
 
-// ✅ 사전 평가 문제 조회
+// 사전 평가 문제 조회
 export async function fetchPreTestQuestions(
   subjectId: number,
 ): Promise<PreTestQuestion[]> {
