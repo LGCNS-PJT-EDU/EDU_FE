@@ -25,6 +25,7 @@ export interface Video {
 }
 
 export interface SubjectDetail {
+  subjectName: any;
   subjectId: number;
   overview: string;
   chapters: Chapter[];
@@ -54,6 +55,7 @@ export async function fetchSubjectDetail(subjectId: number): Promise<SubjectDeta
 
   return {
     subjectId,
+    subjectName: data.subject_name,
     overview: data.subject_overview,
     chapters: data.chapters,
     preSubmitCount: data.preSubmitCount,
