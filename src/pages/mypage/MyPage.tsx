@@ -1,6 +1,7 @@
 import { useQuery, useQueries, UseQueryResult } from '@tanstack/react-query';
 import useLogout from '@/hooks/useLogout';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useProgress } from '@/hooks/useProgress';
 import CardGrid from '@/components/ui/CardGrid';
 import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
@@ -9,6 +10,7 @@ import { fetchRoadmap } from '@/api/roadmapService';
 import { fetchSubjectDetail, SubjectDetail } from '@/hooks/useSubjectDetail';
 
 function MyPage() {
+  const navigate = useNavigate();
   const logout = useLogout();
   const [activeTab, setActiveTab] = useState<'favorite' | 'report'>('favorite');
   const { data: progressData } = useProgress();
@@ -48,10 +50,18 @@ const cardList = subjectDetailsResults
     }))
   );
 
-  const reportCards = [
-    { title: 'HTML', detailUrl: '#', button1: '리포트 보기', button2: '사후평가' },
-    { title: 'Git', detailUrl: '#', button1: '리포트 보기', button2: '사후평가' },
-  ];
+  // 사전사후평가 보면 평가리포트 생성
+  const reportCards = subjectDetailsResults
+    .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } => 
+      r.status === 'success' && r.data.preSubmitCount > 0
+    )
+    .map((r) => ({
+    title: r.data.subjectName, // 실제 과목 이름
+    subjectId: r.data.subjectId,
+    detailUrl: `/solution?subjectId=${r.data.subjectId}`,
+    button1: '리포트 보러가기',
+    button2: '면접 리포트 보러가기',
+    }))
 
   return (
     <div className="flex flex-col min-h-screen font-[pretendard]">
@@ -98,13 +108,11 @@ const cardList = subjectDetailsResults
           <CardGrid
             cards={cardList}
             onButton1Click={(card) => window.open(card.detailUrl, '_blank')}
-            onButton2Click={(card) => console.log(`플랫폼: ${card.button2}`)}
           />
         ) : (
           <CardGrid
             cards={reportCards}
-            onButton1Click={(card) => console.log(`리포트 보기: ${card.title}`)}
-            onButton2Click={(card) => console.log(`사후평가: ${card.title}`)}
+            onButton1Click={(card) => console.log(`리포트 보러가기: ${card.title}`)}
           />
         )}
       </div>
