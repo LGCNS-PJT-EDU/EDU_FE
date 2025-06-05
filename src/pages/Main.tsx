@@ -36,7 +36,7 @@ export default function Main() {
         </h1>
         <p className='mb-14 font-[NeoDunggeunmo] leading-relaxed text-[#373f41]'>진단부터 로드맵, 사후평가까지 AI 기반 맞춤형 학습 플랜</p>
         <div className="flex justify-center items-center">
-          <button className="px-4 py-3 text-white bg-[#6378EB] rounded-lg mb-30" onClick={() => navigate("/diagnosis")}>
+          <button className="px-4 py-3 text-white bg-[#7f94f2] hover:bg-[#6378eb] rounded-lg mb-40" onClick={() => navigate("/diagnosis")}>
             진단평가 보러가기
           </button>
         </div>
@@ -102,13 +102,13 @@ export default function Main() {
           {/* 프론트엔드 백엔드 기본 로드맵 보기 */}
           <div className="flex flex-wrap justify-center gap-5 max-w-[800px] mx-auto mt-16 mb-20 px-5 font-[Pretendard]">
             <div
-              className="bg-gray-50 border border-gray-200 rounded-2xl shadow-sm p-6 max-w-[350px] w-full text-center cursor-pointer transition-all hover:bg-blue-100 hover:-translate-y-1 hover:border-none"
+              className="bg-gray-50 border border-gray-200 rounded-2xl shadow-sm p-6 max-w-[350px] w-full text-center cursor-pointer transition-all hover:-translate-y-1 hover:border-none"
             >
               <h3 className="text-lg font-semibold text-[#6378EB] mb-2">프론트엔드 기본 로드맵</h3>
               <p className="text-sm text-gray-600">프론트엔드 기초부터 차근차근 보기 →</p>
             </div>
             <div
-              className="bg-gray-50 border border-gray-200 rounded-2xl shadow-sm p-6 max-w-[350px] w-full text-center cursor-pointer transition-all hover:bg-blue-100 hover:-translate-y-1 hover:border-none"
+              className="bg-gray-50 border border-gray-200 rounded-2xl shadow-sm p-6 max-w-[350px] w-full text-center cursor-pointer transition-all hover:-translate-y-1 hover:border-none"
             >
               <h3 className="text-lg font-semibold text-[#6378EB] mb-2">백엔드 기본 로드맵</h3>
               <p className="text-sm text-gray-600">백엔드 기초부터 쭉 따라가기 →</p>

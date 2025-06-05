@@ -7,7 +7,7 @@ import cloud from '@/asset/img/login/cloud.png';
 import cloud_down from '@/asset/img/login/cloud_down.png';
 import star from '@/asset/img/login/star.png';
 import main from '@/asset/img/common/main.png';
-import { useCheckEmailMutation,useSignupMutation } from '@/hooks/useMutation';
+import { useCheckEmailMutation, useSignupMutation } from '@/hooks/useMutation';
 
 function Signup() {
   const [email, setEmail] = useState<string>('');
@@ -37,10 +37,10 @@ function Signup() {
       return;
     }
     try {
-      const isAvailable  = await checkEmailMutation.mutateAsync(email);
+      const isAvailable = await checkEmailMutation.mutateAsync(email);
       setIsEmailAvailable(isAvailable);
-      alert(isAvailable ? '사용 가능한 이메일입니다.':'이미 사용 중인 이메일입니다.');
-    } catch{
+      alert(isAvailable ? '사용 가능한 이메일입니다.' : '이미 사용 중인 이메일입니다.');
+    } catch {
       alert('중복 확인을 다시 해주세요!')
     }
   };
@@ -103,7 +103,7 @@ function Signup() {
         className="absolute bottom-30 right-20 w-[250px] z-20"
       />
       <img src={star} alt="star" className="absolute top-15 left-130 w-[100px] z-10" />
-      <img src={star} alt="star" className="absolute top-50 right-20 w-[100px] z-20" />
+      <img src={star} alt="star" className="absolute top-50 right-80 w-[100px] z-20" />
 
       {/* 배너 */}
       <div className="relative flex justify-center items-center">
@@ -117,7 +117,7 @@ function Signup() {
         </div>
       </div>
 
-      <div className="relative max-w-[400px] my-6 z-10 p-[60px_50px] bg-white flex flex-col shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
+      <div className="relative max-w-[430px] my-6 z-10 p-[60px_50px] bg-white flex flex-col shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
         <h2 className="mt-2 mb-3 text-xl font-semibold">회원가입</h2>
         <div className="flex flex-col gap-2">
@@ -136,13 +136,16 @@ function Signup() {
               type="email"
               value={email}
               placeholder="이메일"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setIsEmailAvailable(null);
+              }}
               className="flex-1 border border-[#ccc] px-4 py-2 rounded-lg text-sm"
             />
             <button
               type="button"
               onClick={handleCheckEmail}
-              className="h-[42px] px-3 whitespace-nowrap text-sm bg-[#6378EB] text-white rounded-lg"
+              className="px-3 py-2 whitespace-nowrap text-sm bg-[#6378EB] text-white rounded-lg"
             >
               중복확인
             </button>
