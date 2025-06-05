@@ -1,4 +1,5 @@
 import { useSubjectDetail } from '@/hooks/useSubjectDetail';
+import { useRoadmapStore } from '@/store/roadmapStore';
 import { useNavigate } from 'react-router-dom';
 
 export interface SubjectRef {
@@ -17,6 +18,18 @@ interface SubjectModalProps {
 export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
   const navigate = useNavigate();
   const { subjectId } = subject;
+
+  /* 과목의 status 계산하기 */
+  const nodes = useRoadmapStore((s) => s.nodes);
+  const rawCurrentOrder = useRoadmapStore((s) => s.currentOrder) ?? 0;
+  const nodeData = nodes.find((n) => n.id === subjectId);
+  const nodeOrder = nodeData?.subjectOrder ?? Infinity;
+  const status =
+    nodeOrder < rawCurrentOrder
+      ? 'done'
+      : nodeOrder === rawCurrentOrder
+      ? 'current'
+      : 'todo';
 
   const { data: detail, isLoading, isError } = useSubjectDetail(subjectId);
 
@@ -109,33 +122,44 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
             <p>로딩 중...</p>
           ) : isError || !detail ? (
             <p>불러오기 실패</p>
-          ) : detail.preSubmitCount < 1 ? (
-            <button
-              className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg"
-              onClick={goPreTest}
-            >
-              사전평가 보러가기
-            </button>
           ) : (
-            <>
-              <button
-                className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
-                onClick={goPostTest}
-              >
-                사후평가 보러가기
-              </button>
-              <button
-                className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
-                onClick={goReport}
-              >
-                평가 리포트 보러가기
-              </button>
-              <button
-                className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
-                onClick={goSolution}
-              >
-                오답 보러가기
-              </button>
+             <>
+              {status === 'todo' ? (
+                <button
+                  className="w-full border border-gray-300 text-gray-600 bg-gray-100 py-2 px-4 rounded-lg"
+                  onClick={onClose}
+                >
+                  이전 과목을 먼저 이수해주세요!
+                </button>
+              ) : detail.preSubmitCount < 1 ? (
+                <button
+                  className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg"
+                  onClick={goPreTest}
+                >
+                  사전평가 보러가기
+                </button>
+              ) : (
+                <>
+                  <button
+                    className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                    onClick={goPostTest}
+                  >
+                    사후평가 보러가기
+                  </button>
+                  <button
+                    className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                    onClick={goReport}
+                  >
+                    평가 리포트 보러가기
+                  </button>
+                  <button
+                    className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                    onClick={goSolution}
+                  >
+                    오답 보러가기
+                  </button>
+                </>
+              )}
             </>
           )}
         </div>
