@@ -109,10 +109,10 @@ export default function Roadmap() {
   const doneCount = Math.max(currentOrder - 1, 0);
 
   return (
-    <section className="relative font-[pretendard]">
+    <section className="font-[pretendard] pt-[50px] pb-[50px] mx-auto">
       {/* 진척도 바 + 수정 토글 */}
-      <div className="w-full pt-24 px-8 mb-13 flex justify-between items-start gap-4">
-        <div className="flex-1 min-w-0">
+      <div className="w-[718px] mx-auto flex justify-between">
+        <div className="w-full mb-[20px]">
           <div className="flex items-center mb-3">
             <img src={rabbit} alt="rabbit" className="w-[30px] mr-2" />
             <p className="text-[20px] font-bold break-keep">
@@ -139,21 +139,21 @@ export default function Roadmap() {
         </div>
 
         {/* 오른쪽: 수정/저장 텍스트 버튼 */}
-        <div className="shrink-0 mt-[6px]">
+        <div className="mt-auto self-end mb-[20px]">
           {editing ? (
-            <span
-              className="text-[#6378EB] font-medium cursor-pointer select-none font-[NeoDunggeunmo]"
+            <button
+              className="h-[40px] w-[90px] px-4 text-sm text-white bg-[#6378EB] rounded-md font-medium select-none font-[NeoDunggeunmo]"
               onClick={() => save()}
             >
-              {saving ? "저장 중…" : "저장하기 ›"}
-            </span>
+              {saving ? "저장 중…" : "저장하기"}
+            </button>
           ) : (
-            <span
-              className="text-[#6378EB] font-medium cursor-pointer select-none font-[NeoDunggeunmo]"
+            <button
+              className="h-[40px] w-[90px] px-4 text-sm text-white bg-[#6378EB] rounded-md font-medium select-none font-[NeoDunggeunmo]"
               onClick={toggleEditing}
             >
-              학습 로드맵 수정하기 ›
-            </span>
+              수정하기
+            </button>
           )}
         </div>
       </div>
