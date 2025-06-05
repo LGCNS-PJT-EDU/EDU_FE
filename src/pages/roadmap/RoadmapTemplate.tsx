@@ -37,8 +37,13 @@ function splitIntoRows(total: number): number[] {
   return arr;
 }
 
+interface TemplateProps {
+  currentOrder?: number;
+}
+
 export default function RoadmapTemplate() {
-  const nodes = useRoadmapStore(s => s.nodes);
+  const nodes = useRoadmapStore((s) => s.nodes);
+  const currentOrder = useRoadmapStore((s) => s.currentOrder);
 
   /* 줄별 노드 수 계산 */
   const rowCounts = useMemo(() => splitIntoRows(nodes.length), [nodes.length]);
@@ -88,15 +93,32 @@ export default function RoadmapTemplate() {
 
       {/* 노드 + 라벨 */}
       <DndProvider backend={HTML5Backend}>
-        {positions.map((p, i) => (
-          <RoadmapNode
-            key={i}
-            index={i}
-            x={p.x}
-            y={p.y}
-            showLabel={!!nodes[i]}
-          />
-        ))}
+        {positions.map((p, i) => {
+          const node = nodes[i];
+
+          /* nodeStatus 결정 로직 currentId 없으면 'done' */
+          const status =
+            currentOrder === null || !node
+              ? 'todo'
+              : node.subjectOrder < currentOrder
+              ? 'done'
+              : node.subjectOrder === currentOrder
+              ? 'current'
+              : node.subjectOrder > currentOrder
+              ? 'todo'
+              : 'done';
+
+          return (
+            <RoadmapNode
+              key={i}
+              index={i}
+              x={p.x}
+              y={p.y}
+              showLabel={!!node}
+              nodeStatus={status}
+            />
+          );
+        })}
       </DndProvider>
     </div>
   );
