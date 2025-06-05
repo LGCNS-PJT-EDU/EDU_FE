@@ -112,7 +112,7 @@ export default function RoadmapNode({
       {showLabel && node && (
         <p
           style={{ left: x, top: y + NODE_SIZE / 2 + LABEL_OFFSET }}
-          className="absolute -translate-x-1/2 w-28 text-center text-sm font-bold break-words bg-white px-1"
+          className="absolute -translate-x-1/2 w-35 text-center text-l font-bold break-words bg-white px-1"
         >
           {node.label}
         </p>

@@ -69,7 +69,7 @@ const cardList = subjectDetailsResults
         <div className="w-full flex justify-between items-center mb-2 mt-8">
           <div className="flex">
             <img src={rabbit} alt="smallRabbit" className="w-[30px] mr-2" />
-            <p className="text-[20px] font-bold">프론트엔드</p>
+            <p className="text-[20px] font-bold">프론트엔드</p> {/* roadmapName 넣어주기 */}
           </div>
         </div>
 

@@ -13,6 +13,7 @@ import { useLoadingStore } from "@/store/useLoadingStore";
 import useRoadmapEdit from "@/hooks/useRoadmapEdit";
 import { useRoadmapQuery } from "@/hooks/useRoadmapQuery";
 import axios from "axios";
+import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
 
 export default function Roadmap() {
   /* 로딩 스토어 */
@@ -105,46 +106,55 @@ export default function Roadmap() {
   const total         = roadmap.subjects.length;
   const currentOrder  = useRoadmapStore.getState().currentOrder ?? 0;
   const percent       = total ? Math.round(((currentOrder - 1) / total) * 100) : 0;
+  const doneCount = Math.max(currentOrder - 1, 0);
 
   return (
-    <section className="relative">  
-      {/* 헤더 */}
-      <header className="absolute left-1/2 top-6 z-20 flex -translate-x-1/2 flex-col items-center gap-2">
-        <h1 className="drop-shadow text-2xl font-bold">맞춤 로드맵</h1>
+    <section className="relative font-[pretendard]">
+      {/* 진척도 바 + 수정 토글 */}
+      <div className="w-full pt-24 px-8 mb-13 flex justify-between items-start gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center mb-3">
+            <img src={rabbit} alt="rabbit" className="w-[30px] mr-2" />
+            <p className="text-[20px] font-bold break-keep">
+              프론트엔드 {/* roadmap.roadmapName ?? "로드맵" 추후에 수정*/}
+            </p>
+          </div>
 
-        {editing ? (
-          <Button
-            onClick={ () => save() }
-            disabled={saving}
-            variant="default"
-            size="sm"
-            className="absolute left-96 top-4 gap-1"
-          >
-            <Check size={16} /> {saving ? '저장 중' : '완료'}
-          </Button>
-        ) : (
-          <Button
-            onClick={toggleEditing}
-            variant="outline"
-            size="sm"
-            className="absolute left-96 top-4"
-          >
-            수정
-          </Button>
-        )}
-      </header>
+          <p className="mb-3 text-[20px] font-medium break-keep">
+            오늘도 학습을 시작해볼까요?
+            <span className="ml-2 font-bold">{percent}%</span>
+          </p>
 
-      {/* 진척도 바 */}
-      <div className="w-full pt-24 px-8 mb-10">
-        <div className="mb-4 text-[20px] font-bold">
-          오늘의 학습을 시작해볼까요?
-          <span className="ml-2 font-bold">{percent}%</span>
+          <div className="w-[60%] flex items-center gap-2">
+            <div className="w-full h-6 border-2 border-[#59C5CD] p-[3px] box-border">
+              <div
+                className="h-full bg-[#C6EDF2]"
+                style={{ width: `${(doneCount / total) * 100}%` }}
+              />
+            </div>
+            <span className="text-[#59C5CD] text-sm font-medium whitespace-nowrap font-[NeoDunggeunmo]">
+              {doneCount}/{total} 완료
+            </span>
+          </div>
         </div>
-        <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-[#6378EB] rounded-l-full transition-all duration-300"
-            style={{ width: `${percent}%` }}
-          />
+
+        {/* 오른쪽: 수정/저장 텍스트 버튼 */}
+        <div className="shrink-0 mt-[6px]">
+          {editing ? (
+            <span
+              className="text-[#6378EB] font-medium cursor-pointer select-none font-[NeoDunggeunmo]"
+              onClick={() => save()}
+            >
+              {saving ? "저장 중…" : "저장하기 ›"}
+            </span>
+          ) : (
+            <span
+              className="text-[#6378EB] font-medium cursor-pointer select-none font-[NeoDunggeunmo]"
+              onClick={toggleEditing}
+            >
+              학습 로드맵 수정하기 ›
+            </span>
+          )}
         </div>
       </div>
 
