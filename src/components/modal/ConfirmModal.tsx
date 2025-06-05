@@ -23,13 +23,7 @@ export default function ConfirmModal({
   confirmText = "확인",
   onConfirm,
 }: Props) {
-  const navigate = useNavigate();
   const image = imgSrc ?? takeRabbit;
-
-  const handleConfirm = () => {
-    onConfirm?.(); //선택적으로 실행
-    onClose();
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -57,7 +51,6 @@ export default function ConfirmModal({
 
         <button
           onClick={() => {
-            onClose();
             onConfirm?.();
           }}
           className="w-full rounded-lg bg-blue-600 py-2 text-white transition hover:bg-blue-700"

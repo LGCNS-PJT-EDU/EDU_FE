@@ -8,7 +8,7 @@ import {
   PostTestSubmitPayload,
 } from '@/api/postTestService';
 import { getAccessToken } from "@/store/authGlobal";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function usePosttest(subjectId: number) {
   const navigate = useNavigate();
@@ -78,6 +78,7 @@ export default function usePosttest(subjectId: number) {
       submitCnt: 1,
       answers: questions.map((q) => ({
         examId: q.id,
+        examContent: q.question,
         chapterNum: q.chapterNum,
         chapterName: q.chapterName,
         difficulty: q.difficulty,

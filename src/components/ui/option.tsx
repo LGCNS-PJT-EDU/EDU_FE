@@ -1,5 +1,6 @@
 // src/component/ui/Options.tsx
 import React from 'react';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 
 export interface Choice {
   choiceId: number;
@@ -66,16 +67,30 @@ export const Options: React.FC<OptionsProps> = ({
             // quiz 모드
             return indicatorType === 'number'
               ? c.choiceNum
-              : (isSelected ? '✔' : '');
+              : (isSelected ? <FaCheck size={14}/> : null);
           } else {
             // 오답노트 모드
-            if (isCorrect) return '✔';
-            if (isWrong)   return '✖';
+            if (isCorrect) return <FaCheck size={14}/>;
+            if (isWrong)   return <FaTimes size={14}/>;
             return indicatorType === 'number'
               ? c.choiceNum
-              : '';
+              : null;
           }
         })();
+
+        // 선택지 테두리 색: 정답(녹색), 오답(빨강), 기본(투명)
+        const borderColor = isCorrect
+          ? '#5CAA51'
+          : isWrong
+          ? '#FF0000'
+          : 'transparent';
+
+        // prefix 배경색
+        let prefixBgColor = '#DBDFE3';
+        if (isCorrect)           prefixBgColor = '#5CAA51';
+        else if (isWrong)        prefixBgColor = '#FF0000';
+        else if (!showResult && isSelected) prefixBgColor = '#51BACB';
+
 
         return (
           <button
@@ -83,15 +98,11 @@ export const Options: React.FC<OptionsProps> = ({
             onClick={() => onChoose?.(c.value)}
             disabled={showResult}
             className="flex w-full items-center gap-3 rounded-[15px] border border-transparent px-4 py-3"
-            style={{ backgroundColor: bgColor }}
+            style={{ backgroundColor: bgColor, border: `2px solid ${borderColor}`, }}
           >
             <span
-              className={`
-                flex h-5 w-5 items-center justify-center rounded-full text-white bg-[#51BACB] p-3
-                ${isCorrect || isWrong || (!showResult && isSelected)
-                  ? ''
-                  : 'bg-[#DBDFE3]'}
-              `}
+              className='flex h-5 w-5 items-center justify-center rounded-full text-white'
+              style={{ backgroundColor: prefixBgColor }}
             >
               {indicator}
             </span>

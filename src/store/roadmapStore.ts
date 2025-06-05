@@ -3,6 +3,7 @@ import { create } from 'zustand';
 export interface NodeData {
   id: number;
   label: string;
+  subjectOrder: number;
   subjectOverview: string;          // snake → camel
 }
 
@@ -13,6 +14,9 @@ export interface RoadmapStore {
   selected: NodeData | null;
   modalOpen: boolean;
 
+  currentOrder: number | null;
+  setCurrentOrder: (order: number) => void;
+
   toggleEditing: () => void;
   addNode: (label: string) => void;
   deleteNode: (index: number) => void;
@@ -22,20 +26,23 @@ export interface RoadmapStore {
     subjects: {
       subjectId: number;
       subjectName: string;
-      subject_overview?: string | null;   // 백엔드로부터는 snake_case 받아오기
+      subjectOrder: number;
+      subject_overview?: string | null;
     }[]
   ) => void;
-
   openModal: (index: number) => void;
   closeModal: () => void;
 }
 
-export const useRoadmapStore = create<RoadmapStore>((set) => ({
+export const useRoadmapStore = create<RoadmapStore>((set, get) => ({
   nodes: [],
   editing: false,
   setEditing: (flag) => set({ editing: flag }),
   selected: null,
   modalOpen: false,
+
+  currentOrder: null,
+  setCurrentOrder: (order) => set({ currentOrder: order }),
 
   toggleEditing: () => set((s) => ({ editing: !s.editing })),
 
@@ -43,7 +50,7 @@ export const useRoadmapStore = create<RoadmapStore>((set) => ({
     set((s) => ({
       nodes: [
         ...s.nodes,
-        { id: Date.now(), label, subjectOverview: '' },
+        { id: Date.now(), label, subjectOrder: 0, subjectOverview: '' },
       ],
     })),
 
@@ -63,11 +70,17 @@ export const useRoadmapStore = create<RoadmapStore>((set) => ({
       return { nodes: copy };
     }),
 
-  setInitial: (subjects) =>
+  setInitial: (subjects: {
+    subjectId: number;
+    subjectName: string;
+    subjectOrder: number;
+    subject_overview?: string | null;
+  }[]) =>
     set(() => ({
       nodes: subjects.map((s) => ({
         id: s.subjectId,
         label: s.subjectName,
+        subjectOrder: s.subjectOrder,
         subjectOverview: s.subject_overview ?? '',
       })),
     })),

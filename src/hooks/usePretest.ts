@@ -40,7 +40,6 @@ export default function usePretest(subjectId: number) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [startDate] = useState(() => new Date().toISOString());
   const [startTime] = useState(() => Date.now());
-
   const duration = Math.floor((Date.now() - startTime) / 1000);
 
   const { mutate: submit, isPending: isSubmitting } = useMutation({
@@ -79,6 +78,7 @@ export default function usePretest(subjectId: number) {
       submitCnt: 1,
       answers: questions.map((q) => ({
         examId: q.id,
+        examContent: q.question,
         chapterNum: q.chapterNum,
         chapterName: q.chapterName,
         difficulty: q.difficulty,
