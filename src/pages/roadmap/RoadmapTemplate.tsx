@@ -37,10 +37,6 @@ function splitIntoRows(total: number): number[] {
   return arr;
 }
 
-interface TemplateProps {
-  currentOrder?: number;
-}
-
 export default function RoadmapTemplate() {
   const nodes = useRoadmapStore((s) => s.nodes);
   const currentOrder = useRoadmapStore((s) => s.currentOrder);
