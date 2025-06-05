@@ -7,8 +7,8 @@ interface ProgressResponse {
 }
 
 const fetchProgress = async (): Promise<ProgressResponse> => {
-    const {data} = await axios.get('/api/roadmap/progress');
-    return data
+    const res = await axios.get('/api/roadmap/progress');
+    return res.data.data
 };
 
 export const useProgress = () => {

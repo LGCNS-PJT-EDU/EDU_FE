@@ -28,7 +28,7 @@ export default function Report() {
 
   const sorted = [...data].sort((a, b) => +new Date(a.info.date) - +new Date(b.info.date));
 
-  // ✅ 사전 평가만 있을 때
+  // 사전 평가만 있을 때
   if (sorted.length === 1) {
     const pre = sorted[0];
     const labels = Object.keys(pre.scores).slice(1); // total 제외
@@ -88,7 +88,7 @@ export default function Report() {
     );
   }
 
-  // ✅ 사전 + 사후 평가 있을 때
+  // 사전 + 사후 평가 있을 때
   const pre = sorted[0];
   const post = sorted[sorted.length - 1];
 

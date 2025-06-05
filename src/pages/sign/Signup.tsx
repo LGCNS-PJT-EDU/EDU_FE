@@ -103,7 +103,7 @@ function Signup() {
         className="absolute bottom-30 right-20 w-[250px] z-20"
       />
       <img src={star} alt="star" className="absolute top-15 left-130 w-[100px] z-10" />
-      <img src={star} alt="star" className="absolute top-50 right-80 w-[100px] z-20" />
+      <img src={star} alt="star" className="absolute top-50 right-20 w-[100px] z-20" />
 
       {/* 배너 */}
       <div className="relative flex justify-center items-center">
