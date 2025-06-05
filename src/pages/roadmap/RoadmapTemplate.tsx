@@ -15,8 +15,8 @@ const MIN_COLS         = 3;
 
 const ROW_WIDTH        = (MAX_COLS - 1) * GAP_X; // 한 줄 전체 길이 = 640px
 
-const SKELETON_Y       = 150;         // 뼈대 내려주는 오프셋
-const NODE_Y           = 150;         // 노드 내려주는 오프셋(같이 둠)
+const SKELETON_Y       = 50;         // 뼈대 내려주는 오프셋
+const NODE_Y           = 50;         // 노드 내려주는 오프셋(같이 둠)
 
 const LABEL_OFF        = 8;           // 아이콘 ↔ 라벨 간격
 const LABEL_W          = 112;         // w-28 = 7rem
