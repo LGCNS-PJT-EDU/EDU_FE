@@ -99,7 +99,6 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, onButton1Click }) => {
                   <button className="text-gray-500 hover:text-gray-800">
                     {/* Lucide 아이콘 사용 시 */}
                     <MoreVertical className="w-5 h-5" />
-
                   </button>
                 </div>
               </div>
