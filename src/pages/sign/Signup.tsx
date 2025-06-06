@@ -184,7 +184,7 @@ function Signup() {
           </p>
 
           <button
-            className="mt-6 py-3 bg-[#51BACB] text-white rounded-xl font-semibold hover:bg-[#3fa9b8] transition"
+            className="mt-6 py-3 bg-[#6378EB] text-white rounded-xl font-semibold hover:bg-[#3fa9b8] transition"
             onClick={handleSignup}
           >
             Join In
