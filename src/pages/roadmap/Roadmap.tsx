@@ -17,7 +17,7 @@ import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
 
 export default function Roadmap() {
   /* 로딩 스토어 */
-  const { startLoading, stopLoading } = useLoadingStore(); 
+  const { startLoading, stopLoading } = useLoadingStore();
   /* 라우터 */
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ export default function Roadmap() {
       (s) => s.subjectId === roadmap.userLocationSubjectId
     );
     setCurrentOrder(cur?.subjectOrder ?? 0);
-  }, [roadmap, setCurrentOrder]); 
+  }, [roadmap, setCurrentOrder]);
 
   /* 로그인 안 한 상태에서 모달 열면 로그인 유도 */
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function Roadmap() {
   }, [loadingUser, startLoading, stopLoading]);
 
   if (loadingUser && !roadmap) {
-    return <div style={{ height:"100vh" }} />;
+    return <div style={{ height: "100vh" }} />;
   }
 
   const is404Error =
@@ -103,9 +103,9 @@ export default function Roadmap() {
   if (!roadmap) return null;
 
   /* 진척도 계산 */
-  const total         = roadmap.subjects.length;
-  const currentOrder  = useRoadmapStore.getState().currentOrder ?? 0;
-  const percent       = total ? Math.round(((currentOrder - 1) / total) * 100) : 0;
+  const total = roadmap.subjects.length;
+  const currentOrder = useRoadmapStore.getState().currentOrder ?? 0;
+  const percent = total ? Math.round(((currentOrder - 1) / total) * 100) : 0;
   const doneCount = Math.max(currentOrder - 1, 0);
 
   return (
@@ -164,7 +164,7 @@ export default function Roadmap() {
       {/* 과목 상세 모달 */}
       {modalOpen && selected && (
         <SubjectModal
-          subject={{  
+          subject={{
             subjectId: selected.id,
             subjectName: selected.label,
           }}

@@ -38,7 +38,7 @@ export default function RadarChart({
             pointBackgroundColor: color,
             pointRadius: 4,
             pointHoverRadius: 6,
-            fill: false, // ✅ 배경 제거
+            fill: false, // 배경 제거
           },
         ],
       },

@@ -18,10 +18,7 @@ export interface FeedbackItem {
   }
 }
 
-export const fetchUserFeedback = async (userId: string): Promise<FeedbackItem[]> => {
-  const { data } = await axios.get<FeedbackItem[]>(
-    `/api/feedback/retrieve`,
-    { params: { userId } },   
-  );
-  return data;
+export const fetchUserFeedback = async (): Promise<FeedbackItem[]> => {
+  const res = await axios.get('/api/feedback/retrieve');
+  return res.data.data; 
 };

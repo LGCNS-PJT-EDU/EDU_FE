@@ -1,16 +1,15 @@
 import { useQuery, useQueries, UseQueryResult } from '@tanstack/react-query';
 import useLogout from '@/hooks/useLogout';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useProgress } from '@/hooks/useProgress';
 import CardGrid from '@/components/ui/CardGrid';
 import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
 
 import { fetchRoadmap } from '@/api/roadmapService';
 import { fetchSubjectDetail, SubjectDetail } from '@/hooks/useSubjectDetail';
+import { FeedbackItem, fetchUserFeedback } from '@/api/reportService';
 
 function MyPage() {
-  const navigate = useNavigate();
   const logout = useLogout();
   const [activeTab, setActiveTab] = useState<'favorite' | 'report'>('favorite');
   const { data: progressData } = useProgress();
@@ -21,6 +20,7 @@ function MyPage() {
     queryKey: ['myRoadmap'],
     queryFn: () => fetchRoadmap(),
   });
+
 
   // subjectIds 추출
   const subjectIds = roadmap?.subjects.map((s) => s.subjectId) ?? [];
@@ -35,33 +35,45 @@ function MyPage() {
   });
 
   // 추천 콘텐츠 card 변환
-const cardList = subjectDetailsResults
-  .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
-    r.status === 'success' &&
-    !!r.data?.recommendContents?.length &&
-    r.data.preSubmitCount > 0  //사전평가 했는지 확인
-  )
-  .flatMap((r) =>
-    r.data.recommendContents!.map((content) => ({
-      title: content.title,
-      detailUrl: content.url,
-      button1: '바로가기',
-      button2: content.platform,
-    }))
-  );
-
-  // 사전사후평가 보면 평가리포트 생성
-  const reportCards = subjectDetailsResults
-    .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } => 
-      r.status === 'success' && r.data.preSubmitCount > 0
+  const cardList = subjectDetailsResults
+    .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
+      r.status === 'success' &&
+      !!r.data?.recommendContents?.length &&
+      r.data.preSubmitCount > 0  //사전평가 했는지 확인
     )
-    .map((r) => ({
-    title: r.data.subjectName, // 실제 과목 이름
-    subjectId: r.data.subjectId,
-    detailUrl: `/solution?subjectId=${r.data.subjectId}`,
-    button1: '리포트 보러가기',
-    button2: '면접 리포트 보러가기',
-    }))
+    .flatMap((r) =>
+      r.data.recommendContents!.map((content) => ({
+        title: content.title,
+        detailUrl: content.url,
+        button1: '바로가기',
+        subtitle: `${content.platform} · ${content.type}`,
+        price: content.price,
+        isAiRecommendation: content.isAiRecommendation,
+      }))
+    );
+
+  // 사용자 피드백 데이터 호출
+  const { data: feedbackData } = useQuery<FeedbackItem[]>({
+    queryKey: ['userFeedback'],
+    queryFn: fetchUserFeedback,
+  });
+
+  //  사전/사후 평가 완료한 과목 ID만 필터링
+  const evaluatedSubjectNames = subjectDetailsResults
+    .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
+      r.status === 'success' && r.data.preSubmitCount > 0 && r.data.postSubmitCount > 0
+    )
+    .map((r) => r.data.subjectName); // 문자열 기준 비교 (subjectId가 아니라 subjectName 기준이라면)
+
+  // 평가 리포트 카드 구성 (피드백 기반)
+  const reportCards = (feedbackData ?? [])
+    .filter((fb) => evaluatedSubjectNames.includes(fb.info.subject))
+    .map((fb) => ({
+      title: `피드백 - ${fb.info.subject}`,
+      detailUrl: `/report?subject=${fb.info.subject}&date=${fb.info.date}`,
+      button1: '리포트 보러가기',
+      subtitle: `제출일: ${fb.info.date}`,
+    }));
 
   return (
     <div className="flex flex-col min-h-screen font-[pretendard]">
