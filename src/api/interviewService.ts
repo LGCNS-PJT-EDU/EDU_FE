@@ -1,28 +1,26 @@
-// /api/interview.ts
-import api from '@/api/axios';
+import api from "@/api/axios";
 
-export interface OpenAiMessage {
-  role: string;
-  content: string;
-}
+export async function sendInterviewFeedback(
+  interviewId: number, 
+  content: string,
+  nth:number
+): Promise<string> {
 
-export interface OpenAiChoice {
-  message: OpenAiMessage;
-}
-
-export interface OpenAiResponse {
-  choices: OpenAiChoice[];
-}
-
-export async function sendInterviewFeedback(interviewId: number, content: string): Promise<string> {
-  const res = await api.post<{ data: { interviewFeedback: string } }>('/api/interview/feedback', {
+  const payload = {
     interviewId,
     userReply: content,
-  });
+    nth,
+  };
 
+  console.log("서버 전송 payload:", payload);
+  const res = await api.post<{ data:{ interviewFeedback:string} }>(
+    '/api/interview/feedback',
+     payload
+    );
   const feedback = res.data.data.interviewFeedback;
-
-  if (!feedback) throw new Error('AI 응답이 비어 있습니다.');
-
+  if(!feedback || feedback.trim()===''){
+    throw new Error('AI 피드백이 없습니다.');
+  }
   return feedback;
 }
+

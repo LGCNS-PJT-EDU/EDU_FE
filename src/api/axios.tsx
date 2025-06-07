@@ -1,11 +1,13 @@
 import axios, { AxiosError, AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios';
 import { getAccessToken, useAuthStore } from '@/store/authGlobal';
-
+import qs from 'qs';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
+  // 배열 쿼리 파라미터를 ?subjectIds=1&subjectIds=2 형태로 보내기기
+  paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
 });
 
 function isRefreshUrl(url?: string) {
