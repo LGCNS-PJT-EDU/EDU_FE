@@ -6,6 +6,8 @@ interface Props {
   question: {
     interviewId: number;
     interviewContent: string;
+    subjectId: number;
+    nth: number;
   };
 }
 
@@ -36,7 +38,11 @@ const QuestionSpeechCard: React.FC<Props> = ({ question }) => {
     });
 
     try {
-      const result = await sendInterviewFeedback(question.interviewId, localTranscript);
+      const result = await sendInterviewFeedback(
+        question.interviewId,
+        localTranscript,
+        question.nth
+        );
       setFeedback(result);
     } catch (e) {
       console.error('피드백 요청 중 오류:', e);
