@@ -10,6 +10,7 @@ interface Props {
     subjectId: number;
     nth: number;
   };
+  onTranscriptComplete: (interviewId: number, text: string) => void;
 }
 
 const QuestionSpeechCard: React.FC<Props> = ({ question }) => {
