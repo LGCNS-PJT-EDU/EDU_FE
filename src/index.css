@@ -148,3 +148,9 @@ button{
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  html {
+    @apply scroll-smooth snap-y snap-mandatory;
+  }
+}
