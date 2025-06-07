@@ -18,7 +18,7 @@ export async function sendInterviewFeedback(
   content: string,
   nth:number
 ): Promise<string> {
-  
+
   const payload = {
     interviewId,
     userReply: content,
@@ -26,10 +26,14 @@ export async function sendInterviewFeedback(
   };
 
   console.log("서버 전송 payload:", payload);
-  const res = await api.post<{ data: OpenAiResponse }>('/api/interview/feedback', payload);
-
-  const choices = res.data.data.choices;
-  if (!choices || choices.length === 0) throw new Error('AI 응답이 비어 있습니다.');
-  return choices[0].message.content;
+  const res = await api.post<{ data:{ sendInterviewFeedback:string} }>(
+    '/api/interview/feedback',
+     payload
+    );
+  const feedback = res.data.data.sendInterviewFeedback;
+  if(!feedback || feedback.trim()===''){
+    throw new Error('AI 피드백이 없습니다.');
+  }
+  return feedback;
 }
 
