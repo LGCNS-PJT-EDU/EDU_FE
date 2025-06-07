@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSpeech } from '@/hooks/useSpeech';
 import { sendInterviewFeedback } from '@/api/interviewService';
+import { clear } from 'console';
 
 interface Props {
   question: {
@@ -15,6 +16,7 @@ const QuestionSpeechCard: React.FC<Props> = ({ question }) => {
   const { transcript, listening, startListening, resetTranscript, speak } = useSpeech();
   const [feedback, setFeedback] = useState('');
   const [localTranscript, setLocalTranscript] = useState('');
+  const [seconds,setSeconds]=useState(0);
 
   useEffect(() => {
     if (!listening && transcript) {
@@ -22,10 +24,29 @@ const QuestionSpeechCard: React.FC<Props> = ({ question }) => {
     }
   }, [listening, transcript]);
 
+  useEffect(() => {
+  if (!listening) return;
+
+  const interval = setInterval(() => {
+    setSeconds((prev) => prev + 1);
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, [listening]);
+
+// 타이머 형식
+const formatTime = (totalSeconds: number) => {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+};
+
+
   const handleStart = () => {
     resetTranscript();
     setLocalTranscript('');
     setFeedback('');
+    setSeconds(0);
     startListening();
   };
 
@@ -78,7 +99,7 @@ const QuestionSpeechCard: React.FC<Props> = ({ question }) => {
       </div>
 
       {/* 타이머 */}
-      <div className="text-center text-lg font-mono mb-1">00:00</div>
+      <div className="text-center text-lg font-mono mb-1">{formatTime(seconds)}</div>
       <p className="text-center text-sm text-gray-500 mb-4">대기 중..</p>
 
       {/* 음성 인식 결과 */}
