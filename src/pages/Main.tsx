@@ -1,28 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Aurora2 from '@/components/Aurora/Particles';
 import simbol from '@/asset/img/common/takeitlogo.png';
 import chevron from '@/asset/img/main/chevron-down.png';
-
-function useIntersection(
-  ref: React.RefObject<HTMLElement | null>,
-  options?: IntersectionObserverInit
-) {
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      options
-    );
-    io.observe(ref.current);
-    return () => io.disconnect();
-  }, [ref, options]);
-
-  return inView;
-}
 
 export default function Main() {
   const bottomRef = useRef<HTMLElement | null>(null);
@@ -32,7 +13,6 @@ export default function Main() {
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
-  const heroInView = useIntersection(heroRef);
   return (
     <div className="relative w-full font-[NeoDunggeunmo]">
       {/* 배경 Aurora 파티클 */}

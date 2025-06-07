@@ -13,7 +13,6 @@ import main from '@/asset/img/common/main.png';
 
 import useLogin from '@/hooks/useLogin';
 import { useLoadingStore } from '@/store/useLoadingStore';
-import { useSnackbarStore } from '@/store/useSnackbarStore';
 
 const REDIRECT_BASE = import.meta.env.VITE_REDIRECT_DOMAIN;
 /* 1) 공급자별 고정 파라미터 */
@@ -71,7 +70,6 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const { startLoading, stopLoading } = useLoadingStore();
-  const { showSnackbar } = useSnackbarStore();
 
   const saveAccessToken = useLogin();
   const LoginMutation = useLoginMutation();
@@ -99,7 +97,7 @@ function Login() {
     }
   }
   return (
-    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex justify-center gap-[200px] overflow-hidden">
+    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex flex-col md:flex-row items-center md:items-start justify-center md:justify-center gap-[200px] md:gap-[200px] overflow-hidden px-4">
       <img
         src={pixel_texture}
         alt="pixel texture background"
@@ -117,19 +115,17 @@ function Login() {
       <img src={star} alt="star" className="absolute top-50 right-80 w-[100px] z-20" />
 
       {/* 배너 */}
-      <div className="relative flex justify-center items-center">
+      <div className="hidden md:flex relative justify-center items-center self-center">
         <div className="z-20 text-[#373f41]">
           <img src={main} alt="main" className="w-[200px] mb-[10px]" />
           <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">
-            개발자의 꿈,
-            <br />
-            지금 TakeIT과 시작해보세요
+            개발자의 꿈,<br />지금 TakeIT과 시작해보세요
           </p>
         </div>
       </div>
 
       {/* 로그인 박스 */}
-      <div className="relative max-w-[430px] my-6 z-10 p-[60px_70px] bg-white flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
+      <div className="relative w-full max-w-[400px] my-15 p-[60px_40px] md:p-[60px_70px] bg-white rounded-[30px] flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] min-h-[calc(100vh-200px)]">
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
         <h2 className="mt-1 mb-1 text-xl font-semibold">Login</h2>
 
