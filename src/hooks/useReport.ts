@@ -3,7 +3,7 @@ import axios from '@/api/axios';
 
 export interface FeedbackItem {
   info: {
-    userId: string;
+    userId: number;
     date: string;
     subject: string;
   };
@@ -19,12 +19,19 @@ interface ApiResponse<T> {
   message: string;
   data: T;
 }
-export const useFeedback = () =>
-  useQuery<FeedbackItem[]>({            
-    queryKey: ['feedback'],
-    queryFn: async () => {
-      const res = await axios.get<ApiResponse<FeedbackItem[]>>('/api/feedback/retrieve');
-      return res.data.data;
-    }
-  });
 
+export const fetchUserFeedback = async (subjectId: number) => {
+  const res = await axios.get<ApiResponse<FeedbackItem[]>>('/api/feedback/retrieve', {
+    params: { subjectId },
+  });
+  console.log("subjectId 확인:", subjectId); 
+  console.log("응답 확인", res.data); // 확인용
+  return res.data?.data ?? []; 
+};
+
+export const useFeedback = (subjectId?: number) =>
+  useQuery<FeedbackItem[]>({
+    queryKey: ['feedback', subjectId],
+    queryFn: () => fetchUserFeedback(subjectId!), 
+    enabled: subjectId !== undefined,
+  });
