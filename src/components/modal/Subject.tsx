@@ -44,7 +44,7 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
   };
 
   const goReport = () => {
-    navigate('/report');
+    navigate(`/report?subjectId=${subjectId}`);
     onClose();
   };
 

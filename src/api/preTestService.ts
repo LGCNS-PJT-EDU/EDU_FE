@@ -106,13 +106,13 @@ export async function fetchPreTestQuestions(
   });
 }
 
-// ✅ 사전 평가 결과 제출
+// 사전 평가 결과 제출
 export async function submitPreTest(payload: PreTestSubmitPayload) {
   const res = await api.post<ApiResp<any>>("/api/exam/pre", payload);
   return res.data;
 }
 
-// ✅ 로드맵 ID 포함된 서브젝트 상세 정보 조회
+// 로드맵 ID 포함된 서브젝트 상세 정보 조회
 export async function fetchSubjectDetail(subjectId: number): Promise<any> {
   const res = await api.get<ApiResp<any>>("/api/roadmap/subject", {
     params: { subjectId },
