@@ -154,3 +154,18 @@ button{
     @apply scroll-smooth snap-y snap-mandatory;
   }
 }
+
+/* 3D 카드용 공통 스타일 */
+.card-3d {
+  transform-style: preserve-3d;      /* 내부 요소도 3D로 회전 */
+  perspective: 1000px;               /* 원근감 */
+}
+
+.card-face {
+  @apply absolute inset-0 flex items-center justify-center backface-hidden;
+  backface-visibility: hidden;       /* 뒤집힌 면 숨김 */
+}
+
+.card-face--back {
+  transform: rotateY(180deg);
+}
