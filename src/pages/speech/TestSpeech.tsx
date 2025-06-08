@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import api from '@/api/axios';
+import { submitInterviewAnswers } from '@/api/interviewService';
 import QuestionSpeechCard from '@/components/speech/QuestionSpeechCard';
 
 interface InterviewQuestion {
   interviewId: number;
   interviewContent: string;
   subjectId: number;
+  subjectName:string;
   nth: number;
 }
 
@@ -16,12 +18,13 @@ const TestSpeech: React.FC = () => {
   const [subjectIds, setSubjectIds] = useState<number[]>([]);
   const [answers, setAnswers] = useState<{ [interviewId: number]: string }>({});
 
-
+  // 1번 과목으로 요청 보내고 있는데 면접 과목 선택 페이지 완료하면 사용자가 선택한 실제 과목 ID로 바꿔주기 
   useEffect(() => {
     async function fetchQuestions() {
       const res = await api.get<{ data: InterviewQuestion[] }>('/api/interview/list', {
         params: { subjectIds: [1] },
       });
+
       setQuestions(res.data.data);
 
       if (res.data.data.length > 0) {
@@ -52,13 +55,15 @@ const TestSpeech: React.FC = () => {
   }));
 
   try {
-    await api.post('/api/interview/answers', { answers: payload });
+    const feedbacks = await submitInterviewAnswers(payload);
+    console.log('받은 피드백:', feedbacks);
     alert('면접 제출 완료!');
   } catch (e) {
     console.error('제출 실패:', e);
     alert('제출 실패');
   }
 };
+
 
 
 
@@ -70,7 +75,12 @@ const TestSpeech: React.FC = () => {
   <div className="w-full max-w-4xl mx-auto px-1">
     {/* 헤더 */}
     <div className="flex justify-between items-center mb-4">
-      <h2 className="text-xl font-semibold text-gray-800">과목 이름</h2>
+      {currentQuestion && (
+  <h2 className="text-xl font-semibold text-gray-800">
+    {currentQuestion.subjectName}
+  </h2>
+)}
+
       <span className="text-sm text-gray-500">
         {questions.length > 0 ? `${currentIndex + 1} / ${questions.length}` : ''}
       </span>

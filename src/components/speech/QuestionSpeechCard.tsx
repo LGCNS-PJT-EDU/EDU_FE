@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSpeech } from '@/hooks/useSpeech';
-import { sendInterviewFeedback } from '@/api/interviewService';
-import { clear } from 'console';
+
 
 interface Props {
   question: {
@@ -13,7 +12,7 @@ interface Props {
   onTranscriptComplete: (interviewId: number, text: string) => void;
 }
 
-const QuestionSpeechCard: React.FC<Props> = ({ question }) => {
+const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete }) => {
   const { transcript, listening, startListening, resetTranscript, speak } = useSpeech();
   const [feedback, setFeedback] = useState('');
   const [localTranscript, setLocalTranscript] = useState('');
@@ -22,6 +21,7 @@ const QuestionSpeechCard: React.FC<Props> = ({ question }) => {
   useEffect(() => {
     if (!listening && transcript) {
       setLocalTranscript(transcript);
+      onTranscriptComplete(question.interviewId, transcript); 
     }
   }, [listening, transcript]);
 
@@ -51,20 +51,6 @@ const formatTime = (totalSeconds: number) => {
     startListening();
   };
 
-  const handleSend = async () => {
-    if (!localTranscript) return alert('음성 인식 결과가 없습니다.');
-
-    try {
-      const result = await sendInterviewFeedback(
-        question.interviewId,
-        localTranscript,
-        question.nth
-      );
-      setFeedback(result);
-    } catch (e) {
-      console.error('피드백 요청 중 오류:', e);
-    }
-  };
 
   const handlePlayQuestion = () => {
     speak(question.interviewContent);
@@ -110,23 +96,6 @@ const formatTime = (totalSeconds: number) => {
         </div>
       )}
 
-      {/* 전송 버튼 */}
-      {localTranscript && !feedback && (
-        <button
-          onClick={handleSend}
-          className="px-5 py-2 rounded-md font-semibold bg-cyan-500 text-white hover:bg-cyan-600"
-        >
-          전송하기
-        </button>
-      )}
-
-      {/*피드백 영역 */}
-      {feedback && (
-        <div className="mt-6 bg-green-50 border border-green-200 p-4 rounded-md">
-          <h4 className="font-semibold text-green-600 mb-2">AI 피드백</h4>
-          <p className="text-sm text-gray-800">{feedback}</p>
-        </div>
-      )}
     </section>
   );
 };
