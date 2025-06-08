@@ -85,7 +85,7 @@ function MyPage() {
     }));
 
   return (
-    <div className="flex flex-col min-h-screen font-[pretendard]">
+    <div className="flex flex-col min-h-screen font-[pretendard] w-full px-4 sm:px-0">
       <div className="flex-grow">
         <div className="w-full flex justify-between items-center mb-2 mt-8">
           <div className="flex">
@@ -97,9 +97,10 @@ function MyPage() {
         <div className="w-full mb-13">
           <div className="mb-4 text-[20px] font-medium">
             {progressData?.nickname}님, 오늘도 학습을 진행해볼까요?
-            <span className="ml-2 font-bold">{percent}%</span>
+            <br className="block sm:hidden" />
+            <span className="block sm:inline font-bold mt-1 sm:mt-0 text-left w-full">{percent}%</span>
           </div>
-          <div className="w-full max-w-md flex items-center gap-2 px-2">
+          <div className="w-full max-w-md flex items-center gap-2 pr-2">
             <div className="w-full h-6 border-2 border-[#59C5CD] px-[3px] py-[3px] box-border">
               <div className="h-full bg-[#C6EDF2]" style={{ width: `30px` }}></div>
             </div>
@@ -140,7 +141,7 @@ function MyPage() {
       </div>
 
       {/* 푸터 */}
-      <div className="mt-auto w-full py-4 text-center">
+      <div className="mt-auto w-full max-w-md mx-auto py-4 text-center">
         <button onClick={logout} className="mr-2">로그아웃</button>
         <span className="mx-2">|</span>
         <button className="ml-2">회원탈퇴</button>

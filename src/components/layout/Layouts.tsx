@@ -5,7 +5,7 @@ function Layouts() {
   return (
     <>
       <Nav />
-      <main className="w-[1000px] mx-auto">
+      <main className="w-full max-w-screen-lg px-4 sm:px-6 mx-auto">
         <Outlet />
       </main>
     </>

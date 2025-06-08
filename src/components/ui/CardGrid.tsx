@@ -24,6 +24,10 @@ const chunk = <T,>(arr: T[], size: number): T[][] => {
   );
 };
 
+const truncateText = (text: string, maxLength = 20) => {
+  return text.length > maxLength ? text.slice(0, maxLength) + '…' : text;
+};
+
 const CardGrid: React.FC<CardGridProps> = ({ cards, onButton1Click }) => {
   const groupedCards = chunk(cards, 4);
 
@@ -85,12 +89,13 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, onButton1Click }) => {
                   {/* 왼쪽: 아이콘 + 제목 */}
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-green-200 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h18M3 19h18M5 5v14M19 5v14" />
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        strokeWidth={1.5} fill="none" stroke="url(#grad1)" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Z" />
                       </svg>
                     </div>
                     <div>
-                      <div className="text-base font-bold text-gray-900">{card.title}</div>
+                      <div className="text-base font-bold text-gray-900">{truncateText(card.title, 20)}</div>
                       <div className="text-sm text-gray-500">{card.subtitle || `${card.platform ?? ''} · ${card.type ?? ''}`}</div>
                     </div>
                   </div>
