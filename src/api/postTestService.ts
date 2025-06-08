@@ -21,6 +21,7 @@ export interface PostTestChoice {
 
 export interface PostTestAnswer {
   examId: number;
+  examContent: string;
   chapterNum: number;
   chapterName: string;
   difficulty: string;
@@ -52,6 +53,15 @@ interface ApiResp<T> {
   data: T;
 }
 
+function shuffleArray<T>(arr: T[]): T[] {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 //사후 평가 문제 조회
 export async function fetchPostTestQuestions(
   subjectId: number,
@@ -61,22 +71,30 @@ export async function fetchPostTestQuestions(
   })
 
   return (res.data.data ?? []).map<PostTestQuestion>((q) => {
-    const choices = [q.choice1, q.choice2, q.choice3, q.choice4]
-      .filter(Boolean)
+    const originalChoices: PostTestChoice[] = [q.choice1, q.choice2, q.choice3, q.choice4]
+      .filter((c): c is string => Boolean(c))
       .map((text, idx) => ({
-        id: idx + 1,
-        text: text as string,
-        value: String(idx + 1),
+        id: idx + 1,            // 원본 key (1~4)
+        text,
+        value: String(idx + 1), // 서버로 보낼 값
       }));
+    // 2. 셔플
+    const shuffledChoices = shuffleArray(originalChoices);
 
+    // 3. 원래 answerNum에 해당하는 choice가 셔플된 배열의 몇 번째인지 다시 계산
+    const originalAnswerId = q.answerNum;
+    const correctChoice = shuffledChoices.find((c) => c.id === originalAnswerId);
+    const shuffledAnswerNum = correctChoice
+      ? shuffledChoices.indexOf(correctChoice) + 1
+      : 1; // fallback
     return {
       id: q.questionId,
       question: q.question,
-      choices,
+      choices: shuffledChoices,
       chapterNum: q.chapterNum,
       chapterName: q.chapterName,
       difficulty: q.difficulty,
-      answerNum: q.answerNum,
+      answerNum: shuffledAnswerNum,
     };
   });
 }

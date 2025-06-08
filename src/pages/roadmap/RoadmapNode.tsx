@@ -2,30 +2,65 @@ import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { X } from 'lucide-react';
 import { useRoadmapStore } from '@/store/roadmapStore';
-import nodeImg from '@/asset/img/roadmap/subject/SubjectNode.png';
+import { useSnackbarStore } from '@/store/useSnackbarStore';
+import nodeDoneImg    from '@/asset/img/roadmap/subject/doneNode.png';
+import nodeCurrentImg from '@/asset/img/roadmap/subject/currentNode.png';
+import nodeTodoImg    from '@/asset/img/roadmap/subject/todoNode.png';
+import rabbitImg      from '@/asset/img/common/takeRabbit.png';
 
-const NODE_SIZE = 36;        // 템플릿과 동일하게
-const LABEL_OFFSET = 8;      // 아이콘 바로 아래 라벨과의 간격(px)
+const NODE_SIZE    = 36;
+const LABEL_OFFSET = 8;
 
 interface Props {
   index: number;
   x: number;
   y: number;
   showLabel: boolean;
+  nodeStatus: 'done' | 'current' | 'todo';
 }
 
-export default function RoadmapNode({ index, x, y, showLabel }: Props) {
-  const node        = useRoadmapStore((s) => s.nodes[index]);
-  const editing     = useRoadmapStore((s) => s.editing);
-  const reorderNode = useRoadmapStore((s) => s.reorderNode);
-  const deleteNode  = useRoadmapStore((s) => s.deleteNode);
-  const openModal   = useRoadmapStore((s) => s.openModal);
+export default function RoadmapNode({
+  index, x, y, showLabel, nodeStatus,
+}: Props) {
+  /* Zustand */
+  const node          = useRoadmapStore((s) => s.nodes[index]);  
+  const rawOrder      = useRoadmapStore((s) => s.currentOrder);
+  const currentOrder  = rawOrder ?? 0;  
+  const reorderNode   = useRoadmapStore((s) => s.reorderNode);
+  const deleteNode    = useRoadmapStore((s) => s.deleteNode);
+  const editing       = useRoadmapStore((s) => s.editing);
+  const openModal     = useRoadmapStore((s) => s.openModal);
 
+  /* Snackbar */
+  const showSnackbar  = useSnackbarStore((s) => s.showSnackbar);
+
+  /* 아이콘 선택 */
+  const iconSrc =
+    nodeStatus === 'done'    ? nodeDoneImg
+    : nodeStatus === 'current' ? nodeCurrentImg
+    : nodeTodoImg;
+  const isCurrent = nodeStatus === 'current';
+
+  /* Drag & Drop */
   const [, drop] = useDrop({
     accept: 'NODE',
-    drop: (item: any) =>
-      item.index !== index && reorderNode(item.index, index),
+    drop: (item: any) => {
+      const { nodes } = useRoadmapStore.getState();
+      const dragNode = nodes[item.index];
+      if (!dragNode || !node) return;
+
+      const sameGroup =
+        (dragNode.subjectOrder <  currentOrder && node.subjectOrder <  currentOrder) ||
+        (dragNode.subjectOrder >= currentOrder && node.subjectOrder >= currentOrder);
+
+      if (!sameGroup) {
+        showSnackbar('완료 과목과 미완료 과목은 서로 순서를 바꿀 수 없습니다', 'error');
+        return;
+      }
+      reorderNode(item.index, index);
+    },
   });
+
   const [{ isDragging }, drag] = useDrag({
     type: 'NODE',
     item: { index },
@@ -38,6 +73,7 @@ export default function RoadmapNode({ index, x, y, showLabel }: Props) {
 
   return (
     <>
+      {/* 아이콘 */}
       <div
         ref={iconRef}
         style={{ left: x, top: y }}
@@ -45,11 +81,12 @@ export default function RoadmapNode({ index, x, y, showLabel }: Props) {
         onClick={() => !editing && openModal(index)}
       >
         <img
-          src={nodeImg}
-          alt={node?.label ?? ''}
+          src={iconSrc}
+          alt=""
           className="w-9 h-9"
           style={{ opacity: isDragging ? 0.5 : 1 }}
         />
+
         {editing && (
           <button
             className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-[1px]"
@@ -61,15 +98,21 @@ export default function RoadmapNode({ index, x, y, showLabel }: Props) {
             <X size={12} />
           </button>
         )}
+
+        {isCurrent && (
+          <img
+            src={rabbitImg}
+            alt="현재 위치"
+            className="absolute -top-6 left-1/2 -translate-x-1/2 w-15 h-12"
+          />
+        )}
       </div>
 
+      {/* 라벨 */}
       {showLabel && node && (
         <p
-          style={{
-            left: x,
-            top: y + NODE_SIZE / 2 + LABEL_OFFSET,
-          }}
-          className="absolute -translate-x-1/2 w-28 text-center text-sm font-bold break-words bg-white px-1"
+          style={{ left: x, top: y + NODE_SIZE / 2 + LABEL_OFFSET }}
+          className="absolute -translate-x-1/2 w-35 text-center text-l font-bold break-words bg-white px-1"
         >
           {node.label}
         </p>

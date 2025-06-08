@@ -15,8 +15,8 @@ const MIN_COLS         = 3;
 
 const ROW_WIDTH        = (MAX_COLS - 1) * GAP_X; // 한 줄 전체 길이 = 640px
 
-const SKELETON_Y       = 150;         // 뼈대 내려주는 오프셋
-const NODE_Y           = 150;         // 노드 내려주는 오프셋(같이 둠)
+const SKELETON_Y       = 50;         // 뼈대 내려주는 오프셋
+const NODE_Y           = 50;         // 노드 내려주는 오프셋(같이 둠)
 
 const LABEL_OFF        = 8;           // 아이콘 ↔ 라벨 간격
 const LABEL_W          = 112;         // w-28 = 7rem
@@ -38,7 +38,8 @@ function splitIntoRows(total: number): number[] {
 }
 
 export default function RoadmapTemplate() {
-  const nodes = useRoadmapStore(s => s.nodes);
+  const nodes = useRoadmapStore((s) => s.nodes);
+  const currentOrder = useRoadmapStore((s) => s.currentOrder);
 
   /* 줄별 노드 수 계산 */
   const rowCounts = useMemo(() => splitIntoRows(nodes.length), [nodes.length]);
@@ -88,15 +89,32 @@ export default function RoadmapTemplate() {
 
       {/* 노드 + 라벨 */}
       <DndProvider backend={HTML5Backend}>
-        {positions.map((p, i) => (
-          <RoadmapNode
-            key={i}
-            index={i}
-            x={p.x}
-            y={p.y}
-            showLabel={!!nodes[i]}
-          />
-        ))}
+        {positions.map((p, i) => {
+          const node = nodes[i];
+
+          /* nodeStatus 결정 로직 currentId 없으면 'done' */
+          const status =
+            currentOrder === null || !node
+              ? 'todo'
+              : node.subjectOrder < currentOrder
+              ? 'done'
+              : node.subjectOrder === currentOrder
+              ? 'current'
+              : node.subjectOrder > currentOrder
+              ? 'todo'
+              : 'done';
+
+          return (
+            <RoadmapNode
+              key={i}
+              index={i}
+              x={p.x}
+              y={p.y}
+              showLabel={!!node}
+              nodeStatus={status}
+            />
+          );
+        })}
       </DndProvider>
     </div>
   );

@@ -8,9 +8,16 @@ import BarChart from '@/components/chart/Barchart';
 
 import { useState, useRef } from 'react';
 import { useFeedback } from '@/hooks/useReport';
+import { useSearchParams } from 'react-router-dom';
 
 export default function Report() {
-  const { data = [], isLoading, isError } = useFeedback();
+  const [searchParams] = useSearchParams();
+  const subjectId = searchParams.get('subjectId');
+  const numericId = Number(subjectId);
+
+  const { data = [], isLoading, isError } = useFeedback(numericId);
+  console.log('📦 피드백 데이터:', data);
+
   const [idx, setIdx] = useState(0);
   const startX = useRef(0);
 
@@ -28,7 +35,7 @@ export default function Report() {
 
   const sorted = [...data].sort((a, b) => +new Date(a.info.date) - +new Date(b.info.date));
 
-  // ✅ 사전 평가만 있을 때
+  // 사전 평가만 있을 때
   if (sorted.length === 1) {
     const pre = sorted[0];
     const labels = Object.keys(pre.scores).slice(1); // total 제외
@@ -88,17 +95,19 @@ export default function Report() {
     );
   }
 
-  // ✅ 사전 + 사후 평가 있을 때
+  // 사전 + 사후 평가 있을 때
   const pre = sorted[0];
   const post = sorted[sorted.length - 1];
 
-  const labels = Object.keys(pre.scores).slice(1); // total 제외
-  const preScores = Object.values(pre.scores).slice(1); // total 제외
-  const postScores = Object.values(post.scores).slice(1); // total 제외
+  const labels = Object.keys(pre.scores).filter((key) => key !== 'total');
+  const preScores = labels.map((label) => pre.scores[label]);
+  const postScores = labels.map((label) => post.scores[label]);
   const preTotal = pre.scores['total'];
   const postTotal = post.scores['total'];
-  const strengthArr = Object.values((idx === 0 ? pre : post).feedback.strength);
-  const weaknessArr = Object.values((idx === 0 ? pre : post).feedback.weakness);
+  const currentFeedback = idx === 0 ? pre.feedback : post.feedback;
+  const strengthArr = labels.map((label) => currentFeedback.strength[label] ?? '—');
+  const weaknessArr = labels.map((label) => currentFeedback.weakness[label] ?? '—');
+
 
   return (
     <div className="relative flex flex-col items-center px-4 py-10 font-[pretendard]">

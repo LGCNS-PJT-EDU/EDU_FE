@@ -12,10 +12,12 @@ import { useGuestUuidStore } from "@/store/useGuestUuidStore";
 import { useLoadingStore } from "@/store/useLoadingStore";
 import useRoadmapEdit from "@/hooks/useRoadmapEdit";
 import { useRoadmapQuery } from "@/hooks/useRoadmapQuery";
+import axios from "axios";
+import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
 
 export default function Roadmap() {
   /* 로딩 스토어 */
-  const { startLoading, stopLoading } = useLoadingStore(); 
+  const { startLoading, stopLoading } = useLoadingStore();
   /* 라우터 */
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -35,6 +37,7 @@ export default function Roadmap() {
   const selected = useRoadmapStore((s) => s.selected);
   const modalOpen = useRoadmapStore((s) => s.modalOpen);
   const closeModal = useRoadmapStore((s) => s.closeModal);
+  const setCurrentOrder = useRoadmapStore((s) => s.setCurrentOrder);
 
   /* 로컬 모달 상태 */
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -52,6 +55,15 @@ export default function Roadmap() {
     }
   }, [userRoadmap, roadmapFromState, setInitial]);
 
+  /* 현재 과목 order 계산하기 */
+  useEffect(() => {
+    if (!roadmap) return;
+    const cur = roadmap.subjects.find(
+      (s) => s.subjectId === roadmap.userLocationSubjectId
+    );
+    setCurrentOrder(cur?.subjectOrder ?? 0);
+  }, [roadmap, setCurrentOrder]);
+
   /* 로그인 안 한 상태에서 모달 열면 로그인 유도 */
   useEffect(() => {
     if (modalOpen && !isLoggedIn) {
@@ -62,50 +74,89 @@ export default function Roadmap() {
 
   /* 로딩 */
   useEffect(() => {
-    if (loadingUser) startLoading("로드맵 불러오는 중…");
-    else           stopLoading();
+    if (!loadingUser) return;
+    startLoading("로드맵 불러오는 중…");
+    return () => stopLoading();
   }, [loadingUser, startLoading, stopLoading]);
 
-  if (isError) {
+  if (loadingUser && !roadmap) {
+    return <div style={{ height: "100vh" }} />;
+  }
+
+  const is404Error =
+    isError &&
+    axios.isAxiosError(error) &&
+    error.response?.status === 404;
+
+  if (is404Error) {
     return (
-    <ConfirmModal
-      title="로드맵이 없습니다"
-      message="진단을 먼저 해주세요!"
-      confirmText="진단하러 가기"
-      onClose={() => {}}
-      onConfirm={() => navigate("/diagnosis", { replace: true })}
+      <ConfirmModal
+        title="로드맵이 없습니다"
+        message="진단을 먼저 해주세요!"
+        confirmText="진단하러 가기"
+        onClose={() => navigate("/", { replace: true })}
+        onConfirm={() => navigate("/diagnosis", { replace: true })}
       />
     );
   }
+
   if (!roadmap) return null;
 
-  return (
-    <section className="relative">  
-      {/* 헤더 */}
-      <header className="absolute left-1/2 top-6 z-20 flex -translate-x-1/2 flex-col items-center gap-2">
-        <h1 className="drop-shadow text-2xl font-bold">맞춤 로드맵</h1>
+  /* 진척도 계산 */
+  const total = roadmap.subjects.length;
+  const currentOrder = useRoadmapStore.getState().currentOrder ?? 0;
+  const percent = total ? Math.round(((currentOrder - 1) / total) * 100) : 0;
+  const doneCount = Math.max(currentOrder - 1, 0);
 
-        {editing ? (
-          <Button
-            onClick={ () => save() }
-            disabled={saving}
-            variant="default"
-            size="sm"
-            className="absolute left-96 top-4 gap-1"
-          >
-            <Check size={16} /> {saving ? '저장 중' : '완료'}
-          </Button>
-        ) : (
-          <Button
-            onClick={toggleEditing}
-            variant="outline"
-            size="sm"
-            className="absolute left-96 top-4"
-          >
-            수정
-          </Button>
-        )}
-      </header>
+  return (
+    <section className="font-[pretendard] pt-[50px] pb-[50px] mx-auto">
+      {/* 진척도 바 + 수정 토글 */}
+      <div className="w-[718px] mx-auto flex justify-between">
+        <div className="w-full mb-[20px]">
+          <div className="flex items-center mb-3">
+            <img src={rabbit} alt="rabbit" className="w-[30px] mr-2" />
+            <p className="text-[20px] font-bold break-keep">
+              프론트엔드 {/* roadmap.roadmapName ?? "로드맵" 추후에 수정*/}
+            </p>
+          </div>
+
+          <p className="mb-3 text-[20px] font-medium break-keep">
+            오늘도 학습을 시작해볼까요?
+            <span className="ml-2 font-bold">{percent}%</span>
+          </p>
+
+          <div className="w-[60%] flex items-center gap-2">
+            <div className="w-full h-6 border-2 border-[#59C5CD] p-[3px] box-border">
+              <div
+                className="h-full bg-[#C6EDF2]"
+                style={{ width: `${(doneCount / total) * 100}%` }}
+              />
+            </div>
+            <span className="text-[#59C5CD] text-sm font-medium whitespace-nowrap font-[NeoDunggeunmo]">
+              {doneCount}/{total} 완료
+            </span>
+          </div>
+        </div>
+
+        {/* 오른쪽: 수정/저장 텍스트 버튼 */}
+        <div className="mt-auto self-end mb-[20px]">
+          {editing ? (
+            <button
+              className="h-[40px] w-[90px] px-4 text-sm text-white bg-[#6378EB] rounded-md font-medium select-none font-[NeoDunggeunmo]"
+              onClick={() => save()}
+            >
+              {saving ? "저장 중…" : "저장하기"}
+            </button>
+          ) : (
+            <button
+              className="h-[40px] w-[90px] px-4 text-sm text-white bg-[#6378EB] rounded-md font-medium select-none font-[NeoDunggeunmo]"
+              onClick={toggleEditing}
+            >
+              수정하기
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* 로드맵 그래프 */}
       <RoadmapTemplate />

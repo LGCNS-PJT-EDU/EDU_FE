@@ -1,6 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Main from '@/pages/Main';
-import About from '@/pages/about/About';
 import Login from '@/pages/login/Login';
 import MyPage from '@/pages/mypage/MyPage';
 import OAuthCallback from '@/pages/login/OAuthCallback';
@@ -14,6 +13,7 @@ import PretestPage from '@/pages/test/PretestPage';
 import PosttestPage from '@/pages/test/PosttestPage';
 import Solution from '@/pages/solution/Solution';
 import TestSpeech from '@/pages/speech/TestSpeech';
+import DefaultRoadmap from '@/pages/roadmap/DefaultRoadmap';
 
 const router = createBrowserRouter([
   {
@@ -33,10 +33,10 @@ const router = createBrowserRouter([
     path: '/',
     element: <Layout />,
     children: [
-      { path: 'about', element: <About /> },
       { path: 'mypage', element: <MyPage /> },
       { path: 'report', element: <Report /> },
       { path: 'roadmap', element: <Roadmap /> },
+      { path: '/roadmap/default/:type', element: <DefaultRoadmap />},
       { path: 'solution', element: <Solution /> },
       { path: 'login/oauth2/code/:provider', element: <OAuthCallback /> },
     ],

@@ -13,9 +13,9 @@ interface ApiRecommendContent {
   url: string;
   type: string;
   platform: string;
-  duration: string;
+  duaration: string;
   price: string;
-  isAiRecommendation: boolean;
+  isAiRecommendation: true;
   comment: string;
 }
 
@@ -25,6 +25,7 @@ export interface Video {
 }
 
 export interface SubjectDetail {
+  subjectName: any;
   subjectId: number;
   overview: string;
   chapters: Chapter[];
@@ -42,7 +43,7 @@ interface ApiSubjectResponse {
   recommendContents: ApiRecommendContent[];
 }
 
-async function fetchSubjectDetail(subjectId: number): Promise<SubjectDetail> {
+export async function fetchSubjectDetail(subjectId: number): Promise<SubjectDetail> {
   const response = await api.get<{ stateCode: number; message: string; data: ApiSubjectResponse }>(
     '/api/roadmap/subject',
     {
@@ -51,8 +52,10 @@ async function fetchSubjectDetail(subjectId: number): Promise<SubjectDetail> {
   );
 
   const data = response.data.data; 
+
   return {
     subjectId,
+    subjectName: data.subject_name,
     overview: data.subject_overview,
     chapters: data.chapters,
     preSubmitCount: data.preSubmitCount,
@@ -68,4 +71,15 @@ export function useSubjectDetail(subjectId: number) {
     queryFn: () => fetchSubjectDetail(subjectId),
     enabled: !!subjectId,
   })
+}
+
+export function useAllRecommendContents(subjectIds: number[]) {
+  return useQuery({
+    queryKey: ['allRecommendContents', subjectIds],
+    queryFn: async () => {
+      const results = await Promise.all(subjectIds.map(id => fetchSubjectDetail(id)));
+      return results.flatMap(detail => detail.recommendContents || []);
+    },
+    enabled: subjectIds.length > 0,
+  });
 }
