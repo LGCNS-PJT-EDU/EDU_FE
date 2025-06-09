@@ -83,40 +83,50 @@ export default function TestTemplate({
   const isAnswered = answers[currentQ?.diagnosisId ?? -1] !== undefined;
   const totalCount = questions.length;
 
-  if (!hasStarted) {
-    return (
-      <div className="flex h-[calc(100vh-70px)] flex-col items-center justify-center px-4 font-[pretendard]">
-        <div
-          className="relative h-[50%] w-[800px] max-w-md rounded-2xl bg-[#E6EEFF] p-8 border-2"
-        >
-{/*           <img
-            src={pixel_texture}
-            alt="pixel texture background"
-            className="pointer-events-none absolute bottom-0 left-0 h-[70%] w-full object-cover opacity-70"
-          /> */}
-          <img src={blue_star} alt="star" className="absolute right-10 top-30 z-10 w-[50px]" />
-          <img src={gold_star} alt="star" className="absolute right-40 top-50 z-10 w-[100px]" />
-          <p className="z-10 text-sm text-gray-600">{time}</p>
-          <h2 className="z-10 mt-4 text-xl font-bold">{headline}</h2>
-          <p className="z-10 mt-2 flex gap-3 text-s text-[#4A4A4A]">
-            <img src={Isolation} alt="isolation" className="z-10 w-[15px]" />
-            <img src={smallRabbit} alt="smallRabbit" className="z-10 w-[30px]" />
-            개발 로드맵 확인하러 가기
-          </p>
-{/*           <div className="z-10 mt-6 flex justify-center">
-            <img src={takeitR} alt="토끼 이미지" className="absolute bottom-0 right-0 w-[150px]" />
-          </div> */}
-          <button onClick={() => setHasStarted(true)} disabled={isLoadingQuestions} className="z-20 cursor-pointer font-semibold text-black">
-            <img src={startBtn} alt="startBtn" className="w-[150px]" />
-          </button>
+if (!hasStarted) {
+  return (
+    <div className="flex h-[calc(100vh-70px)] w-full flex-col items-center justify-center gap-8 px-8 py-8 font-[pretendard]">
+      <div className="flex w-full max-w-[800px] flex-col gap-6 lg:flex-row">
+        {/* 왼쪽: 진행 통계 */}
+        <div className="flex flex-row gap-6 lg:flex-col">
+          <StatCard title="전체 질문 갯수" value={totalCount} />
+          <StatCard title="현재 응답 갯수" value={Object.keys(answers).length} bgColor="#C6EDF2" />
+        </div>
+
+        {/* 오른쪽: 시작 카드 */}
+        <div className="relative flex-1 rounded-2xl bg-[#E6EEFF] p-8 border-2 min-h-[300px] flex flex-col justify-between">
+          <div>
+            <p className="text-sm text-gray-600">🕒 진단 소요시간 5분, 약 10문제</p>
+            <h2 className="mt-4 text-xl font-bold">문제를 시작해볼까요?</h2>
+            <p className="mt-2 flex gap-2 text-sm text-[#4A4A4A]">
+              <img src={Isolation} alt="isolation" className="w-[15px]" />
+              <img src={smallRabbit} alt="smallRabbit" className="w-[30px]" />
+              개발 로드맵 확인하러 가기
+            </p>
+          </div>
+
+          <div className="z-10 mt-6 flex justify-center">
+            <button
+              onClick={() => setHasStarted(true)}
+              disabled={isLoadingQuestions}
+              className="z-20 cursor-pointer font-semibold text-black"
+            >
+              <img src={startBtn} alt="startBtn" className="w-[150px]" />
+            </button>
+          </div>
+
+          {/* 장식 이미지 */}
+          <img src={blue_star} alt="star" className="absolute right-10 top-10 z-10 w-[50px]" />
+          <img src={gold_star} alt="star" className="absolute right-40 top-20 z-10 w-[100px]" />
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div
-      className="flex h-[calc(100vh-70px)] w-full flex-col items-center justify-center gap-8 px-4 py-8 font-[pretendard]"
+      className="flex h-[calc(100vh-70px)] w-full flex-col items-center justify-center gap-8 px-8 py-8 font-[pretendard]"
 
     >
       <div className="flex w-full max-w-[800px] flex-col gap-6 lg:flex-row">

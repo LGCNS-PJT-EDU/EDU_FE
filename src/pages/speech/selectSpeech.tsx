@@ -1,35 +1,38 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelectSpeech } from '@/hooks/useSelectSpeech';
 
 export default function Selectspeech() {
-    const [allSubjects, setAllSubjects] = useState([
-    "JavaScript", "Python", "React", "HTML", "CSS", "Node.js",
-    "TypeScript", "Vue.js", "Angular", "Next.js", "Express",
-    "MongoDB", "MySQL", "Firebase", "Java", "Spring", "Kotlin",
-    "C++", "Algorithms", "Data Structures"
-  ]);
+  const navigate = useNavigate();
+  const { data, isLoading, error } = useSelectSpeech();
 
-  const [selected] = useState(new Set(["JavaScript", "Python"]));
   const [filter, setFilter] = useState('');
   const [customSubject, setCustomSubject] = useState('');
-  const navigate = useNavigate();
+
+  if (isLoading) return <div className="p-4">불러오는 중...</div>;
+  if (error || !data) return <div className="text-red-500 p-4">에러가 발생했습니다.</div>;
+
+  const { existingSubjectIds, missingSubjectIds } = data;
+
+  const allSubjects = [...existingSubjectIds, ...missingSubjectIds];
+  const selected = new Set(existingSubjectIds.map(s => s.subjectNm));
 
   const handleAddSubject = () => {
     const trimmed = customSubject.trim();
     if (!trimmed) return;
-    if (allSubjects.includes(trimmed)) {
+    if (allSubjects.some(s => s.subjectNm === trimmed)) {
       alert('이미 존재하는 과목입니다.');
       return;
     }
-    setAllSubjects([...allSubjects, trimmed]);
+    // UI 상에서만 임시 추가
+    allSubjects.push({ subId: Date.now(), subjectNm: trimmed });
     selected.add(trimmed);
     setCustomSubject('');
   };
 
   const filteredSubjects = allSubjects.filter(subject =>
-    subject.toLowerCase().includes(filter.toLowerCase())
+    subject.subjectNm.toLowerCase().includes(filter.toLowerCase())
   );
-
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 font-[pretendard]">
@@ -46,14 +49,13 @@ export default function Selectspeech() {
       <div className="flex flex-wrap gap-4 mb-6">
         {filteredSubjects.map(subject => (
           <div
-            key={subject}
-            className={`w-23 h-10 flex items-center justify-center rounded-lg shadow-md font-[13px] border-2 transition ${
-              selected.has(subject)
+            key={subject.subId}
+            className={`w-23 h-10 flex items-center justify-center rounded-lg shadow-md font-[13px] border-2 transition
+              ${selected.has(subject.subjectNm)
                 ? 'border-blue-500 bg-blue-50 text-blue-800'
-                : 'border-transparent bg-white text-gray-800'
-            }`}
+                : 'border-gray-300 bg-white text-gray-800'}`}
           >
-            {subject}
+            {subject.subjectNm}
           </div>
         ))}
       </div>
@@ -80,7 +82,8 @@ export default function Selectspeech() {
           </button>
         </div>
       </div>
-            {selected.size > 0 && (
+
+      {selected.size > 0 && (
         <div className="mt-10 text-center">
           <button
             className="px-6 py-3 w-full bg-green-600 text-white rounded-md hover:bg-green-700 transition"
@@ -92,5 +95,4 @@ export default function Selectspeech() {
       )}
     </div>
   );
-};
-
+}
