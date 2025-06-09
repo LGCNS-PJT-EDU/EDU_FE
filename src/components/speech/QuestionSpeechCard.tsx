@@ -24,16 +24,16 @@ const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete })
   const [feedback, setFeedback] = useState('');
   const [localTranscript, setLocalTranscript] = useState('');
   const [seconds,setSeconds]=useState(0);
-  const [countdown, setCountdown] =useState(3);
+  const [countdown, setCountdown] =useState(10); // 카운트 다운
   const [showCountdown, setShowCountdown] = useState(true);
 
   useEffect(() => {
   const countdownTimer = setInterval(() => {
     setCountdown((prev) => {
       if (prev <= 1) {
-        clearInterval(countdownTimer);
+        clearInterval(countdownTimer); // 카운트다운 종료
         setShowCountdown(false);
-        handleStart(); // 자동 녹음 시작
+        handleStart(); // 자동으로 녹음 시작
         return 0;
       }
       return prev - 1;
@@ -45,11 +45,12 @@ const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete })
 
 
   useEffect(() => {
-    if (!listening && transcript) {
-      setLocalTranscript(transcript);
-      onTranscriptComplete(question.interviewId, transcript); 
-    }
-  }, [listening, transcript]);
+  if (transcript) {
+    setLocalTranscript(transcript);
+    onTranscriptComplete(question.interviewId, transcript); //상위 컴포넌트에 최신 답변을 전달하기 
+  }
+}, [transcript]);
+
 
   useEffect(() => {
   if (!listening) return;
@@ -79,14 +80,17 @@ const formatTime = (totalSeconds: number) => {
   };
 
   //녹음 종료 
-  const handleStop=()=>{
-    stopRecording();
-  };
+  const handleStop = () => {
+  stopRecording();
+  setLocalTranscript(transcript);  
+  onTranscriptComplete(question.interviewId, transcript); // 상위 컴포넌트에도 전달
+};
 
-  // 다운로드용 링크 만들기
+
+  // 다운로드용 링크 생성
 const handleDownload = () => {
   if (!audioBlob) return;
-  const url = URL.createObjectURL(audioBlob);
+  const url = URL.createObjectURL(audioBlob); // Blob을 브라우저에서 접근 가능한 임시 URL로 변환
   const a = document.createElement('a');
   a.href = url;
   a.download = `interview_${question.interviewId}.webm`;
@@ -114,25 +118,16 @@ const handleDownload = () => {
         </button>
       </div>
 
-      {/* 듣는 중 상태만 표시 */}
-{listening && (
-  <div className="flex justify-center mb-4">
-    <span className="px-5 py-2 rounded-md bg-cyan-200 text-white font-semibold text-sm">
-       듣는 중...
-    </span>
-  </div>
-)}
-
-      {/* 타이머 or 카운트다운 표시 */}
+      {/* 타이머 */}
       <div className="text-center text-lg font-mono mb-1">
         {showCountdown ? `녹음까지 ${countdown}초` : formatTime(seconds)}
       </div>
       <p className="text-center text-sm text-gray-500 mb-4">
-        {showCountdown ? '잠시 후 녹음이 시작됩니다...' : '대기 중...'}
+        {showCountdown ? '잠시 후 녹음이 시작됩니다.' : ''}
       </p>
 
 
-      {/* 녹음 중단 버튼 */}
+      {/* 녹음 종료 버튼 */}
 {listening && (
   <div className="flex justify-center mb-4">
     <button
@@ -156,13 +151,13 @@ const handleDownload = () => {
   </div>
 )}
 
+      {/* 음성 인식 결과 */} 
+{localTranscript && (
+  <div className="bg-gray-100 text-sm text-gray-800 p-4 rounded-md mb-4 min-h-[60px]">
+    {localTranscript}
+  </div>
+)}
 
-      {/* 음성 인식 결과 */}
-      {localTranscript && (
-        <div className="bg-gray-100 text-sm text-gray-800 p-4 rounded-md mb-4 min-h-[60px]">
-          {localTranscript}
-        </div>
-      )}
 
     </section>
   );
