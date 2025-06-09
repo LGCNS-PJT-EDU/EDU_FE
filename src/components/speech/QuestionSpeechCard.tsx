@@ -47,7 +47,7 @@ const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete })
   useEffect(() => {
   if (transcript) {
     setLocalTranscript(transcript);
-    onTranscriptComplete(question.interviewId, transcript);
+    onTranscriptComplete(question.interviewId, transcript); //상위 컴포넌트에 최신 답변을 전달하기 
   }
 }, [transcript]);
 
@@ -82,8 +82,8 @@ const formatTime = (totalSeconds: number) => {
   //녹음 종료 
   const handleStop = () => {
   stopRecording();
-  setLocalTranscript(transcript); 
-  onTranscriptComplete(question.interviewId, transcript); 
+  setLocalTranscript(transcript); // 종료하면 음성 인식된 텍스트 보여주기 
+  onTranscriptComplete(question.interviewId, transcript); // 상위 컴포넌트에도 전달
 };
 
 

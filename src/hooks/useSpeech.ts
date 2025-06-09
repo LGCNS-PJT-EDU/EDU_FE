@@ -29,7 +29,7 @@ export const useSpeech = () => {
     audioChunksRef.current = [];
 
     mediaRecorder.ondataavailable = (event) => {
-      audioChunksRef.current.push(event.data); // 오디오 조각 누적하기 
+      audioChunksRef.current.push(event.data); // 오디오 조각 배열에 누적하기 
     };
 
     mediaRecorder.onstop = () => { // 오디오 조각 하나의 파일로 만들기 
@@ -49,22 +49,22 @@ export const useSpeech = () => {
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       const result = event.results[0][0].transcript; //정확도가 가장 높은 문장 가져오기기
-      setTranscript((prev) => prev + ' ' + result); // 누적 저장
+      setTranscript((prev) => prev + ' ' + result); // 음성 인식한 텍스트 누적해서 저장하기기
     };
 
-    recognition.onend = () => { // 음성 인식 끝났을 때 자동 재시작하기 
-  if (listening) {
+    recognition.onend = () => { // 음성 인식 자동으로 끝났을 때 계속 재시작하기 
+  if (listening) {  // 듣고 있는데 내용이 아무것도 없으면 
     if (transcript.trim() === '') {
       console.log('인식된 음성이 없습니다.');
     }
-    recognitionRef.current?.start(); 
+    recognitionRef.current?.start(); // 끊기면 다시 시작 
   }
 };
 
 
    recognition.onerror = (event: any) => {
   console.error('STT error:', event.error);
-  if (event.error !== 'aborted') { // 수동 종료한 경우 에러는 무시하기 
+  if (event.error !== 'aborted') { // 수동 종료한 경우 aborted 에러는 무시하기 
   console.error('STT 수동 종료함:', event.error);
 }
   if (event.error !== 'aborted' && listening) {
@@ -72,9 +72,7 @@ export const useSpeech = () => {
   }
 };
 
-
-
-    setListening(true);
+    setListening(true); // 수동 종료한거 아니면 무조건 true로 설정 
     recognition.start(); // STT 시작
   };
 
