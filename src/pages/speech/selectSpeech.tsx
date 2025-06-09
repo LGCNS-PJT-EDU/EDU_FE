@@ -15,7 +15,7 @@ export default function Selectspeech() {
   const { existingSubjectIds, missingSubjectIds } = data;
 
   const allSubjects = [...existingSubjectIds, ...missingSubjectIds];
-  const selected = new Set(existingSubjectIds.map(s => s.subjectNm));
+  const selected = new Set(existingSubjectIds.map(s => s.subjectNm)); 
 
   const handleAddSubject = () => {
     const trimmed = customSubject.trim();
@@ -87,10 +87,17 @@ export default function Selectspeech() {
         <div className="mt-10 text-center">
           <button
             className="px-6 py-3 w-full bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-            onClick={() => navigate("/testspeech")}
+            onClick={() => {
+              const selectedSubjectIds = allSubjects
+                .filter(subject => selected.has(subject.subjectNm))
+                .map(subject => subject.subId);
+
+              navigate("/testspeech", { state: { subjectIds: selectedSubjectIds } });
+            }}
           >
             면접 보러가기
           </button>
+
         </div>
       )}
     </div>
