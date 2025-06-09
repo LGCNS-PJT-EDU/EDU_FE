@@ -19,7 +19,7 @@ export default function Main() {
   return (
     <div className="relative w-full font-[NeoDunggeunmo]">
       {/* 배경 Aurora 파티클 */}
-      <div className="absolute inset-0 -z-10">
+      <div className="fixed inset-0 -z-10">
         <Aurora2
           particleColors={['#586bd1', '#73ccd7']}
           particleCount={400}
@@ -33,21 +33,19 @@ export default function Main() {
       </div>
 
       {/* 상단 Hero 섹션 */}
-      <section ref={heroRef} className="relative h-screen snap-start w-full flex flex-col items-center justify-center text-center max-w-[900px] px-4 mx-auto scroll-mt-[60px]">
-        <img src={simbol} alt="take it" className="mb-7 w-56 mx-auto" />
+      <section ref={heroRef} className="relative h-[calc(100vh-72px)] overflow-hidden snap-start w-full flex flex-col items-center justify-center text-center max-w-[900px] px-4 mx-auto scroll-mt-[72px]">
+        <img src={simbol} alt="take it" className="mb-7 w-56" />
         <h1 className="mb-1 font-[NeoDunggeunmo] leading-relaxed text-[#373f41] text-[23px]">
           AI가 안내하는 당신만의 학습 여정
         </h1>
-        <p className="mb-14 font-[NeoDunggeunmo] leading-relaxed text-[#373f41]">
+        <p className="mb-6 font-[NeoDunggeunmo] leading-relaxed text-[#373f41]">
           <br />지금 바로 진단 받고<br />나에게 딱 맞는 로드맵을 받아보세요!
         </p>
-        <div className="flex justify-center items-center">
           <button className="px-4 py-3 text-white bg-[#6378EB] rounded-lg mb-30" onClick={() => navigate("/diagnosis")}>
             진단평가 보러가기
           </button>
-        </div>
-          <button className="animate-bounce" onClick={scrollToBottom}>
-            <img src={chevron} alt="scroll down" className="mx-auto w-20" />
+          <button className="animate-bounce absolute bottom-4 left-1/2 -translate-x-1/2" onClick={scrollToBottom}>
+            <img src={chevron} alt="scroll down" className="w-14" />
           </button>
       </section>
 
