@@ -63,10 +63,8 @@ export const useSpeech = () => {
 
 
    recognition.onerror = (event: any) => {
-  console.error('STT error:', event.error);
-  if (event.error !== 'aborted') { // 수동 종료한 경우 aborted 에러는 무시하기 
-  console.error('STT 수동 종료함:', event.error);
-}
+  console.error('STT 수동 종료함:');
+
   if (event.error !== 'aborted' && listening) {
     recognitionRef.current?.start();
   }
