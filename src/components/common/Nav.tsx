@@ -55,7 +55,7 @@ function Nav() {
 
           <div className="hidden md:flex items-center gap-[15px]">
             {navItem('/roadmap', 'ROADMAP')}
-            {navItem('/testspeech', 'INTERVIEW')}
+            {navItem('/selectSpeech', 'INTERVIEW')}
             <a href="mailto:example@example.com">
               <button className={`w-auto h-[70px] px-2 ${baseBtnClass}`}>CONTACT</button>
             </a>
@@ -204,7 +204,7 @@ function Nav() {
                 </Link>
 
                 <Link
-                  to="/testspeech"
+                  to="/selectSpeech"
                   onClick={() => setOpen(false)}
                   className="block font-[pretendard] text-lg text-[#373F41]"
                 >
