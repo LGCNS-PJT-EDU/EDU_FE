@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelectSpeech } from '@/hooks/useSelectSpeech';
 
@@ -9,14 +9,20 @@ export default function Selectspeech() {
   const [filter, setFilter] = useState('');
   const [customSubject, setCustomSubject] = useState('');
 
+  const [selected, setSelected] = useState<Set<string>>(new Set()); 
+  
+  useEffect(() => {
+  if (data) {
+    const initialSelected = new Set(data.existingSubjectIds.map(s => s.subjectNm));
+    setSelected(initialSelected); 
+  }
+}, [data]);
+
   if (isLoading) return <div className="p-4">불러오는 중...</div>;
   if (error || !data) return <div className="text-red-500 p-4">에러가 발생했습니다.</div>;
 
-  const { existingSubjectIds, missingSubjectIds } = data;
-
-  const allSubjects = [...existingSubjectIds, ...missingSubjectIds];
-  const selected = new Set(existingSubjectIds.map(s => s.subjectNm)); 
-
+  const allSubjects = [...data.existingSubjectIds, ...data.missingSubjectIds];
+  
   const handleAddSubject = () => {
     const trimmed = customSubject.trim();
     if (!trimmed) return;
@@ -26,9 +32,21 @@ export default function Selectspeech() {
     }
     // UI 상에서만 임시 추가
     allSubjects.push({ subId: Date.now(), subjectNm: trimmed });
-    selected.add(trimmed);
+    setSelected(prev => new Set([...prev, trimmed]));
     setCustomSubject('');
   };
+
+  const toggleSubject=(subjectNm:string) => {
+    setSelected(prev =>{
+      const newSet = new Set(prev);
+      if (newSet.has(subjectNm)) {
+        newSet.delete(subjectNm);
+      } else {
+        newSet.add(subjectNm);
+      }
+      return newSet;
+    })
+  }
 
   const filteredSubjects = allSubjects.filter(subject =>
     subject.subjectNm.toLowerCase().includes(filter.toLowerCase())
@@ -49,14 +67,16 @@ export default function Selectspeech() {
       <div className="flex flex-wrap gap-4 mb-6">
         {filteredSubjects.map(subject => (
           <div
-            key={subject.subId}
-            className={`w-23 h-10 flex items-center justify-center rounded-lg shadow-md font-[13px] border-2 transition
-              ${selected.has(subject.subjectNm)
-                ? 'border-blue-500 bg-blue-50 text-blue-800'
-                : 'border-gray-300 bg-white text-gray-800'}`}
-          >
-            {subject.subjectNm}
+              key={subject.subId}
+              onClick={() => toggleSubject(subject.subjectNm)}
+              className={`cursor-pointer w-23 h-10 flex items-center justify-center rounded-lg shadow-md font-[13px] border-2 transition
+                ${selected.has(subject.subjectNm)
+                  ? 'border-blue-500 bg-blue-50 text-blue-800'
+                  : 'border-gray-300 bg-white text-gray-800'}`}
+            >
+              {subject.subjectNm}
           </div>
+
         ))}
       </div>
 
