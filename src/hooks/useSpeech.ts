@@ -8,10 +8,10 @@ declare const window: WindowWithRecognition;
 export const useSpeech = () => {
   const [transcript, setTranscript] = useState('');
   const [listening, setListening] = useState(false);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null); // 저장할 Blob 파일 관리
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
+  const audioChunksRef = useRef<Blob[]>([]); // 녹음된 오디오 조각 담을 배열
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   const startListening = async () => {
@@ -29,15 +29,15 @@ export const useSpeech = () => {
     audioChunksRef.current = [];
 
     mediaRecorder.ondataavailable = (event) => {
-      audioChunksRef.current.push(event.data);
+      audioChunksRef.current.push(event.data); // 오디오 조각 배열에 누적하기 
     };
 
-    mediaRecorder.onstop = () => {
+    mediaRecorder.onstop = () => { // 오디오 조각 하나의 파일로 만들기 
       const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
       setAudioBlob(blob);
     };
 
-    mediaRecorder.start();
+    mediaRecorder.start(); // 녹음 시작 
 
     // SpeechRecognition 설정
     const recognition = new SpeechRecognition();
@@ -48,57 +48,54 @@ export const useSpeech = () => {
     recognition.maxAlternatives = 1;
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
-      const result = event.results[0][0].transcript;
-      setTranscript((prev) => prev + ' ' + result); // 누적 저장
+      const result = event.results[0][0].transcript; //정확도가 가장 높은 문장 가져오기기
+      setTranscript((prev) => prev + ' ' + result); // 음성 인식한 텍스트 누적해서 저장하기기
     };
 
-    recognition.onend = () => {
-  if (listening) {
+    recognition.onend = () => { // 음성 인식 자동으로 끝났을 때 계속 재시작하기 
+  if (listening) {  // 듣고 있는데 내용이 아무것도 없으면 
     if (transcript.trim() === '') {
       console.log('인식된 음성이 없습니다.');
     }
-    recognitionRef.current?.start(); // 계속 재시작
+    recognitionRef.current?.start(); // 끊기면 다시 시작 
   }
 };
 
 
    recognition.onerror = (event: any) => {
-  console.error('STT error:', event.error);
-  if (event.error !== 'aborted') {
-  console.error('STT 수동 종료함:', event.error);
-}
+  console.error('STT 수동 종료함:');
+
   if (event.error !== 'aborted' && listening) {
     recognitionRef.current?.start();
   }
 };
 
-
-
-    setListening(true);
+    setListening(true); // 수동 종료한거 아니면 무조건 true로 설정 
     recognition.start(); // STT 시작
   };
 
   const stopRecording = () => {
-    setListening(false); // 수동 종료만 false 처리
-    recognitionRef.current?.abort(); // STT 완전 중단
+    setListening(false);  // listening을 false로 바꾸면 재시작 안 함
+    recognitionRef.current?.abort(); // STT 완전 중단 (강제 종료)
     mediaRecorderRef.current?.stop(); // 녹음 종료
   };
 
+  //TTS
   const speak = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'ko-KR';
     window.speechSynthesis.speak(utterance);
   };
 
-  const resetTranscript = () => setTranscript('');
+  const resetTranscript = () => setTranscript(''); // 음성 인식 결과 초기화
 
   return {
-    transcript,
-    listening,
-    startListening,
-    stopRecording,
-    speak,
-    resetTranscript,
+    transcript, // 음성 인식 전체 문장장
+    listening, // 지금 음성 인식 중인지 여부 
+    startListening,  // STT + 녹음 시작
+    stopRecording,   // STT + 녹음 중단
+    speak, // TTS
+    resetTranscript,  // 텍스트 초기화
     audioBlob,
   };
 };

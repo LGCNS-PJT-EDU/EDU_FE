@@ -13,6 +13,7 @@ import PretestPage from '@/pages/test/PretestPage';
 import PosttestPage from '@/pages/test/PosttestPage';
 import Solution from '@/pages/solution/Solution';
 import TestSpeech from '@/pages/speech/TestSpeech';
+import Selectspeech from '@/pages/speech/selectSpeech';
 import DefaultRoadmap from '@/pages/roadmap/DefaultRoadmap';
 
 const router = createBrowserRouter([
@@ -39,6 +40,7 @@ const router = createBrowserRouter([
       { path: '/roadmap/default/:type', element: <DefaultRoadmap />},
       { path: 'solution', element: <Solution /> },
       { path: 'login/oauth2/code/:provider', element: <OAuthCallback /> },
+      { path: 'selectspeech', element: <Selectspeech /> },
     ],
   },
 ]);

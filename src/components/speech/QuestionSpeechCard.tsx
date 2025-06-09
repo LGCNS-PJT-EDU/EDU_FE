@@ -31,7 +31,7 @@ const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete })
   const countdownTimer = setInterval(() => {
     setCountdown((prev) => {
       if (prev <= 1) {
-        clearInterval(countdownTimer);
+        clearInterval(countdownTimer); // 카운트다운 종료
         setShowCountdown(false);
         handleStart(); // 자동으로 녹음 시작
         return 0;
@@ -47,7 +47,7 @@ const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete })
   useEffect(() => {
   if (transcript) {
     setLocalTranscript(transcript);
-    onTranscriptComplete(question.interviewId, transcript);
+    onTranscriptComplete(question.interviewId, transcript); //상위 컴포넌트에 최신 답변을 전달하기 
   }
 }, [transcript]);
 
@@ -82,15 +82,15 @@ const formatTime = (totalSeconds: number) => {
   //녹음 종료 
   const handleStop = () => {
   stopRecording();
-  setLocalTranscript(transcript); 
-  onTranscriptComplete(question.interviewId, transcript); 
+  setLocalTranscript(transcript);  
+  onTranscriptComplete(question.interviewId, transcript); // 상위 컴포넌트에도 전달
 };
 
 
   // 다운로드용 링크 생성
 const handleDownload = () => {
   if (!audioBlob) return;
-  const url = URL.createObjectURL(audioBlob);
+  const url = URL.createObjectURL(audioBlob); // Blob을 브라우저에서 접근 가능한 임시 URL로 변환
   const a = document.createElement('a');
   a.href = url;
   a.download = `interview_${question.interviewId}.webm`;
