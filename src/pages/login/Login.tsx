@@ -6,10 +6,8 @@ import google from '@/asset/img/login/btn_google.svg';
 import kakao from '@/asset/img/login/btn_kakao.svg';
 import naver from '@/asset/img/login/btn_naver.svg';
 import pixel_texture from '@/asset/img/common/pixel_texture.png';
-import cloud from '@/asset/img/login/cloud.png';
-import cloud_down from '@/asset/img/login/cloud_down.png';
-import star from '@/asset/img/login/star.png';
 import main from '@/asset/img/common/main.png';
+import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png'
 
 import useLogin from '@/hooks/useLogin';
 import { useLoadingStore } from '@/store/useLoadingStore';
@@ -96,23 +94,19 @@ function Login() {
       stopLoading();
     }
   }
+
   return (
-    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex flex-col md:flex-row items-center md:items-start justify-center md:justify-center gap-[200px] md:gap-[200px] overflow-hidden px-4">
+    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex flex-col md:flex-row items-center md:items-start justify-center gap-[200px] overflow-hidden px-0 md:px-4">
       <img
         src={pixel_texture}
-        alt="pixel texture background"
-        className="absolute bottom-0 left-0 w-full h-[70%] object-cover z-0 opacity-70"
+        alt=""
+        className="hidden md:block absolute bottom-0 left-0 w-full h-[100%] object-cover z-0 opacity-70"
       />
-
-      {/* 구름 & 별 장식 */}
-      <img src={cloud} alt="cloud" className="absolute top-35 left-0 w-[200px] z-10" />
       <img
-        src={cloud_down}
-        alt="cloud down"
-        className="absolute bottom-30 right-20 w-[250px] z-20"
+        src={responsiveBG}
+        alt=""
+        className="block md:hidden absolute inset-0 w-full h-full object-cover z-0"
       />
-      <img src={star} alt="star" className="absolute top-15 left-130 w-[100px] z-10" />
-      <img src={star} alt="star" className="absolute top-50 right-80 w-[100px] z-20" />
 
       {/* 배너 */}
       <div className="hidden md:flex relative justify-center items-center self-center">
@@ -125,7 +119,15 @@ function Login() {
       </div>
 
       {/* 로그인 박스 */}
-      <div className="relative w-full max-w-[400px] my-15 p-[60px_40px] md:p-[60px_70px] bg-white rounded-[30px] flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] min-h-[calc(100vh-200px)]">
+      <div className="relative w-full max-w-[450px]
+                      md:w-full md:max-w-[400px]
+                      max-md:-mx-4
+                      mb-25 mt-80 md:my-15
+                      translate-y-8 md:translate-y-0
+                      p-10 md:p-[60px_70px]
+                      bg-white rounded-[40px] md:rounded-[30px]
+                      flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] 
+                      border border-[#E0E0E0] min-h-[calc(100vh-200px)]">
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
         <h2 className="mt-1 mb-1 text-xl font-semibold">Login</h2>
 
