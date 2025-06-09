@@ -13,10 +13,36 @@ interface Props {
 }
 
 const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete }) => {
-  const { transcript, listening, startListening, resetTranscript, speak } = useSpeech();
+  const { transcript,
+  listening,
+  startListening,
+  stopRecording,
+  speak,
+  resetTranscript,
+  audioBlob, } = useSpeech();
+
   const [feedback, setFeedback] = useState('');
   const [localTranscript, setLocalTranscript] = useState('');
   const [seconds,setSeconds]=useState(0);
+  const [countdown, setCountdown] =useState(3);
+  const [showCountdown, setShowCountdown] = useState(true);
+
+  useEffect(() => {
+  const countdownTimer = setInterval(() => {
+    setCountdown((prev) => {
+      if (prev <= 1) {
+        clearInterval(countdownTimer);
+        setShowCountdown(false);
+        handleStart(); // 자동 녹음 시작
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+
+  return () => clearInterval(countdownTimer);
+}, []);
+
 
   useEffect(() => {
     if (!listening && transcript) {
@@ -43,6 +69,7 @@ const formatTime = (totalSeconds: number) => {
 };
 
 
+// 녹음 시작 
   const handleStart = () => {
     resetTranscript();
     setLocalTranscript('');
@@ -51,6 +78,20 @@ const formatTime = (totalSeconds: number) => {
     startListening();
   };
 
+  //녹음 종료 
+  const handleStop=()=>{
+    stopRecording();
+  };
+
+  // 다운로드용 링크 만들기
+const handleDownload = () => {
+  if (!audioBlob) return;
+  const url = URL.createObjectURL(audioBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `interview_${question.interviewId}.webm`;
+  a.click();
+};
 
   const handlePlayQuestion = () => {
     speak(question.interviewContent);
@@ -73,21 +114,48 @@ const formatTime = (totalSeconds: number) => {
         </button>
       </div>
 
-      {/* 녹음 시작 버튼 */}
-      <div className="flex justify-center mb-4">
-        <button
-          onClick={handleStart}
-          disabled={listening}
-          className={`px-5 py-2 rounded-md border font-semibold text-sm transition-colors 
-          ${listening ? 'bg-cyan-200 text-white cursor-not-allowed' : 'bg-white text-cyan-600 border-cyan-400 hover:bg-cyan-50'}`}
-        >
-          🎤 {listening ? '듣는 중...' : '녹음 시작'}
-        </button>
-      </div>
+      {/* 듣는 중 상태만 표시 */}
+{listening && (
+  <div className="flex justify-center mb-4">
+    <span className="px-5 py-2 rounded-md bg-cyan-200 text-white font-semibold text-sm">
+       듣는 중...
+    </span>
+  </div>
+)}
 
-      {/* 타이머 */}
-      <div className="text-center text-lg font-mono mb-1">{formatTime(seconds)}</div>
-      <p className="text-center text-sm text-gray-500 mb-4">대기 중..</p>
+      {/* 타이머 or 카운트다운 표시 */}
+      <div className="text-center text-lg font-mono mb-1">
+        {showCountdown ? `녹음까지 ${countdown}초` : formatTime(seconds)}
+      </div>
+      <p className="text-center text-sm text-gray-500 mb-4">
+        {showCountdown ? '잠시 후 녹음이 시작됩니다...' : '대기 중...'}
+      </p>
+
+
+      {/* 녹음 중단 버튼 */}
+{listening && (
+  <div className="flex justify-center mb-4">
+    <button
+      onClick={handleStop}
+      className="px-5 py-2 rounded-md bg-red-500 text-white text-sm font-semibold hover:bg-red-600"
+    >
+      🛑 녹음 종료
+    </button>
+  </div>
+)}
+
+{/* 다운로드 버튼 */}
+{audioBlob && (
+  <div className="flex justify-center mb-4">
+    <button
+      onClick={handleDownload}
+      className="px-4 py-2 rounded-md bg-green-500 text-white text-sm font-semibold hover:bg-green-600"
+    >
+      ⬇ 녹음 파일 다운로드
+    </button>
+  </div>
+)}
+
 
       {/* 음성 인식 결과 */}
       {localTranscript && (
