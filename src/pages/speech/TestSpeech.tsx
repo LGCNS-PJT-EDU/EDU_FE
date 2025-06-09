@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '@/api/axios';
 import { submitInterviewAnswers } from '@/api/interviewService';
 import QuestionSpeechCard from '@/components/speech/QuestionSpeechCard';
+import { useLocation } from 'react-router-dom';
 
 interface InterviewQuestion {
   interviewId: number;
@@ -18,22 +19,31 @@ const TestSpeech: React.FC = () => {
   const [subjectIds, setSubjectIds] = useState<number[]>([]);
   const [answers, setAnswers] = useState<{ [interviewId: number]: string }>({});
 
+  const location = useLocation();
+  const subjectIdsFromState = (location.state as { subjectIds: number[] })?.subjectIds ?? [];
+
   // 1번 과목으로 요청 보내고 있는데 면접 과목 선택 페이지 완료하면 사용자가 선택한 실제 과목 ID로 바꿔주기 
-  useEffect(() => {
+   useEffect(() => {
     async function fetchQuestions() {
-      const res = await api.get<{ data: InterviewQuestion[] }>('/api/interview/list', {
-        params: { subjectIds: [1] },
-      });
+      try {
+        const res = await api.get<{ data: InterviewQuestion[] }>('/api/interview/list', {
+          params: { subjectIds: subjectIdsFromState },
+        });
 
-      setQuestions(res.data.data);
-
-      if (res.data.data.length > 0) {
-        setNth(res.data.data[0].nth);
+        setQuestions(res.data.data);
+        if (res.data.data.length > 0) {
+          setNth(res.data.data[0].nth);
+        }
+      } catch (error) {
+        console.error('질문 목록 불러오기 실패:', error);
       }
     }
 
-    fetchQuestions();
-  }, []);
+    if (subjectIdsFromState.length > 0) { // 선택한 과목 없으면 호출 안함 
+      fetchQuestions();
+      setSubjectIds(subjectIdsFromState); 
+    }
+  }, [subjectIdsFromState]);
 
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
