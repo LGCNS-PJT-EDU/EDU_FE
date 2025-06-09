@@ -13,17 +13,44 @@ interface Props {
 }
 
 const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete }) => {
-  const { transcript, listening, startListening, resetTranscript, speak } = useSpeech();
+  const { transcript,
+  listening,
+  startListening,
+  stopRecording,
+  speak,
+  resetTranscript,
+  audioBlob, } = useSpeech();
+
   const [feedback, setFeedback] = useState('');
   const [localTranscript, setLocalTranscript] = useState('');
   const [seconds,setSeconds]=useState(0);
+  const [countdown, setCountdown] =useState(10); // 카운트 다운
+  const [showCountdown, setShowCountdown] = useState(true);
 
   useEffect(() => {
-    if (!listening && transcript) {
-      setLocalTranscript(transcript);
-      onTranscriptComplete(question.interviewId, transcript); 
-    }
-  }, [listening, transcript]);
+  const countdownTimer = setInterval(() => {
+    setCountdown((prev) => {
+      if (prev <= 1) {
+        clearInterval(countdownTimer);
+        setShowCountdown(false);
+        handleStart(); // 자동으로 녹음 시작
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+
+  return () => clearInterval(countdownTimer);
+}, []);
+
+
+  useEffect(() => {
+  if (transcript) {
+    setLocalTranscript(transcript);
+    onTranscriptComplete(question.interviewId, transcript);
+  }
+}, [transcript]);
+
 
   useEffect(() => {
   if (!listening) return;
@@ -43,6 +70,7 @@ const formatTime = (totalSeconds: number) => {
 };
 
 
+// 녹음 시작 
   const handleStart = () => {
     resetTranscript();
     setLocalTranscript('');
@@ -51,6 +79,23 @@ const formatTime = (totalSeconds: number) => {
     startListening();
   };
 
+  //녹음 종료 
+  const handleStop = () => {
+  stopRecording();
+  setLocalTranscript(transcript); 
+  onTranscriptComplete(question.interviewId, transcript); 
+};
+
+
+  // 다운로드용 링크 생성
+const handleDownload = () => {
+  if (!audioBlob) return;
+  const url = URL.createObjectURL(audioBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `interview_${question.interviewId}.webm`;
+  a.click();
+};
 
   const handlePlayQuestion = () => {
     speak(question.interviewContent);
@@ -73,28 +118,46 @@ const formatTime = (totalSeconds: number) => {
         </button>
       </div>
 
-      {/* 녹음 시작 버튼 */}
-      <div className="flex justify-center mb-4">
-        <button
-          onClick={handleStart}
-          disabled={listening}
-          className={`px-5 py-2 rounded-md border font-semibold text-sm transition-colors 
-          ${listening ? 'bg-cyan-200 text-white cursor-not-allowed' : 'bg-white text-cyan-600 border-cyan-400 hover:bg-cyan-50'}`}
-        >
-          🎤 {listening ? '듣는 중...' : '녹음 시작'}
-        </button>
-      </div>
-
       {/* 타이머 */}
-      <div className="text-center text-lg font-mono mb-1">{formatTime(seconds)}</div>
-      <p className="text-center text-sm text-gray-500 mb-4">대기 중..</p>
+      <div className="text-center text-lg font-mono mb-1">
+        {showCountdown ? `녹음까지 ${countdown}초` : formatTime(seconds)}
+      </div>
+      <p className="text-center text-sm text-gray-500 mb-4">
+        {showCountdown ? '잠시 후 녹음이 시작됩니다.' : ''}
+      </p>
 
-      {/* 음성 인식 결과 */}
-      {localTranscript && (
-        <div className="bg-gray-100 text-sm text-gray-800 p-4 rounded-md mb-4 min-h-[60px]">
-          {localTranscript}
-        </div>
-      )}
+
+      {/* 녹음 종료 버튼 */}
+{listening && (
+  <div className="flex justify-center mb-4">
+    <button
+      onClick={handleStop}
+      className="px-5 py-2 rounded-md bg-red-500 text-white text-sm font-semibold hover:bg-red-600"
+    >
+      🛑 녹음 종료
+    </button>
+  </div>
+)}
+
+{/* 다운로드 버튼 */}
+{audioBlob && (
+  <div className="flex justify-center mb-4">
+    <button
+      onClick={handleDownload}
+      className="px-4 py-2 rounded-md bg-green-500 text-white text-sm font-semibold hover:bg-green-600"
+    >
+      ⬇ 녹음 파일 다운로드
+    </button>
+  </div>
+)}
+
+      {/* 음성 인식 결과 */} 
+{localTranscript && (
+  <div className="bg-gray-100 text-sm text-gray-800 p-4 rounded-md mb-4 min-h-[60px]">
+    {localTranscript}
+  </div>
+)}
+
 
     </section>
   );

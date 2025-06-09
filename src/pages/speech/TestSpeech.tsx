@@ -48,10 +48,11 @@ const TestSpeech: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    // 질문id랑 답변 key,value로 묶어서 map 돌기 
   const payload = Object.entries(answers).map(([interviewId, userReply]) => ({
-    interviewId: Number(interviewId),
+    interviewId: Number(interviewId), //문자열이여서 정수로 바꿔주기 
     userReply,
-    nth: nth!,
+    nth: nth!, //nth가 null/undefined가 아님을 보장하기 위해 ! 사용
   }));
 
   try {
