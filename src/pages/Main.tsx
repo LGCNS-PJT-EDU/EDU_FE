@@ -50,7 +50,7 @@ export default function Main() {
       </section>
 
         {/* 진단 → 로드맵 → 학습 → 평가 흐름 소개 섹션 */}
-        <section ref={bottomRef} className="relative min-h-screen snap-start w-full flex flex-col items-center text-center max-w-[900px] px-4 mx-auto pt-20 scroll-mt-[50px]">
+        <section ref={bottomRef} className="relative min-h-screen snap-start w-full flex flex-col items-center text-center max-w-[900px] px-4 mx-auto pt-20 scroll-mt-[75px]">
           <h2 className="mb-4 text-2xl md:text-3xl font-bold text-center text-[#3d3d3d]">
             AI가 함께하는 학습 여정, 이렇게 진행돼요!
           </h2>
