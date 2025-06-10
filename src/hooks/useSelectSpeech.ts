@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 interface Subject {
     subId: number;
     subjectNm: string;
+    isComplete: boolean
 }
 
 interface ApiResponse {
