@@ -6,7 +6,7 @@ import { useSnackbarStore } from '@/store/useSnackbarStore';
 import nodeDoneImg    from '@/asset/img/roadmap/subject/doneNode.png';
 import nodeCurrentImg from '@/asset/img/roadmap/subject/currentNode.png';
 import nodeTodoImg    from '@/asset/img/roadmap/subject/todoNode.png';
-import rabbitImg      from '@/asset/img/common/takeRabbit.png';
+import arrow      from '@/asset/img/common/pixel_arrow.png';
 
 const NODE_SIZE    = 36;
 const LABEL_OFFSET = 8;
@@ -83,7 +83,7 @@ export default function RoadmapNode({
         <img
           src={iconSrc}
           alt=""
-          className="w-9 h-9"
+          className="w-11 h-11"
           style={{ opacity: isDragging ? 0.5 : 1 }}
         />
 
@@ -98,15 +98,15 @@ export default function RoadmapNode({
             <X size={12} />
           </button>
         )}
-
-        {isCurrent && (
-          <img
-            src={rabbitImg}
-            alt="현재 위치"
-            className="absolute -top-6 left-1/2 -translate-x-1/2 w-15 h-12"
-          />
-        )}
       </div>
+      {isCurrent && (
+        <img
+          style={{ left: x, top: y-80 }}
+          src={arrow}
+          alt="현재 위치"
+          className="absolute -top- left-1/2 -translate-x-1/2 w-16.5 h-12"
+        />
+      )}
 
       {/* 라벨 */}
       {showLabel && node && (

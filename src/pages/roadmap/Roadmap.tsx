@@ -23,37 +23,40 @@ export default function Roadmap() {
   const navigate = useNavigate();
   /* 정식 로드맵 있으면 있는거 가져오기 */
   const roadmapFromState = state as RoadmapPayload | undefined;
-  const { data: userRoadmap, isLoading: loadingUser, isError, error } = useRoadmapQuery();
 
   /* uuid, 로그인 여부 */
   const uuid = useGuestUuidStore((s) => s.uuid);
   const isLoggedIn = useIsLoggedIn();
 
+  /* React Query: state 가 없을 때만 fetch */
+  const { data: userRoadmap, isLoading: loadingUser, isError, error } = useRoadmapQuery({
+    enabled: !Boolean(roadmapFromState),
+    refetchOnMount: 'always',
+  });
+
   /* Zustand 상태 */
-  const setInitial = useRoadmapStore((s) => s.setInitial);
   const toggleEditing = useRoadmapStore((s) => s.toggleEditing);
   const editing = useRoadmapStore((s) => s.editing);
   const { save, saving } = useRoadmapEdit();
   const selected = useRoadmapStore((s) => s.selected);
   const modalOpen = useRoadmapStore((s) => s.modalOpen);
   const closeModal = useRoadmapStore((s) => s.closeModal);
-  const setCurrentOrder = useRoadmapStore((s) => s.setCurrentOrder);
+  const nodes = useRoadmapStore((s) => s.nodes);
 
   /* 로컬 모달 상태 */
   const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   /* 진입 시 로드맵 주입 */
   console.log("[Roadmap.tsx] ▶️ fromState:", roadmapFromState, "  /  userRoadmap:", userRoadmap);
-  const roadmap = userRoadmap ?? roadmapFromState;
+  const roadmap = roadmapFromState ?? userRoadmap;
 
   /* 로드맵 보여주기 */
   useEffect(() => {
-    const source = userRoadmap ?? roadmapFromState;
-    console.log("[Roadmap.tsx] initializing subjects from →", source);
+    const source = roadmapFromState ?? userRoadmap;
     if (source?.subjects) {
-      setInitial(source.subjects);
+      useRoadmapStore.getState().setInitial(source.subjects);
     }
-  }, [userRoadmap, roadmapFromState, setInitial]);
+  }, [userRoadmap, roadmapFromState]);
 
   /* 현재 과목 order 계산하기 */
   useEffect(() => {
@@ -61,9 +64,15 @@ export default function Roadmap() {
     const cur = roadmap.subjects.find(
       (s) => s.subjectId === roadmap.userLocationSubjectId
     );
-    setCurrentOrder(cur?.subjectOrder ?? 0);
-  }, [roadmap, setCurrentOrder]);
+    useRoadmapStore.getState().setCurrentOrder(cur?.subjectOrder ?? 0);
+  }, [roadmap]);
 
+  /* 진척도 계산 */
+  const total = nodes.length;
+  const currentOrder = useRoadmapStore((s) => s.currentOrder) ?? 0;
+  const percent = total ? Math.round(((currentOrder - 1) / total) * 100) : 0;
+  const doneCount = Math.max(currentOrder - 1, 0);
+  
   /* 로그인 안 한 상태에서 모달 열면 로그인 유도 */
   useEffect(() => {
     if (modalOpen && !isLoggedIn) {
@@ -102,12 +111,6 @@ export default function Roadmap() {
 
   if (!roadmap) return null;
 
-  /* 진척도 계산 */
-  const total = roadmap.subjects.length;
-  const currentOrder = useRoadmapStore.getState().currentOrder ?? 0;
-  const percent = total ? Math.round(((currentOrder - 1) / total) * 100) : 0;
-  const doneCount = Math.max(currentOrder - 1, 0);
-
   return (
     <section className="font-[pretendard] pt-[50px] pb-[50px] mx-auto">
       {/* 진척도 바 + 수정 토글 */}
@@ -116,7 +119,7 @@ export default function Roadmap() {
           <div className="flex items-center mb-3">
             <img src={rabbit} alt="rabbit" className="w-[30px] mr-2" />
             <p className="text-[20px] font-bold break-keep">
-              프론트엔드 {/* roadmap.roadmapName ?? "로드맵" 추후에 수정*/}
+              { roadmap.roadmapName ?? "로드맵" }
             </p>
           </div>
 
