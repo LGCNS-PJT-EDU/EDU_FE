@@ -16,7 +16,6 @@ export default function Report() {
   const numericId = Number(subjectId);
 
   const { data = [], isLoading, isError } = useFeedback(numericId);
-  console.log('📦 피드백 데이터:', data);
 
   const [idx, setIdx] = useState(0);
   const startX = useRef(0);
@@ -38,14 +37,14 @@ export default function Report() {
   // 사전 평가만 있을 때
   if (sorted.length === 1) {
     const pre = sorted[0];
-    const labels = Object.keys(pre.scores).slice(1); // total 제외
-    const preScores = Object.values(pre.scores).slice(1); // total 제외
+    const labels = Object.keys(pre.scores).filter((key) => key !== 'total');
+    const preScores = labels.map((label) => pre.scores[label]);
     const totalScore = pre.scores['total']; // 총점 따로 저장
     const strengthArr = Object.values(pre.feedback.strength);
     const weaknessArr = Object.values(pre.feedback.weakness);
 
     return (
-      <div className="p-8 font-[pretendard] text-center">
+      <div className="py-8 font-[pretendard] text-center">
         <h2 className="mb-2 text-2xl font-bold text-[#5B7CFF]">Education Evaluation</h2>
         <p className="text-gray-600">사전 평가 결과</p>
 
@@ -57,40 +56,66 @@ export default function Report() {
 
         <p className="mt-8 text-gray-500">사후 평가를 완료하면 비교 결과와 한줄평가를 볼 수 있습니다.</p>
 
-        <table className="mt-10 w-full table-fixed border-separate border-spacing-0 text-sm text-gray-800">
+        <table className="mt-10 w-full table-fixed border-collapse rounded-xl overflow-hidden text-sm">
           <thead>
-            <tr>
-              <th className="w-[60px]" />
+            <tr className="bg-[#EEF2FF] text-[#6378EB]">
+              <th className="w-[90px] py-3 text-center"></th>
               {labels.map((k) => (
-                <th key={k} className="border-l border-b border-blue-200">
-                  <div className="font-bold">{k}</div>
+                <th key={k} className="px-2 py-3 text-center font-bold">
+                  {k.length > 11 ? (
+                    <>
+                      {k.slice(0, 11)}<br />{k.slice(11)}
+                    </>
+                  ) : k}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            <tr className="align-top">
-              <td className="border-t border-b border-blue-200">
-                <img src={good} alt="good" className="mx-auto h-6 w-6" />
+            {/* 긍정 피드백 */}
+            <tr className="bg-[#E0F2FE] align-top">
+              <td className="text-center align-middle py-2">
+                <img src={good} alt="good" className="mx-auto h-9 w-9" />
               </td>
               {labels.map((_, i) => (
-                <td key={i} className="border-l border-b border-blue-200 px-2 py-3 text-left">
-                  {strengthArr[i] ?? '—'}
+                <td key={i} className="px-3 py-6 text-left">
+                  {(strengthArr[i] ?? '—')
+                    .split('.')
+                    .filter(Boolean)
+                    .map((sentence, idx, arr) => (
+                      <span key={idx}>
+                        {sentence.trim()}
+                        {idx < arr.length - 1 && '.'}
+                        <br />
+                      </span>
+                    ))}
                 </td>
               ))}
             </tr>
-            <tr className="align-top">
-              <td>
-                <img src={weakness} alt="bad" className="mx-auto h-6 w-6" />
+
+            {/* 부정 피드백 */}
+            <tr className="bg-[#FEE2E2] align-top">
+              <td className="text-center align-middle py-2">
+                <img src={weakness} alt="bad" className="mx-auto w-9 h-9" />
               </td>
               {labels.map((_, i) => (
-                <td key={i} className="border-l border-blue-200 px-2 py-3 text-left">
-                  {weaknessArr[i] ?? '—'}
+                <td key={i} className="px-3 py-6 text-left">
+                  {(weaknessArr[i] ?? '—')
+                    .split('.')
+                    .filter(Boolean)
+                    .map((sentence, idx, arr) => (
+                      <span key={idx}>
+                        {sentence.trim()}
+                        {idx < arr.length - 1 && '.'}
+                        <br />
+                      </span>
+                    ))}
                 </td>
               ))}
             </tr>
           </tbody>
         </table>
+
       </div>
     );
   }
@@ -108,14 +133,13 @@ export default function Report() {
   const strengthArr = labels.map((label) => currentFeedback.strength[label] ?? '—');
   const weaknessArr = labels.map((label) => currentFeedback.weakness[label] ?? '—');
 
-
   return (
     <div className="relative flex flex-col items-center px-4 py-10 font-[pretendard]">
       <h2 className="mb-2 text-2xl font-bold text-[#5B7CFF]">Education Evaluation</h2>
       <p className="text-center text-gray-600">사전·사후 학습 결과 비교</p>
 
       <p className="mt-4 text-sm text-gray-700">
-        사전 총점: {preTotal}점 / 사후 총점: {postTotal}점
+        사전평가 득점수: {preTotal}점 / 사후평가 득점수: {postTotal}점
       </p>
 
       {idx > 0 && (
@@ -129,8 +153,7 @@ export default function Report() {
         </button>
       )}
 
-      <div
-        className="relative mt-10 w-full max-w-[500px] overflow-hidden"
+      <div className="relative mt-10 w-full max-w-[800px] h-[550px] mx-auto overflow-hidden"
         onTouchStart={swipeStart}
         onTouchEnd={swipeEnd}
       >
@@ -146,7 +169,6 @@ export default function Report() {
           </div>
           <div className="w-full flex-shrink-0">
             <BarChart
-              labels={labels}
               pre={preScores}
               post={postScores}
               final={post.feedback.final}
@@ -167,40 +189,66 @@ export default function Report() {
       )}
 
       {idx < 2 && (
-        <table className="mt-10 w-full table-fixed border-separate border-spacing-0 text-sm text-gray-800">
+        <table className="mt-10 w-full table-fixed border-collapse rounded-xl overflow-hidden shadow-md text-sm text-gray-800">
           <thead>
-            <tr>
-              <th className="w-[60px]" />
+            <tr className="bg-blue-100 text-blue-800">
+              <th className="w-[60px] py-3 text-center"></th>
               {labels.map((k) => (
-                <th key={k} className="border-l border-b border-blue-200">
-                  <div className="font-bold">{k}</div>
+                <th key={k} className="px-2 py-3 text-center font-bold">
+                  {k.length > 11 ? (
+                    <>
+                      {k.slice(0, 11)}<br />{k.slice(11)}
+                    </>
+                  ) : k}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            <tr className="align-top">
-              <td className="border-t border-b border-blue-200">
-                <img src={good} alt="good" className="mx-auto h-6 w-6" />
+            {/* 긍정 피드백 */}
+            <tr className="bg-blue-50 align-top leading-relaxed">
+              <td className="text-center align-middle py-4">
+                <div className=" rounded-full w-8 h-8 flex items-center justify-center mx-auto text-lg">
+                  <img src={good} alt="긍정피드백" />
+                </div>
               </td>
               {labels.map((_, i) => (
-                <td key={i} className="border-l border-b border-blue-200 px-2 py-3 text-left">
-                  {strengthArr[i] ?? '—'}
+                <td key={i} className="px-3 py-4 text-left">
+                  {(strengthArr[i] ?? '—')
+                    .split('.')
+                    .filter(Boolean)
+                    .map((sentence, idx) => (
+                      <div key={idx} className="pb-[2px]">
+                        {sentence.trim() + '.'}
+                      </div>
+                    ))}
                 </td>
               ))}
             </tr>
-            <tr className="align-top">
-              <td>
-                <img src={weakness} alt="bad" className="mx-auto h-6 w-6" />
+
+            {/* 부정 피드백 */}
+            <tr className="bg-red-100 align-top leading-relaxed">
+              <td className="text-center align-middle py-4">
+                <div className="rounded-full w-8 h-8 flex items-center justify-center mx-auto text-lg">
+                  <img src={weakness} alt="긍정피드백" />
+                </div>
               </td>
               {labels.map((_, i) => (
-                <td key={i} className="border-l border-blue-200 px-2 py-3 text-left">
-                  {weaknessArr[i] ?? '—'}
+                <td key={i} className="px-2 py-4 text-left">
+                  {(weaknessArr[i] ?? '—')
+                    .split('.')
+                    .filter(Boolean)
+                    .map((sentence, idx) => (
+                      <div key={idx} className="pb-[2px]">
+                        {sentence.trim() + '.'}
+                      </div>
+                    ))}
                 </td>
               ))}
             </tr>
           </tbody>
         </table>
+
       )}
     </div>
   );

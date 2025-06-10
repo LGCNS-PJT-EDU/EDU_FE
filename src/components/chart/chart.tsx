@@ -36,9 +36,9 @@ export default function RadarChart({
             borderColor: color,
             borderWidth: 2,
             pointBackgroundColor: color,
-            pointRadius: 4,
-            pointHoverRadius: 6,
-            fill: false, // 배경 제거
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            fill: false,
           },
         ],
       },
@@ -65,19 +65,26 @@ export default function RadarChart({
         scales: {
           r: {
             min: 0,
-            max: 100,
+            max: 75,
             ticks: {
-              stepSize: 20,
+              stepSize: 15,
               color: '#6b7280',
               backdropColor: 'transparent',
             },
             grid: {
               color: '#e5e7eb',
-              circular: true,
+              circular: false,
             },
             pointLabels: {
-              font: { size: 14 },
-              color: '#374151',
+              font: 
+              { size: 14,
+                weight: 'bold'
+               },
+              color: '#6378EB',
+              callback: function(label: string, index: number){
+                const score = values[index];
+                return [label, `${score}점`]
+              }
             },
           },
         },
@@ -86,8 +93,8 @@ export default function RadarChart({
   }, [labels, values, label, color]);
 
   return (
-    <div style={{ width: '100%', maxWidth: 500, height: 500, margin: 'auto' }}>
-      <Radar data={data} options={options} />
+    <div style={{ width: '100%', maxWidth: 600, height: 600, margin: 'auto' }}>
+      <Radar data={data} options={options as any} />
     </div>
   );
 }
