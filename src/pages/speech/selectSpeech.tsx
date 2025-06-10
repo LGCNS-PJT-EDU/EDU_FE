@@ -48,21 +48,19 @@ export default function Selectspeech() {
       <div className="flex mb-6 border-b border-gray-200">
         <button
           onClick={() => setTab('existing')}
-          className={`mr-4 pb-2 border-b-2 ${
-            tab === 'existing'
-              ? 'border-[#6378EB] text-[#6378EB] font-bold'
-              : 'border-transparent text-gray-500'
-          }`}
+          className={`mr-4 pb-2 border-b-2 ${tab === 'existing'
+            ? 'border-[#6378EB] text-[#6378EB] font-bold'
+            : 'border-transparent text-gray-500'
+            }`}
         >
           로드맵 과목
         </button>
         <button
           onClick={() => setTab('missing')}
-          className={`pb-2 border-b-2 ${
-            tab === 'missing'
-              ? 'border-[#6378EB] text-[#6378EB] font-bold'
-              : 'border-transparent text-gray-500'
-          }`}
+          className={`pb-2 border-b-2 ${tab === 'missing'
+            ? 'border-[#6378EB] text-[#6378EB] font-bold'
+            : 'border-transparent text-gray-500'
+            }`}
         >
           전체 과목
         </button>
@@ -78,7 +76,7 @@ export default function Selectspeech() {
       />
 
       {/* 과목 카드 목록 */}
-      <div className="flex flex-wrap gap-3 mb-6 min-h-[180px]">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {filteredSubjects.map(subject => {
           const isSelected = selected.has(subject.subjectNm);
 
@@ -86,12 +84,12 @@ export default function Selectspeech() {
             <div
               key={subject.subId}
               onClick={() => toggleSubject(subject.subjectNm)}
-              className={`relative w-40 h-20 flex items-center justify-center px-3 text-center rounded-lg font-[13px] font-bold border-3 cursor-pointer transition
-                ${
-                  isSelected
-                    ? 'border-[#6378EB] bg-blue-50 text-[#6378EB]'
-                    : 'border-gray-300 bg-white text-gray-800'
+              className={`relative w-full h-16 sm:h-20 flex items-center justify-center px-4 text-center rounded-lg font-bold border-2 cursor-pointer transition
+                  ${isSelected
+                  ? 'border-[#6378EB] bg-blue-50 text-[#6378EB]'
+                  : 'border-gray-300 bg-white text-gray-800'
                 }`}
+
             >
               {subject.isComplete && (
                 <div className="absolute top-1 left-1 bg-[#73ccdc] text-white text-[12px] px-2 py-[2px] rounded-[7px] font-semibold z-10">
