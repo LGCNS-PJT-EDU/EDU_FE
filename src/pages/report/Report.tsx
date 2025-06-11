@@ -34,92 +34,6 @@ export default function Report() {
 
   const sorted = [...data].sort((a, b) => +new Date(a.info.date) - +new Date(b.info.date));
 
-  // 사전 평가만 있을 때
-  if (sorted.length === 1) {
-    const pre = sorted[0];
-    const labels = Object.keys(pre.scores).filter((key) => key !== 'total');
-    const preScores = labels.map((label) => pre.scores[label]);
-    const totalScore = pre.scores['total']; // 총점 따로 저장
-    const strengthArr = Object.values(pre.feedback.strength);
-    const weaknessArr = Object.values(pre.feedback.weakness);
-
-    return (
-      <div className="py-8 font-[pretendard] text-center">
-        <h2 className="mb-2 text-2xl font-bold text-[#5B7CFF]">Education Evaluation</h2>
-        <p className="text-gray-600">사전 평가 결과</p>
-
-        <p className="mt-6 text-gray-700 font-medium">총점: {totalScore}점</p>
-
-        <div className="mt-4">
-          <RadarChart labels={labels} values={preScores} label="Pre" color="#5b7cff" />
-        </div>
-
-        <p className="mt-8 text-gray-500">사후 평가를 완료하면 비교 결과와 한줄평가를 볼 수 있습니다.</p>
-
-        <table className="mt-10 w-full table-fixed border-collapse rounded-xl overflow-hidden text-sm">
-          <thead>
-            <tr className="bg-[#EEF2FF] text-[#6378EB]">
-              <th className="w-[90px] py-3 text-center"></th>
-              {labels.map((k) => (
-                <th key={k} className="px-2 py-3 text-center font-bold">
-                  {k.length > 11 ? (
-                    <>
-                      {k.slice(0, 11)}<br />{k.slice(11)}
-                    </>
-                  ) : k}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {/* 긍정 피드백 */}
-            <tr className="bg-[#E0F2FE] align-top">
-              <td className="text-center align-middle py-2">
-                <img src={good} alt="good" className="mx-auto h-9 w-9" />
-              </td>
-              {labels.map((_, i) => (
-                <td key={i} className="px-3 py-6 text-left">
-                  {(strengthArr[i] ?? '—')
-                    .split('.')
-                    .filter(Boolean)
-                    .map((sentence, idx, arr) => (
-                      <span key={idx}>
-                        {sentence.trim()}
-                        {idx < arr.length - 1 && '.'}
-                        <br />
-                      </span>
-                    ))}
-                </td>
-              ))}
-            </tr>
-
-            {/* 부정 피드백 */}
-            <tr className="bg-[#FEE2E2] align-top">
-              <td className="text-center align-middle py-2">
-                <img src={weakness} alt="bad" className="mx-auto w-9 h-9" />
-              </td>
-              {labels.map((_, i) => (
-                <td key={i} className="px-3 py-6 text-left">
-                  {(weaknessArr[i] ?? '—')
-                    .split('.')
-                    .filter(Boolean)
-                    .map((sentence, idx, arr) => (
-                      <span key={idx}>
-                        {sentence.trim()}
-                        {idx < arr.length - 1 && '.'}
-                        <br />
-                      </span>
-                    ))}
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
-
-      </div>
-    );
-  }
-
   // 사전 + 사후 평가 있을 때
   const pre = sorted[0];
   const post = sorted[sorted.length - 1];
@@ -132,14 +46,15 @@ export default function Report() {
   const currentFeedback = idx === 0 ? pre.feedback : post.feedback;
   const strengthArr = labels.map((label) => currentFeedback.strength[label] ?? '—');
   const weaknessArr = labels.map((label) => currentFeedback.weakness[label] ?? '—');
-
+  const hasPost = sorted.length > 1;
+  
   return (
     <div className="relative flex flex-col items-center px-4 py-10 font-[pretendard]">
       <h2 className="mb-2 text-2xl font-bold text-[#5B7CFF]">Education Evaluation</h2>
       <p className="text-center text-gray-600">사전·사후 학습 결과 비교</p>
 
       <p className="mt-4 text-sm text-gray-700">
-        사전평가 득점수: {preTotal}점 / 사후평가 득점수: {postTotal}점
+        사전 총점: {preTotal}점 / 사후 총점: {postTotal}점
       </p>
 
       {idx > 0 && (
@@ -153,7 +68,7 @@ export default function Report() {
         </button>
       )}
 
-      <div className="relative mt-10 w-full max-w-[800px] h-[550px] mx-auto overflow-hidden"
+      <div className="relative mt-10 w-full max-w-[700px] h-[500px] mx-auto overflow-hidden"
         onTouchStart={swipeStart}
         onTouchEnd={swipeEnd}
       >
@@ -164,16 +79,17 @@ export default function Report() {
           <div className="w-full flex-shrink-0">
             <RadarChart labels={labels} values={preScores} label="Pre" color="#5b7cff" />
           </div>
-          <div className="w-full flex-shrink-0">
-            <RadarChart labels={labels} values={postScores} label="Post" color="#ff6ab0" />
-          </div>
-          <div className="w-full flex-shrink-0">
-            <BarChart
-              pre={preScores}
-              post={postScores}
-              final={post.feedback.final}
-            />
-          </div>
+
+          {hasPost && (
+            <>
+              <div className="w-full flex-shrink-0">
+                <RadarChart labels={labels} values={postScores} label="Post" color="#ff6ab0" />
+              </div>
+              <div className="w-full flex-shrink-0">
+                <BarChart pre={preScores} post={postScores} final={post.feedback.final} />
+              </div>
+            </>
+          )}
         </div>
       </div>
 

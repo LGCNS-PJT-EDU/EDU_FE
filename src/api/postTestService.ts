@@ -74,9 +74,9 @@ export async function fetchPostTestQuestions(
     const originalChoices: PostTestChoice[] = [q.choice1, q.choice2, q.choice3, q.choice4]
       .filter((c): c is string => Boolean(c))
       .map((text, idx) => ({
-        id: idx + 1,            // 원본 key (1~4)
+        id: idx + 1,            
         text,
-        value: String(idx + 1), // 서버로 보낼 값
+        value: String(idx + 1), 
       }));
     // 2. 셔플
     const shuffledChoices = shuffleArray(originalChoices);
@@ -94,7 +94,7 @@ export async function fetchPostTestQuestions(
       chapterNum: q.chapterNum,
       chapterName: q.chapterName,
       difficulty: q.difficulty,
-      answerNum: shuffledAnswerNum,
+      answerNum: q.answerNum,
     };
   });
 }

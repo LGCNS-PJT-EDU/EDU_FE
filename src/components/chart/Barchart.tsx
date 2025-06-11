@@ -47,8 +47,8 @@ export default function BarChart({ pre, post, final }: Props) {
     <div className="space-y-4">
       <Bar data={data} options={options} />
       {final && (
-        <div className="rounded-lg bg-gray-50 p-4 text-sm text-gray-700 shadow">
-          <strong className="text-blue-600">종합 평가&nbsp;:</strong> {final}
+        <div className="w-[800px] mx-auto rounded-lg bg-[#F6F5F8] p-4 text-sm text-gray-700">
+          <strong className="text-[#6378EB]">종합 평가&nbsp;:</strong> {final}
         </div>
       )}
     </div>
