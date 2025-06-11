@@ -1,4 +1,3 @@
-// src/pages/roadmap/RoadmapTemplate.tsx
 import React, { useMemo } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -72,6 +71,12 @@ export default function RoadmapTemplate() {
     maxY + NODE_SIZE/2 + LABEL_OFF + LABEL_H,           // 라벨 끝
     SKELETON_Y + (rows-1)*GAP_Y + NODE_SIZE/2           // 뼈대 끝
   ) + STROKE;
+
+  const MOBILE_MAX_WIDTH = 375;
+  const scale = width > MOBILE_MAX_WIDTH
+    ? MOBILE_MAX_WIDTH / width
+    : 1;
+
 
   return (
     <div className="relative mx-auto" style={{ width, height }}>

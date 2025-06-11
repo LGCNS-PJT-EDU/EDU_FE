@@ -83,7 +83,7 @@ export default function RoadmapNode({
         <img
           src={iconSrc}
           alt=""
-          className="w-11 h-11"
+          className="w-7 h-7"
           style={{ opacity: isDragging ? 0.5 : 1 }}
         />
 
@@ -101,10 +101,10 @@ export default function RoadmapNode({
       </div>
       {isCurrent && (
         <img
-          style={{ left: x, top: y-80 }}
+          style={{ left: x, top: y-55 }}
           src={arrow}
           alt="현재 위치"
-          className="absolute -top- left-1/2 -translate-x-1/2 w-16.5 h-12"
+          className="absolute -top- left-1/2 -translate-x-1/2 w-9 h-7"
         />
       )}
 
