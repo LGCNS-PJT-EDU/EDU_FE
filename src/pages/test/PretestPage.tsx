@@ -51,6 +51,9 @@ export default function PretestPage() {
       isSubmitting={isSubmitting}
       hasStarted={hasStarted}
       setHasStarted={setHasStarted}
+      onSubmitSuccess={() => {
+        navigate(`/solution?subjectId=${subjectId}`);
+      }}
     />
   );
 }
