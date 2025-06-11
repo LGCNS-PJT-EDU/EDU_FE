@@ -33,7 +33,6 @@ export default function Report() {
   if (isError || !data.length) return <p className="py-20 text-center">데이터 없음</p>;
 
   const sorted = [...data].sort((a, b) => +new Date(a.info.date) - +new Date(b.info.date));
-
   // 사전 평가만 있을 때
   if (sorted.length === 1) {
     const pre = sorted[0];
@@ -133,6 +132,8 @@ export default function Report() {
   const strengthArr = labels.map((label) => currentFeedback.strength[label] ?? '—');
   const weaknessArr = labels.map((label) => currentFeedback.weakness[label] ?? '—');
 
+  const hasPost = sorted.length > 1;
+ 
   return (
     <div className="relative flex flex-col items-center px-4 py-10 font-[pretendard]">
       <h2 className="mb-2 text-2xl font-bold text-[#5B7CFF]">Education Evaluation</h2>
@@ -153,7 +154,7 @@ export default function Report() {
         </button>
       )}
 
-      <div className="relative mt-10 w-full max-w-[800px] h-[550px] mx-auto overflow-hidden"
+      <div className="relative mt-10 w-full max-w-[700px] h-[500px] mx-auto overflow-hidden"
         onTouchStart={swipeStart}
         onTouchEnd={swipeEnd}
       >
@@ -164,17 +165,17 @@ export default function Report() {
           <div className="w-full flex-shrink-0">
             <RadarChart labels={labels} values={preScores} label="Pre" color="#5b7cff" />
           </div>
-          <div className="w-full flex-shrink-0">
-            <RadarChart labels={labels} values={postScores} label="Post" color="#ff6ab0" />
-          </div>
-          <div className="w-full flex-shrink-0">
-            <BarChart
-              pre={preScores}
-              post={postScores}
-              final={post.feedback.final}
-            />
-          </div>
-        </div>
+
+          {hasPost && (
+            <>
+              <div className="w-full flex-shrink-0">
+                <RadarChart labels={labels} values={postScores} label="Post" color="#ff6ab0" />
+              </div>
+              <div className="w-full flex-shrink-0">
+                <BarChart pre={preScores} post={postScores} final={post.feedback.final} />
+              </div>
+            </>
+          )}
       </div>
 
       {idx < 2 && (

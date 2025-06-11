@@ -93,7 +93,7 @@ export default function RadarChart({
   }, [labels, values, label, color]);
 
   return (
-    <div style={{ width: '100%', maxWidth: 600, height: 600, margin: 'auto' }}>
+    <div className="w-full max-w-[600px] h-[600px]">
       <Radar data={data} options={options as any} />
     </div>
   );

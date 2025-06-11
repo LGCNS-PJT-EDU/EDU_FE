@@ -101,7 +101,7 @@ export async function fetchPreTestQuestions(
       chapterNum: q.chapterNum,
       chapterName: q.chapterName,
       difficulty: q.difficulty,
-      answerNum: shuffledAnswerNum, // 셔플된 정답 번호
+      answerNum: q.answerNum, 
     };
   });
 }

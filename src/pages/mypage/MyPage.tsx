@@ -8,9 +8,11 @@ import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
 import { fetchRoadmap } from '@/api/roadmapService';
 import { fetchSubjectDetail, SubjectDetail } from '@/hooks/useSubjectDetail';
 import { FeedbackItem, fetchUserFeedback } from '@/hooks/useReport';
+import { useNavigate } from 'react-router-dom';
 
 function MyPage() {
   const logout = useLogout();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'favorite' | 'report'>('favorite');
   const { data: progressData } = useProgress();
   const percent = Math.min(100, Math.round(progressData?.percent || 0));
@@ -136,6 +138,7 @@ function MyPage() {
           <CardGrid
             cards={reportCards}
             onButton1Click={(card) => console.log(`리포트 보러가기: ${card.title}`)}
+            onClick = {() => navigate('/solution')}
           />
         )}
       </div>
