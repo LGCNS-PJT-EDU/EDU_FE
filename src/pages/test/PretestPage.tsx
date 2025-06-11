@@ -39,6 +39,9 @@ export default function PretestPage() {
     };
   });
 
+  const goSolution = () => navigate(`/solution?subjectId=${subjectId}`, { replace: true });
+  const goRoadmap = () => navigate("/roadmap", { replace: true });
+
   return (
     <TestTemplate
       kind="pre"
@@ -51,6 +54,9 @@ export default function PretestPage() {
       isSubmitting={isSubmitting}
       hasStarted={hasStarted}
       setHasStarted={setHasStarted}
+      subjectId={subjectId}
+      onConfirmNote={goSolution}
+      onCloseConfirm={goRoadmap}
     />
   );
 }

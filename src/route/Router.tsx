@@ -27,7 +27,9 @@ const router = createBrowserRouter([
       { path: 'signup', element: <Signup /> },
       { path: 'diagnosis', element: <Diagnosis /> },
       { path: 'pretest', element: <PretestPage /> },
-      { path: 'posttest', element: <PosttestPage /> }
+      { path: 'posttest', element: <PosttestPage /> },
+      { path: 'roadmap', element: <Roadmap /> },
+      { path: '/roadmap/default/:type', element: <DefaultRoadmap /> },
     ],
   },
   {
@@ -36,8 +38,6 @@ const router = createBrowserRouter([
     children: [
       { path: 'mypage', element: <MyPage /> },
       { path: 'report', element: <Report /> },
-      { path: 'roadmap', element: <Roadmap /> },
-      { path: '/roadmap/default/:type', element: <DefaultRoadmap /> },
       { path: 'solution', element: <Solution /> },
       { path: 'login/oauth2/code/:provider', element: <OAuthCallback /> },
       { path: 'selectspeech', element: <Selectspeech /> },
