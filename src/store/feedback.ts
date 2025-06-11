@@ -7,4 +7,5 @@ export const splitPrePost = (list: FeedbackItem[]) => {
     (a, b) => +new Date(a.info.date) - +new Date(b.info.date)
   );
   return { pre: sorted[0], post: sorted[sorted.length - 1] };
+  
 };

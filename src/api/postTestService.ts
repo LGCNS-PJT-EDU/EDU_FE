@@ -110,5 +110,5 @@ export async function fetchSubjectDetail(subjectId: number): Promise<any> {
   const res = await api.get<ApiResp<any>>("/api/roadmap/subject", {
     params: { subjectId },
   });
-  return res.data.data; // roadmapId 포함되어 있어야 함
+  return res.data.data; 
 }

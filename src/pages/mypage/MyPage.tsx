@@ -8,25 +8,35 @@ import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
 import { fetchRoadmap } from '@/api/roadmapService';
 import { fetchSubjectDetail, SubjectDetail } from '@/hooks/useSubjectDetail';
 import { FeedbackItem, fetchUserFeedback } from '@/hooks/useReport';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+
+interface FeedbackItemWithSubjectId extends FeedbackItem {
+  info: FeedbackItem['info'] & { subjectId: number };
+}
+
+interface ReportCard {
+  title: string;
+  detailUrl: string;
+  button1?: string;
+  subtitle?: string;
+  subjectId: number;
+}
 
 function MyPage() {
   const logout = useLogout();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<'favorite' | 'report'>('favorite');
   const { data: progressData } = useProgress();
   const percent = Math.min(100, Math.round(progressData?.percent || 0));
 
-  // 로드맵 조회
   const { data: roadmap } = useQuery({
     queryKey: ['myRoadmap'],
     queryFn: () => fetchRoadmap(),
   });
 
-  // subjectIds 추출
   const subjectIds = roadmap?.subjects.map((s) => s.subjectId) ?? [];
 
-  // 과목 상세 정보 병렬 요청
   const subjectDetailsResults = useQueries({
     queries: subjectIds.map((id) => ({
       queryKey: ['subjectDetail', id],
@@ -35,7 +45,6 @@ function MyPage() {
     })),
   });
 
-  // 추천 콘텐츠 카드 구성
   const cardList = subjectDetailsResults
     .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
       r.status === 'success' &&
@@ -53,38 +62,66 @@ function MyPage() {
       }))
     );
 
-  // 피드백 병렬 요청 (subjectId 기반)
+  // subjectId 포함시켜서 반환
   const feedbackResults = useQueries({
-    queries: subjectIds.map((id) => ({
-      queryKey: ['userFeedback', id],
-      queryFn: () => fetchUserFeedback(id),
-      enabled: !!id,
+    queries: subjectIds.map((subjectId) => ({
+      queryKey: ['userFeedback', subjectId],
+      queryFn: async () => {
+        const data = await fetchUserFeedback(subjectId);
+        return { data, subjectId }; // subjectId 포함
+      },
+      enabled: !!subjectId,
     })),
   });
 
-  // 평가 완료된 subjectName 목록 추출
-  const evaluatedSubjectNames = subjectDetailsResults
-    .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
-      r.status === 'success' && r.data.preSubmitCount > 0 && r.data.postSubmitCount > 0
+  // 사전 평가만 완료한 subjectId
+  const evaluatedSubjectIds = subjectDetailsResults
+    .filter(
+      (r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
+        r.status === 'success' && r.data.preSubmitCount > 0
     )
-    .map((r) => r.data.subjectName);
+    .map((r) => r.data.subjectId);
 
-  // 성공적으로 가져온 피드백 데이터만 추출
-  const feedbackDataList = feedbackResults
-    .filter((r): r is UseQueryResult<FeedbackItem[], Error> & { data: FeedbackItem[] } =>
-      r.status === 'success' && !!r.data?.length
-    )
-    .flatMap((r) => r.data);
+  // 정확한 subjectId 매핑을 기반으로 피드백 리스트 생성
+  const feedbackDataList: FeedbackItemWithSubjectId[] = [];
 
-  // 리포트 카드 구성
-  const reportCards = feedbackDataList
-    .filter((fb) => evaluatedSubjectNames.includes(fb.info.subject))
-    .map((fb) => ({
-      title: `피드백 - ${fb.info.subject}`,
-      detailUrl: `/report?subject=${fb.info.subject}&date=${fb.info.date}`,
-      button1: '리포트 보러가기',
-      subtitle: `제출일: ${fb.info.date}`,
-    }));
+  feedbackResults.forEach((r) => {
+    if (r.status === 'success' && r.data?.data?.length) {
+      const { data, subjectId } = r.data;
+      const enriched = data.map((fb) => ({
+        ...fb,
+        info: {
+          ...fb.info,
+          subjectId,
+        },
+      }));
+      feedbackDataList.push(...enriched);
+    }
+  });
+
+  const reportCardsMap = new Map<number, ReportCard>();
+
+  feedbackDataList
+    .filter((fb) => evaluatedSubjectIds.includes(fb.info.subjectId))
+    .forEach((fb) => {
+      const subjectId = fb.info.subjectId;
+      const existing = reportCardsMap.get(subjectId);
+
+      if (
+        !existing ||
+        new Date(fb.info.date) > new Date(existing.subtitle?.replace('제출일: ', '') || '')
+      ) {
+        reportCardsMap.set(subjectId, {
+          title: `${fb.info.subject}`,
+          detailUrl: `/report?subject=${fb.info.subject}&date=${fb.info.date}`,
+          button1: '리포트 보러가기',
+          subtitle: `제출일: ${fb.info.date}`,
+          subjectId,
+        });
+      }
+    });
+
+  const reportCards = Array.from(reportCardsMap.values());
 
   return (
     <div className="flex flex-col min-h-screen font-[pretendard] w-full px-4 sm:px-0">
@@ -92,7 +129,7 @@ function MyPage() {
         <div className="w-full flex justify-between items-center mb-2 mt-8">
           <div className="flex">
             <img src={rabbit} alt="smallRabbit" className="w-[30px] mr-2" />
-            <p className="text-[20px] font-bold">프론트엔드</p>
+            <p className="text-[20px] font-bold">{progressData?.roadmapName}</p>
           </div>
         </div>
 
@@ -104,10 +141,10 @@ function MyPage() {
           </div>
           <div className="w-full max-w-md flex items-center gap-2 pr-2">
             <div className="w-full h-6 border-2 border-[#59C5CD] px-[3px] py-[3px] box-border">
-              <div className="h-full bg-[#C6EDF2]" style={{ width: `30px` }}></div>
+              <div className="h-full bg-[#C6EDF2]" style={{ width: `${percent}%` }}></div>
             </div>
             <span className="text-[#59C5CD] text-sm font-medium whitespace-nowrap font-[NeoDunggeunmo]">
-              20/30 완료
+              {progressData?.completeCnt}/{progressData?.subCnt} 완료
             </span>
           </div>
         </div>
@@ -137,7 +174,9 @@ function MyPage() {
         ) : (
           <CardGrid
             cards={reportCards}
-            onButton1Click={(card) => console.log(`리포트 보러가기: ${card.title}`)}
+            onButton1Click={(card) => {
+              navigate(`/solution?subjectId=${card.subjectId}`);
+            }}
           />
         )}
       </div>

@@ -1,19 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from '@/api/axios';
+import api from '@/api/axios';
 
-interface ProgressResponse {
+interface ProgressData {
   nickname: string;
+  roadmapName: string;
   percent: number;
+  subCnt: number;
+  completeCnt: number;
 }
 
-const fetchProgress = async (): Promise<ProgressResponse> => {
-    const res = await axios.get('/api/roadmap/progress');
-    return res.data.data
+interface ProgressResponse {
+  stateCode: number;
+  message: string;
+  data: ProgressData;
+}
+
+const fetchProgress = async (): Promise<ProgressData> => {
+  const res = await api.get<ProgressResponse>('/api/roadmap/progress');
+  return res.data.data;
 };
 
 export const useProgress = () => {
-    return useQuery<ProgressResponse>({
-        queryKey: ['roadmapProgress'],
-        queryFn: fetchProgress,
-    });
-}
+  return useQuery<ProgressData>({
+    queryKey: ['roadmapProgress'],
+    queryFn: fetchProgress,
+  });
+};
