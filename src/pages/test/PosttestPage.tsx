@@ -50,6 +50,9 @@ export default function PosttestPage() {
       isSubmitting={isSubmitting}
       hasStarted={hasStarted}
       setHasStarted={setHasStarted}
+      onSubmitSuccess={() => {
+        navigate(`/solution?subjectId=${subjectId}`);
+      }}
     />
   )
 }

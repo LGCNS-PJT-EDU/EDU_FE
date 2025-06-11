@@ -42,6 +42,7 @@ export interface AssesmentProps {
   hasStarted: boolean;
   setHasStarted: (started: boolean) => void;
   isLoadingQuestions?: boolean;
+  onSubmitSuccess?: () => void;
 }
 
 const introCopy = {
@@ -77,11 +78,17 @@ export default function TestTemplate({
   hasStarted,
   setHasStarted,
   isLoadingQuestions = false,
+  onSubmitSuccess,
 }: AssesmentProps) {
   const { time, headline, sub, submitLabel } = introCopy[kind];
   const currentQ = questions[currentIdx];
   const isAnswered = answers[currentQ?.diagnosisId ?? -1] !== undefined;
   const totalCount = questions.length;
+
+  const handleSubmit = async () => {
+    await submit();
+    if (onSubmitSuccess) onSubmitSuccess();
+  };
 
 if (!hasStarted) {
   return (
