@@ -6,7 +6,7 @@ import OAuthCallback from '@/pages/login/OAuthCallback';
 import Layout from '@/components/layout/Layouts';
 import Roadmap from '@/pages/roadmap/Roadmap';
 import Signup from '@/pages/sign/Signup';
-import Diagnosis from  '@/pages/test/DiagnosisPage';
+import Diagnosis from '@/pages/test/DiagnosisPage';
 import FullLayouts from '@/components/layout/FullLayouts';
 import Report from '@/pages/report/Report';
 import PretestPage from '@/pages/test/PretestPage';
@@ -14,6 +14,7 @@ import PosttestPage from '@/pages/test/PosttestPage';
 import Solution from '@/pages/solution/Solution';
 import TestSpeech from '@/pages/speech/TestSpeech';
 import Selectspeech from '@/pages/speech/selectSpeech';
+import SpeechFeedback from '@/pages/speech/speechFeedback';
 import DefaultRoadmap from '@/pages/roadmap/DefaultRoadmap';
 
 const router = createBrowserRouter([
@@ -26,7 +27,6 @@ const router = createBrowserRouter([
       { path: 'signup', element: <Signup /> },
       { path: 'diagnosis', element: <Diagnosis /> },
       { path: 'pretest', element: <PretestPage /> },
-      { path: 'testspeech', element: <TestSpeech /> },
       { path: 'posttest', element: <PosttestPage /> }
     ],
   },
@@ -37,10 +37,12 @@ const router = createBrowserRouter([
       { path: 'mypage', element: <MyPage /> },
       { path: 'report', element: <Report /> },
       { path: 'roadmap', element: <Roadmap /> },
-      { path: '/roadmap/default/:type', element: <DefaultRoadmap />},
+      { path: '/roadmap/default/:type', element: <DefaultRoadmap /> },
       { path: 'solution', element: <Solution /> },
       { path: 'login/oauth2/code/:provider', element: <OAuthCallback /> },
       { path: 'selectspeech', element: <Selectspeech /> },
+      { path: 'testspeech', element: <TestSpeech /> },
+      { path: 'speechfeedback', element: <SpeechFeedback /> },
     ],
   },
 ]);
