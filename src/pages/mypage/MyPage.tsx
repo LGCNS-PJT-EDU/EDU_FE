@@ -62,7 +62,7 @@ function MyPage() {
       }))
     );
 
-  // ✅ subjectId 포함시켜서 반환
+  // subjectId 포함시켜서 반환
   const feedbackResults = useQueries({
     queries: subjectIds.map((subjectId) => ({
       queryKey: ['userFeedback', subjectId],
@@ -74,7 +74,7 @@ function MyPage() {
     })),
   });
 
-  // ✅ 사전 평가만 완료한 subjectId
+  // 사전 평가만 완료한 subjectId
   const evaluatedSubjectIds = subjectDetailsResults
     .filter(
       (r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
@@ -82,7 +82,7 @@ function MyPage() {
     )
     .map((r) => r.data.subjectId);
 
-  // ✅ 정확한 subjectId 매핑을 기반으로 피드백 리스트 생성
+  // 정확한 subjectId 매핑을 기반으로 피드백 리스트 생성
   const feedbackDataList: FeedbackItemWithSubjectId[] = [];
 
   feedbackResults.forEach((r) => {
@@ -112,7 +112,7 @@ function MyPage() {
         new Date(fb.info.date) > new Date(existing.subtitle?.replace('제출일: ', '') || '')
       ) {
         reportCardsMap.set(subjectId, {
-          title: `피드백 - ${fb.info.subject}`,
+          title: `${fb.info.subject}`,
           detailUrl: `/report?subject=${fb.info.subject}&date=${fb.info.date}`,
           button1: '리포트 보러가기',
           subtitle: `제출일: ${fb.info.date}`,

@@ -49,6 +49,7 @@ export default function RadarChart({
           legend: {
             display: true,
             position: 'top' as const,
+
             labels: {
               color: '#1f2937',
               font: { size: 14 },
@@ -65,9 +66,9 @@ export default function RadarChart({
         scales: {
           r: {
             min: 0,
-            max: 75,
+            max: 100,
             ticks: {
-              stepSize: 15,
+              stepSize: 20,
               color: '#6b7280',
               backdropColor: 'transparent',
             },
