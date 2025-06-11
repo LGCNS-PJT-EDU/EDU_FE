@@ -138,7 +138,6 @@ function MyPage() {
           <CardGrid
             cards={reportCards}
             onButton1Click={(card) => console.log(`리포트 보러가기: ${card.title}`)}
-            onClick = {() => navigate('/solution')}
           />
         )}
       </div>
