@@ -8,11 +8,24 @@ import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
 import { fetchRoadmap } from '@/api/roadmapService';
 import { fetchSubjectDetail, SubjectDetail } from '@/hooks/useSubjectDetail';
 import { FeedbackItem, fetchUserFeedback } from '@/hooks/useReport';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+
+interface FeedbackItemWithSubjectId extends FeedbackItem {
+  info: FeedbackItem['info'] & { subjectId: number };
+}
+
+interface ReportCard {
+  title: string;
+  detailUrl: string;
+  button1?: string;
+  subtitle?: string;
+  subjectId: number;
+}
 
 function MyPage() {
   const logout = useLogout();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<'favorite' | 'report'>('favorite');
   const { data: progressData } = useProgress();
   const percent = Math.min(100, Math.round(progressData?.percent || 0));
@@ -23,7 +36,6 @@ function MyPage() {
     queryFn: () => fetchRoadmap(),
   });
 
-  // subjectIds 추출
   const subjectIds = roadmap?.subjects.map((s) => s.subjectId) ?? [];
 
   // 과목 상세 정보 병렬 요청
@@ -53,7 +65,7 @@ function MyPage() {
       }))
     );
 
-  // 피드백 병렬 요청 (subjectId 기반)
+  // 피드백 병렬 요청
   const feedbackResults = useQueries({
     queries: subjectIds.map((id) => ({
       queryKey: ['userFeedback', id],
@@ -62,29 +74,57 @@ function MyPage() {
     })),
   });
 
-  // 평가 완료된 subjectName 목록 추출
-  const evaluatedSubjectNames = subjectDetailsResults
-    .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
-      r.status === 'success' && r.data.preSubmitCount > 0 && r.data.postSubmitCount > 0
+  // ✅ 평가 완료된 subjectId 목록
+  const evaluatedSubjectIds = subjectDetailsResults
+    .filter(
+      (r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
+        r.status === 'success' &&
+        r.data.preSubmitCount > 0 &&
+        r.data.postSubmitCount > 0
     )
-    .map((r) => r.data.subjectName);
+    .map((r) => r.data.subjectId);
 
-  // 성공적으로 가져온 피드백 데이터만 추출
-  const feedbackDataList = feedbackResults
-    .filter((r): r is UseQueryResult<FeedbackItem[], Error> & { data: FeedbackItem[] } =>
-      r.status === 'success' && !!r.data?.length
-    )
-    .flatMap((r) => r.data);
+  // ✅ subjectId를 명시적으로 넣은 피드백 리스트 생성
+  const feedbackDataList: FeedbackItemWithSubjectId[] = [];
 
-  // 리포트 카드 구성
-  const reportCards = feedbackDataList
-    .filter((fb) => evaluatedSubjectNames.includes(fb.info.subject))
-    .map((fb) => ({
-      title: `피드백 - ${fb.info.subject}`,
-      detailUrl: `/report?subject=${fb.info.subject}&date=${fb.info.date}`,
-      button1: '리포트 보러가기',
-      subtitle: `제출일: ${fb.info.date}`,
-    }));
+  feedbackResults.forEach((r, i) => {
+    if (r.status === 'success' && r.data?.length) {
+      const subjectId = subjectIds[i];
+      const enriched = r.data.map((fb) => ({
+        ...fb,
+        info: {
+          ...fb.info,
+          subjectId,
+        },
+      }));
+      feedbackDataList.push(...enriched);
+    }
+  });
+
+  // ✅ 중복 제거 + 최신 제출일 기준 리포트 카드 생성
+  const reportCardsMap = new Map<number, ReportCard>();
+
+  feedbackDataList
+    .filter((fb) => evaluatedSubjectIds.includes(fb.info.subjectId))
+    .forEach((fb) => {
+      const subjectId = fb.info.subjectId;
+      const existing = reportCardsMap.get(subjectId);
+
+      if (
+        !existing ||
+        new Date(fb.info.date) > new Date(existing.subtitle?.replace('제출일: ', '') || '')
+      ) {
+        reportCardsMap.set(subjectId, {
+          title: `피드백 - ${fb.info.subject}`,
+          detailUrl: `/report?subject=${fb.info.subject}&date=${fb.info.date}`,
+          button1: '리포트 보러가기',
+          subtitle: `제출일: ${fb.info.date}`,
+          subjectId,
+        });
+      }
+    });
+
+  const reportCards = Array.from(reportCardsMap.values());
 
   return (
     <div className="flex flex-col min-h-screen font-[pretendard] w-full px-4 sm:px-0">
@@ -137,7 +177,11 @@ function MyPage() {
         ) : (
           <CardGrid
             cards={reportCards}
-            onButton1Click={(card) => console.log(`리포트 보러가기: ${card.title}`)}
+            onButton1Click={(card) => {
+              if (card.subjectId !== undefined) {
+                navigate(`/solution?subjectId=${card.subjectId}`);
+              } 
+            }}
           />
         )}
       </div>
