@@ -38,6 +38,10 @@ export default function PosttestPage() {
       choices: choiceArr,
     };
   });
+
+  const goSolution = () => navigate(`/solution?subjectId=${subjectId}`, { replace: true });
+  const goRoadmap = () => navigate("/roadmap", { replace: true });
+
   return (
     <TestTemplate
       kind="post"
@@ -50,9 +54,9 @@ export default function PosttestPage() {
       isSubmitting={isSubmitting}
       hasStarted={hasStarted}
       setHasStarted={setHasStarted}
-      onSubmitSuccess={() => {
-        navigate(`/solution?subjectId=${subjectId}`);
-      }}
+      subjectId={subjectId}
+      onConfirmNote={goSolution}
+      onCloseConfirm={goRoadmap}
     />
   )
 }
