@@ -30,7 +30,6 @@ function MyPage() {
   const { data: progressData } = useProgress();
   const percent = Math.min(100, Math.round(progressData?.percent || 0));
 
-  // 로드맵 조회
   const { data: roadmap } = useQuery({
     queryKey: ['myRoadmap'],
     queryFn: () => fetchRoadmap(),
@@ -38,7 +37,6 @@ function MyPage() {
 
   const subjectIds = roadmap?.subjects.map((s) => s.subjectId) ?? [];
 
-  // 과목 상세 정보 병렬 요청
   const subjectDetailsResults = useQueries({
     queries: subjectIds.map((id) => ({
       queryKey: ['subjectDetail', id],
@@ -47,7 +45,6 @@ function MyPage() {
     })),
   });
 
-  // 추천 콘텐츠 카드 구성
   const cardList = subjectDetailsResults
     .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
       r.status === 'success' &&
@@ -65,32 +62,33 @@ function MyPage() {
       }))
     );
 
-  // 피드백 병렬 요청
+  // ✅ subjectId 포함시켜서 반환
   const feedbackResults = useQueries({
-    queries: subjectIds.map((id) => ({
-      queryKey: ['userFeedback', id],
-      queryFn: () => fetchUserFeedback(id),
-      enabled: !!id,
+    queries: subjectIds.map((subjectId) => ({
+      queryKey: ['userFeedback', subjectId],
+      queryFn: async () => {
+        const data = await fetchUserFeedback(subjectId);
+        return { data, subjectId }; // subjectId 포함
+      },
+      enabled: !!subjectId,
     })),
   });
 
-  // ✅ 평가 완료된 subjectId 목록
+  // ✅ 사전 평가만 완료한 subjectId
   const evaluatedSubjectIds = subjectDetailsResults
     .filter(
       (r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
-        r.status === 'success' &&
-        r.data.preSubmitCount > 0 &&
-        r.data.postSubmitCount > 0
+        r.status === 'success' && r.data.preSubmitCount > 0
     )
     .map((r) => r.data.subjectId);
 
-  // ✅ subjectId를 명시적으로 넣은 피드백 리스트 생성
+  // ✅ 정확한 subjectId 매핑을 기반으로 피드백 리스트 생성
   const feedbackDataList: FeedbackItemWithSubjectId[] = [];
 
-  feedbackResults.forEach((r, i) => {
-    if (r.status === 'success' && r.data?.length) {
-      const subjectId = subjectIds[i];
-      const enriched = r.data.map((fb) => ({
+  feedbackResults.forEach((r) => {
+    if (r.status === 'success' && r.data?.data?.length) {
+      const { data, subjectId } = r.data;
+      const enriched = data.map((fb) => ({
         ...fb,
         info: {
           ...fb.info,
@@ -101,7 +99,6 @@ function MyPage() {
     }
   });
 
-  // ✅ 중복 제거 + 최신 제출일 기준 리포트 카드 생성
   const reportCardsMap = new Map<number, ReportCard>();
 
   feedbackDataList
@@ -132,7 +129,7 @@ function MyPage() {
         <div className="w-full flex justify-between items-center mb-2 mt-8">
           <div className="flex">
             <img src={rabbit} alt="smallRabbit" className="w-[30px] mr-2" />
-            <p className="text-[20px] font-bold">프론트엔드</p>
+            <p className="text-[20px] font-bold">{progressData?.roadmapName}</p>
           </div>
         </div>
 
@@ -144,10 +141,10 @@ function MyPage() {
           </div>
           <div className="w-full max-w-md flex items-center gap-2 pr-2">
             <div className="w-full h-6 border-2 border-[#59C5CD] px-[3px] py-[3px] box-border">
-              <div className="h-full bg-[#C6EDF2]" style={{ width: `30px` }}></div>
+              <div className="h-full bg-[#C6EDF2]" style={{ width: `${percent}%` }}></div>
             </div>
             <span className="text-[#59C5CD] text-sm font-medium whitespace-nowrap font-[NeoDunggeunmo]">
-              20/30 완료
+              {progressData?.completeCnt}/{progressData?.subCnt} 완료
             </span>
           </div>
         </div>
@@ -178,9 +175,7 @@ function MyPage() {
           <CardGrid
             cards={reportCards}
             onButton1Click={(card) => {
-              if (card.subjectId !== undefined) {
-                navigate(`/solution?subjectId=${card.subjectId}`);
-              } 
+              navigate(`/solution?subjectId=${card.subjectId}`);
             }}
           />
         )}

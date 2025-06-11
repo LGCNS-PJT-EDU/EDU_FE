@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '@/api/axios';
 
-interface ProgressResponse {
+interface ProgressData {
   nickname: string;
   roadmapName: string;
   percent: number;
@@ -12,21 +12,16 @@ interface ProgressResponse {
 interface ProgressResponse {
   stateCode: number;
   message: string;
-  data: ProgressResponse;
+  data: ProgressData;
 }
 
-const fetchProgress = async (): Promise<ProgressResponse> => {
+const fetchProgress = async (): Promise<ProgressData> => {
   const res = await api.get<ProgressResponse>('/api/roadmap/progress');
-
-  if (res.data.stateCode !== 1073741824) {
-    throw new Error(`Error: ${res.data.message}`);
-  }
-
   return res.data.data;
 };
 
 export const useProgress = () => {
-  return useQuery<ProgressResponse>({
+  return useQuery<ProgressData>({
     queryKey: ['roadmapProgress'],
     queryFn: fetchProgress,
   });
