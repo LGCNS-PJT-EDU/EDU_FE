@@ -13,6 +13,8 @@ export const useSpeech = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]); // 녹음된 오디오 조각 담을 배열
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const resetAudioBlob = () => setAudioBlob(null);
+
 
   const startListening = async () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -75,9 +77,9 @@ export const useSpeech = () => {
   };
 
   const stopRecording = () => {
-    setListening(false);  // listening을 false로 바꾸면 재시작 안 함
     recognitionRef.current?.abort(); // STT 완전 중단 (강제 종료)
     mediaRecorderRef.current?.stop(); // 녹음 종료
+    setListening(false);  // listening을 false로 바꾸면 재시작 안 함
   };
 
   //TTS
@@ -97,5 +99,6 @@ export const useSpeech = () => {
     speak, // TTS
     resetTranscript,  // 텍스트 초기화
     audioBlob,
+    resetAudioBlob,
   };
 };

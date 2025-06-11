@@ -76,13 +76,12 @@ export default function RadarChart({
               circular: false,
             },
             pointLabels: {
-              font:
-              {
-                size: 14,
+              font: 
+              { size: 14,
                 weight: 'bold'
-              },
+               },
               color: '#6378EB',
-              callback: function (label: string, index: number) {
+              callback: function(label: string, index: number){
                 const score = values[index];
                 return [label, `${score}점`]
               }

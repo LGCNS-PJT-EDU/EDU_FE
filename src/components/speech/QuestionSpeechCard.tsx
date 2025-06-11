@@ -19,21 +19,26 @@ const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete })
   stopRecording,
   speak,
   resetTranscript,
+  resetAudioBlob,
   audioBlob, } = useSpeech();
 
   const [feedback, setFeedback] = useState('');
   const [localTranscript, setLocalTranscript] = useState('');
   const [seconds,setSeconds]=useState(0);
-  const [countdown, setCountdown] =useState(10); // 카운트 다운
+  const [countdown, setCountdown] =useState(2); // 카운트 다운
   const [showCountdown, setShowCountdown] = useState(true);
 
   useEffect(() => {
+
+  setCountdown(2);
+  setShowCountdown(true);
+
   const countdownTimer = setInterval(() => {
     setCountdown((prev) => {
       if (prev <= 1) {
-        clearInterval(countdownTimer); // 카운트다운 종료
+        clearInterval(countdownTimer);
         setShowCountdown(false);
-        handleStart(); // 자동으로 녹음 시작
+        handleStart(); 
         return 0;
       }
       return prev - 1;
@@ -41,7 +46,11 @@ const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete })
   }, 1000);
 
   return () => clearInterval(countdownTimer);
-}, []);
+    if (listening) {
+    stopRecording(); 
+  }
+}, [question.interviewId]); 
+
 
 
   useEffect(() => {
@@ -53,6 +62,7 @@ const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete })
 
 
   useEffect(() => {
+  console.log('listening 상태:', listening);
   if (!listening) return;
 
   const interval = setInterval(() => {
@@ -73,6 +83,7 @@ const formatTime = (totalSeconds: number) => {
 // 녹음 시작 
   const handleStart = () => {
     resetTranscript();
+    resetAudioBlob();
     setLocalTranscript('');
     setFeedback('');
     setSeconds(0);
