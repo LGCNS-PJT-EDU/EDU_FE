@@ -53,7 +53,7 @@ useEffect(() => {
 
   useEffect(() => {
   console.log('listening 상태:', listening);
-  if (!listening) return;
+  if (!listening) return; // 듣고 있는 중이면 타이머 증가 안함 
 
   const interval = setInterval(() => {
     setSeconds((prev) => prev + 1);
@@ -61,6 +61,19 @@ useEffect(() => {
 
   return () => clearInterval(interval);
 }, [listening]);
+
+useEffect(() => {
+  // 이전 질문에서 녹음 중이었다면 자동 종료
+  if (listening) {
+    console.log('질문 변경 감지 → 녹음 중지');
+    stopRecording();
+  }
+  resetTranscript();
+  resetAudioBlob();
+  setSeconds(0);
+  setShowCountdown(false);
+}, [question.interviewId]);
+
 
 // 타이머 형식
 const formatTime = (totalSeconds: number) => {
