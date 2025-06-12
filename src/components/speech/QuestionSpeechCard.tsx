@@ -18,6 +18,7 @@ const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete })
   startListening,
   stopRecording,
   speak,
+  speakWithCallback,
   resetTranscript,
   resetAudioBlob,
   audioBlob, } = useSpeech();
@@ -25,32 +26,21 @@ const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete })
   const [feedback, setFeedback] = useState('');
   const [localTranscript, setLocalTranscript] = useState('');
   const [seconds,setSeconds]=useState(0);
-  const [countdown, setCountdown] =useState(2); // 카운트 다운
+  const [countdown, setCountdown] =useState(5); // 카운트 다운
   const [showCountdown, setShowCountdown] = useState(true);
 
-  useEffect(() => {
 
-  setCountdown(2);
-  setShowCountdown(true);
-
-  const countdownTimer = setInterval(() => {
-    setCountdown((prev) => {
-      if (prev <= 1) {
-        clearInterval(countdownTimer);
-        setShowCountdown(false);
-        handleStart(); 
-        return 0;
-      }
-      return prev - 1;
+useEffect(() => {
+  const timer = setTimeout(() => {
+    console.log('[TTS] 질문 읽기 시작');
+    speakWithCallback(question.interviewContent, () => {
+       console.log('[TTS] 종료됨');
+      startCountdown(); // TTS 끝나면 카운트다운 시작
     });
   }, 1000);
 
-  return () => clearInterval(countdownTimer);
-    if (listening) {
-    stopRecording(); 
-  }
-}, [question.interviewId]); 
-
+  return () => clearTimeout(timer);
+}, [question.interviewId]);
 
 
   useEffect(() => {
@@ -78,6 +68,27 @@ const formatTime = (totalSeconds: number) => {
   const seconds = totalSeconds % 60;
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 };
+
+const COUNTDOWN_START = 5;
+
+// 카운트다운 시작
+const startCountdown = () => {
+  setCountdown(COUNTDOWN_START); // 타이머 초기화 
+  setShowCountdown(true);
+
+  const countdownTimer = setInterval(() => {
+    setCountdown((prev) => {
+      if (prev <= 1) {
+        clearInterval(countdownTimer);
+        setShowCountdown(false);
+        handleStart(); // 녹음 시작
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+};
+
 
 
 // 녹음 시작 
@@ -114,6 +125,7 @@ const handleDownload = () => {
 
   return (
     <section className="border border-cyan-300 rounded-xl p-6 bg-white shadow-sm">
+    
       {/* 질문 텍스트 */}
       <h3 className="text-base font-medium text-gray-800 mb-4">
         {question.interviewContent}

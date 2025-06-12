@@ -15,7 +15,6 @@ export const useSpeech = () => {
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const resetAudioBlob = () => setAudioBlob(null);
 
-
   const startListening = async () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -89,6 +88,14 @@ export const useSpeech = () => {
     window.speechSynthesis.speak(utterance);
   };
 
+  const speakWithCallback = (text: string, onEnd: () => void) => {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'ko-KR';
+  utterance.onend = onEnd;
+  window.speechSynthesis.speak(utterance);
+};
+
+
   const resetTranscript = () => setTranscript(''); // 음성 인식 결과 초기화
 
   return {
@@ -97,6 +104,7 @@ export const useSpeech = () => {
     startListening,  // STT + 녹음 시작
     stopRecording,   // STT + 녹음 중단
     speak, // TTS
+    speakWithCallback, // TTS + 콜백
     resetTranscript,  // 텍스트 초기화
     audioBlob,
     resetAudioBlob,
