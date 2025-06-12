@@ -92,9 +92,10 @@ const TestSpeech: React.FC = () => {
   </h2>
 )}
 
-      <span className="text-sm text-gray-500">
-        {questions.length > 0 ? `${currentIndex + 1} / ${questions.length}` : ''}
-      </span>
+      <span className="text-base font-semibold text-cyan-700 bg-cyan-100 px-2 py-1 rounded-md shadow-sm">
+  {questions.length > 0 ? `문제 ${currentIndex + 1} / ${questions.length}` : ''}
+</span>
+
     </div>
 
     {/* 질문 카드 */}
