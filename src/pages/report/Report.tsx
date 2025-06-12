@@ -47,7 +47,7 @@ export default function Report() {
   if (isLoading) return <p className="py-20 text-center">불러오는 중…</p>;
   if (isError || !data.length) return <p className="py-20 text-center">데이터 없음</p>;
 
-  const sorted = [...data].sort((a, b) => +new Date(a.info.date) - +new Date(b.info.date));
+  const sorted = [...data].sort((a, b) => +new Date(a.date) - +new Date(b.date));
 
   //사전평가와 사후평가 데이터 구분
   const pre = sorted[0]; //가장 첫번째 평가
@@ -65,7 +65,7 @@ export default function Report() {
   const postScores = postNormalized.chapters;
 
   return (
-    <div className="relative flex flex-col items-center px-4 py-10 font-[pretendard]">
+    <div className="w-[1000px] relative flex flex-col items-center px-4 py-10 font-[pretendard]">
       <h2 className="mb-2 text-2xl font-bold text-[#5B7CFF]">Education Evaluation</h2>
       <p className="text-center text-gray-600">
         {idx === 0 && '사전 평가 결과'}
@@ -81,8 +81,8 @@ export default function Report() {
       </p>
 
       {/* 슬라이드 & 버튼 묶음 */}
-      <div className="relative w-full max-w-[700px] h-[600px] mx-auto mt-10">
-        {/* ← 버튼 */}
+      <div className="relative w-full max-w-[700px] h-[600px] mx-auto mt-2">
+        {/* 버튼 */}
         {idx > 0 && (
           <button className="absolute left-[-5rem] top-1/2 -translate-y-1/2 z-10" onClick={() => setIdx(idx - 1)}>
             <MdChevronLeft size={40} className="text-blue-500" />
@@ -107,13 +107,13 @@ export default function Report() {
             style={{ transform: `translateX(-${idx * 100}%)` }}
           >
             <div className="w-full flex-shrink-0">
-              <RadarChart labels={labels} values={preScores} label="Pre" color="#5b7cff" />
+              <RadarChart labels={labels} values={preScores} label="Pre" color="rgba(91, 124, 255, 1)" />
             </div>
             <div className="w-full flex-shrink-0">
-              <RadarChart labels={labels} values={postScores} label="Post" color="#ff6ab0" />
+              <RadarChart labels={labels} values={postScores} label="Post" color="rgba(255, 106, 176, 1)" />
             </div>
             <div className="w-full flex-shrink-0">
-              <BarChart pre={preScores} post={postScores} final={post.feedback.final} />
+              <BarChart pre={preTotal} post={postTotal} final={post.feedback.final} />
             </div>
           </div>
         </div>

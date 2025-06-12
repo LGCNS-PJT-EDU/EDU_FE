@@ -11,7 +11,7 @@ import { FeedbackItem, fetchUserFeedback } from '@/hooks/useReport';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface FeedbackItemWithSubjectId extends FeedbackItem {
-  info: FeedbackItem['info'] & { subjectId: number };
+  subjectId: number;
 }
 
 interface ReportCard {
@@ -90,11 +90,9 @@ function MyPage() {
       const { data, subjectId } = r.data;
       const enriched = data.map((fb) => ({
         ...fb,
-        info: {
-          ...fb.info,
-          subjectId,
-        },
+        subjectId, // 평탄화된 필드
       }));
+
       feedbackDataList.push(...enriched);
     }
   });
@@ -102,20 +100,20 @@ function MyPage() {
   const reportCardsMap = new Map<number, ReportCard>();
 
   feedbackDataList
-    .filter((fb) => evaluatedSubjectIds.includes(fb.info.subjectId))
+    .filter((fb) => evaluatedSubjectIds.includes(fb.subjectId))
     .forEach((fb) => {
-      const subjectId = fb.info.subjectId;
+      const subjectId = fb.subjectId;
       const existing = reportCardsMap.get(subjectId);
 
       if (
         !existing ||
-        new Date(fb.info.date) > new Date(existing.subtitle?.replace('제출일: ', '') || '')
+        new Date(fb.date) > new Date(existing.subtitle?.replace('제출일: ', '') || '')
       ) {
         reportCardsMap.set(subjectId, {
-          title: `${fb.info.subject}`,
-          detailUrl: `/report?subject=${fb.info.subject}&date=${fb.info.date}`,
+          title: `${fb.subject}`,
+          detailUrl: `/report?subject=${fb.subject}&date=${fb.date}`,
           button1: '리포트 보러가기',
-          subtitle: `제출일: ${fb.info.date}`,
+          subtitle: `제출일: ${fb.date}`,
           subjectId,
         });
       }

@@ -1,11 +1,12 @@
 import { FeedbackItem } from '@/hooks/useReport';
 
-/** 사전(가장 오래된) / 사후(가장 최신) 분리 */
 export const splitPrePost = (list: FeedbackItem[]) => {
-  if (!list.length) return { pre: null, post: null };
-  const sorted = [...list].sort(
-    (a, b) => +new Date(a.info.date) - +new Date(b.info.date)
+  const valid = list.filter(item => item?.date); // date 존재 여부 체크
+  if (!valid.length) return { pre: null, post: null };
+
+  const sorted = [...valid].sort(
+    (a, b) => +new Date(a.date) - +new Date(b.date)
   );
+
   return { pre: sorted[0], post: sorted[sorted.length - 1] };
-  
 };

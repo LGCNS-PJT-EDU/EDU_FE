@@ -93,7 +93,7 @@ export default function Selectspeech() {
             >
               {subject.isComplete && (
                 <div className="absolute top-1 left-1 bg-[#73ccdc] text-white text-[12px] px-2 py-[2px] rounded-[7px] font-semibold z-10">
-                  완료
+                  평가완료
                 </div>
               )}
               <span className="text-sm leading-tight text-center break-words">
