@@ -40,7 +40,7 @@ export default function PretestPage() {
     };
   });
 
-  const goSolution = () => navigate(`/solution?subjectId=${subjectId}`, { replace: true });
+  const goSolution = () => navigate(`/solution?subjectId=${subjectId}&eval=pre`, { replace: true });
   const goRoadmap = () => navigate("/roadmap", { replace: true });
 
   return (

@@ -11,8 +11,8 @@ const Solution: React.FC = () => {
   /* subjectId 읽기 (쿼리스트링) */
   const [sp] = useSearchParams()
   const subjectId = Number(sp.get('subjectId')) || 0
-
-  const { evalType, setEvalType } = useSolutionStore()
+  const qsEval = sp.get('eval')
+  const qsNthRaw = Number(sp.get('nth'))
 
   /* 모든 문제를 한 번에 가져옴 */
   const { data: rawList = [], isLoading, isError } = useQuery<
@@ -42,11 +42,35 @@ const Solution: React.FC = () => {
       ).sort((a, b) => a - b),
     [rawList],
   )
+  const hasPost = postRounds.length > 0
 
-  const [postRound, setPostRound] = React.useState<number | null>(null)
+  /* evalType 초기 결정 */
+  const { evalType, setEvalType } = useSolutionStore()
   React.useEffect(() => {
-    if (postRounds.length) setPostRound(postRounds[postRounds.length - 1])
-  }, [postRounds])
+    let initEval: EvalType = 'pre'
+    if (qsEval === 'post') initEval = 'post'
+    else if (!qsEval && hasPost) initEval = 'post'
+    setEvalType(initEval)
+  }, [qsEval, hasPost, setEvalType])
+  
+  const [postRound, setPostRound] = React.useState<number | null>(null)
+
+  /* 초기 postRound 계산 */
+  React.useEffect(() => {
+    if (evalType === 'post' && hasPost) {
+      const nth = Number.isFinite(qsNthRaw) ? qsNthRaw : postRounds[postRounds.length - 1]
+      setPostRound(nth)
+    } else {
+      setPostRound(null)
+    }
+  }, [evalType, hasPost, qsNthRaw, postRounds])
+
+  /* 사후 회차 목록이 변하면 최신값으로 보정 */
+  React.useEffect(() => {
+    if (evalType === 'post' && hasPost && !postRounds.includes(postRound as number)) {
+      setPostRound(postRounds[postRounds.length - 1])
+    }
+  }, [evalType, hasPost, postRounds, postRound])
 
   /* isPre / nth 값으로 필터 */
   const list = React.useMemo(() => {
@@ -119,7 +143,8 @@ const Solution: React.FC = () => {
           사전평가
         </button>
         <button
-          onClick={() => setEvalType('post')}
+          onClick={() => hasPost && setEvalType('post')}
+          disabled={!hasPost}
           className={`px-4 py-2 text-sm rounded-md transition-all ${
             evalType === 'post'
               ? 'bg-white text-gray-900 font-semibold shadow-sm'
@@ -222,5 +247,5 @@ const Solution: React.FC = () => {
       )}
     </div>
   )
-}
+} 
 export default Solution

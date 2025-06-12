@@ -40,7 +40,7 @@ export default function PosttestPage() {
     };
   });
 
-  const goSolution = () => navigate(`/solution?subjectId=${subjectId}`, { replace: true });
+  const goSolution = () => navigate(`/solution?subjectId=${subjectId}&eval=post`, { replace: true });
   const goRoadmap = () => navigate("/roadmap", { replace: true });
 
   return (
