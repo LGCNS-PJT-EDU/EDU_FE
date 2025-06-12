@@ -27,10 +27,12 @@ export default function ConfirmModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="relative w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl">
+      <div className="relative w-[80vw] md:w-full max-w-[22rem] md:max-w-sm p-6 md:p-8 rounded-2xl bg-white shadow-xl"
+           style={{ maxHeight: '90vh', overflowY: 'auto' }}
+      >
         {/* 닫기 버튼 */}
         <button
-          className="absolute right-4 top-4 text-2xl text-gray-400 hover:text-gray-600"
+          className="absolute right-3 md:right-4 top-3 md:top-4 text-2xl text-gray-400 hover:text-gray-600"
           onClick={onClose}
         >
           &times;
@@ -40,15 +42,16 @@ export default function ConfirmModal({
         <img
           src={image}
           alt={imgAlt ?? 'modal image'}
-          className="mx-auto mb-4 h-28 w-28 object-contain"
+          className="mx-auto mb-4 h-22 md:h-28 w-22 md:w-28 object-contain"
         />
 
         {/* 제목 */}
-        <h3 className="mb-2 text-center text-xl font-semibold">{title}</h3>
+        <h3 className="mb-2 text-center text-lg md:text-xl font-semibold">{title}</h3>
 
         {/* 본문 메시지 */}
-        <p className="mb-6 text-center text-gray-600 whitespace-pre-wrap">{message}</p>
+        <p className="mb-6 text-center text-gray-600 whitespace-pre-wrap text-sm md:text-base">{message}</p>
 
+        {/* 확인 버튼 */}
         <button
           onClick={() => {
             onConfirm?.();

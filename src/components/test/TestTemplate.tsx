@@ -80,10 +80,12 @@ export default function TestTemplate({
   setHasStarted,
   isLoadingQuestions = false,
   subjectId,
+  showConfirm,
   onConfirmNote,
   onCloseConfirm,
 }: AssesmentProps & {
   subjectId: number;
+  showConfirm: boolean;
   onConfirmNote: () => void;
   onCloseConfirm: () => void;
 }) {
@@ -99,7 +101,7 @@ export default function TestTemplate({
     setShowConfirmModal(true);
   };
 
-  if (showConfirmModal) {
+  if (showConfirm) {
     return (
       <ConfirmModal
         title="제출이 완료되었습니다"

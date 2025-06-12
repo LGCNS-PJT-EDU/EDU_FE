@@ -42,14 +42,8 @@ export default function usePosttest(subjectId: number) {
   const [startTime] = useState(() => Date.now());
   const duration = Math.floor((Date.now() - startTime) / 1000);
 
-  const { mutate: submit, isPending: isSubmitting } = useMutation({
+  const { mutate: submit, isPending: isSubmitting, isSuccess, isError } = useMutation({
     mutationFn: submitPostTest,
-    onSuccess: () => {
-      alert("사전평가 제출이 완료되었습니다.");
-      /* 모달창 추가해줘야함 */
-      navigate("/roadmap")
-    },
-    onError: () => alert("사전평가 제출 실패"),
   });
 
   const choose = (value: string) => {
@@ -97,5 +91,7 @@ export default function usePosttest(subjectId: number) {
     choose,
     submitAnswers,
     isSubmitting: isSubmitting || isQuestionsLoading || isSubjectLoading,
+    isSuccess,
+    isError,
   };
 }

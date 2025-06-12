@@ -42,15 +42,8 @@ export default function usePretest(subjectId: number) {
   const [startTime] = useState(() => Date.now());
   const duration = Math.floor((Date.now() - startTime) / 1000);
 
-  const { mutate: submit, isPending: isSubmitting } = useMutation({
+  const { mutate: submit, isPending: isSubmitting, isSuccess, isError } = useMutation({
     mutationFn: submitPreTest,
-    onSuccess: () => {
-      alert("사전평가 제출 완료");
-      navigate("/roadmap");
-    },
-    onError: () => {
-      alert("제출 실패");
-    },
   });
 
   const choose = (value: string) => {
@@ -97,5 +90,7 @@ export default function usePretest(subjectId: number) {
     choose,
     submitAnswers,
     isSubmitting: isSubmitting || isQuestionsLoading || isSubjectLoading,
+    isSuccess,
+    isError,
   };
 }

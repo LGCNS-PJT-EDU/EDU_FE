@@ -21,6 +21,7 @@ export default function PosttestPage() {
     choose,
     submitAnswers,
     isSubmitting,
+    isSuccess,
   } = usePosttest(subjectId);
 
   const mappedQuestions = questions.map((q) => {
@@ -55,6 +56,7 @@ export default function PosttestPage() {
       hasStarted={hasStarted}
       setHasStarted={setHasStarted}
       subjectId={subjectId}
+      showConfirm={isSuccess}
       onConfirmNote={goSolution}
       onCloseConfirm={goRoadmap}
     />
