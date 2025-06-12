@@ -24,7 +24,17 @@ const Solution: React.FC = () => {
     enabled: subjectId > 0,
   })
 
-  /* ---------- 사후평가 라운드(drop-down) ---------- */
+  /* 레벨 → 라벨/색상 매핑 */
+  const levelMap: Record<
+    string,
+    { label: '하' | '중' | '상'; badge: string }
+  > = {
+    low:    { label: '하', badge: 'bg-blue-500'   },
+    medium: { label: '중', badge: 'bg-orange-500' },
+    high:   { label: '상', badge: 'bg-red-500'    },
+  }
+
+  /* 사후평가 드롭다운 */
   const postRounds = React.useMemo(
     () =>
       Array.from(
@@ -43,7 +53,7 @@ const Solution: React.FC = () => {
     if (evalType === 'pre') return rawList.filter(q => q.isPre)
     return rawList.filter(q => !q.isPre && q.nth === postRound)
   }, [rawList, evalType, postRound])
-  /* ---------- 사후평가 라운드(drop-down) 끝 ---------- */
+  /* 사후평가 드롭다운 끝 */
 
   /* 해설 토글 배열은 필터된 리스트 길이에 맞춰 초기화 */
   const [showExp, setShowExp] = React.useState<boolean[]>([])
@@ -58,7 +68,7 @@ const Solution: React.FC = () => {
       return next
     })
 
-  /* ---------- 안내 카드용 상태 ---------- */
+  /* 안내 카드용 상태 */
   const navigate = useNavigate()
   const needNotice = isLoading || isError || !list.length
   const noticeMsg = isLoading
@@ -66,7 +76,6 @@ const Solution: React.FC = () => {
     : isError
     ? '문제를 불러오지 못했습니다.'
     : '표시할 문항이 없습니다.'
-  /* ---------- 안내 카드용 상태 끝 ---------- */
 
   const subjectName = rawList[0]?.subNm || '과목'
 
@@ -155,22 +164,34 @@ const Solution: React.FC = () => {
               { choiceId: idx * 4 + 4, choiceNum: 4, choice: q.option4, value: '4' },
             ]
 
+            /* 레벨 라벨/색상 */
+            const { label, badge } = levelMap[q.examLevel] ?? {
+              label: '?',
+              badge: 'bg-gray-400',
+            }
+
             return (
-              <div key={idx} className="border border-black rounded-lg p-5">
+              <div key={idx} className="rounded-lg border-2 border-[#ededf1] p-4">
                 {/* 문제 헤더 */}
-                <div className="flex justify-between items-center mb-2">
+                <div className="mb-2 flex items-center justify-between">
                   <h3 className="font-medium">
                     {idx + 1}. {q.examContent}
-                    <span className="ml-3 text-sm text-gray-500">
-                      Lv. {q.examLevel}
-                    </span>
                   </h3>
-                  <button
-                    onClick={() => toggleExp(idx)}
-                    className="text-sm text-black"
+                </div>
+
+                {/* 해설 토글 (헤더 바로 아래) */}
+                <div className="mb-2 flex items-center justify-between">
+                    <button
+                      onClick={() => toggleExp(idx)}
+                      className="text-sm font-bold text-black"
+                    >
+                      {showExp[idx] ? '해설 접기 ▲' : '해설 보기 ▼'}
+                    </button>
+                  <span
+                    className={`ml-2 inline-flex h-7 w-7 items-center justify-center rounded-full flex-shrink-0 text-sm font-semibold text-white ${badge}`}
                   >
-                    {showExp[idx] ? '해설 접기 ▲' : '해설 보기 ▼'}
-                  </button>
+                    {label}
+                  </span>
                 </div>
 
                 {/* 해설 */}
