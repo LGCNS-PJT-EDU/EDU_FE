@@ -140,9 +140,10 @@ const handleDownload = () => {
     <section className="border border-cyan-300 rounded-xl p-6 bg-white shadow-sm">
     
       {/* 질문 텍스트 */}
-      <h3 className="text-base font-medium text-gray-800 mb-4">
-        {question.interviewContent}
+      <h3 className="text-xl font-bold text-gray-800 mb-4">
+        Q. {question.interviewContent}
       </h3>
+
 
       {/* 질문 다시 듣기 버튼 */}
       <div className="mb-4">
