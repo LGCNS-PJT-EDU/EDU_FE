@@ -1,4 +1,5 @@
 import api from '@/api/axios';
+import { SubjectDetail } from '@/hooks/useSubjectDetail';
 
 interface RawPostQuestion {
   questionId: number;
@@ -106,8 +107,10 @@ export async function submitPostTest(payload: PostTestSubmitPayload) {
 }
 
 //  로드맵 ID 포함된 서브젝트 상세 정보 조회
-export async function fetchSubjectDetail(subjectId: number): Promise<any> {
-  const res = await api.get<ApiResp<any>>("/api/roadmap/subject", {
+export async function fetchSubjectDetail(
+  subjectId: number
+): Promise<SubjectDetail> {
+  const res = await api.get<ApiResp<SubjectDetail>>("/api/roadmap/subject", {
     params: { subjectId },
   });
   return res.data.data; 
