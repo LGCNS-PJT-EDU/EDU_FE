@@ -22,7 +22,7 @@ export default function Main() {
       <div className="fixed inset-0 -z-10">
         <Aurora2
           particleColors={['#586bd1', '#73ccd7']}
-          particleCount={400}
+          particleCount={250}
           particleSpread={10}
           speed={0.1}
           particleBaseSize={100}
@@ -50,7 +50,7 @@ export default function Main() {
       </section>
 
         {/* 진단 → 로드맵 → 학습 → 평가 흐름 소개 섹션 */}
-        <section ref={bottomRef} className="relative min-h-screen snap-start w-full flex flex-col items-center text-center max-w-[900px] px-4 mx-auto pt-20 scroll-mt-[75px]">
+        <section ref={bottomRef} className="relative min-h-screen snap-start w-full flex flex-col items-center text-center max-w-[900px] px-4 mx-auto pt-20 md:pt-30 scroll-mt-[30px] md:scroll-mt-[0px]">
           <h2 className="mb-4 text-2xl md:text-3xl font-bold text-center text-[#3d3d3d]">
             AI가 함께하는 학습 여정, 이렇게 진행돼요!
           </h2>
@@ -155,7 +155,7 @@ export default function Main() {
           </section>
 
           {/* 프론트엔드 기본 로드맵 & 백엔드 기본 로드맵 버튼 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[700px] w-full mx-auto mt-16 mb-20 px-5 font-[Pretendard]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[700px] w-full mx-auto mt-16 mb-20 md:mb-0 px-5 font-[Pretendard]">
             {[
               {
                 type: 'FE',
@@ -172,13 +172,13 @@ export default function Main() {
                 key={type}
                 className="flex flex-col justify-between bg-gray-50 border border-gray-200 rounded-2xl shadow-sm p-6 min-h-[90px]
                           text-center transition-all hover:bg-blue-100 hover:-translate-y-1 hover:border-transparent"
+                          onClick={() => navigate(`/roadmap/default/${type}`)}
               >
                 <h3 className="text-lg font-semibold text-[#6378EB] mb-2">
                   {title}
                 </h3>
                 <p
-                  className="text-sm text-gray-600 underline underline-offset-4 cursor-pointer"
-                  onClick={() => navigate(`/roadmap/default/${type}`)}
+                  className="text-sm text-gray-600 "
                 >
                   {desc}
                 </p>

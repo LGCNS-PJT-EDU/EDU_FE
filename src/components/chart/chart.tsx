@@ -8,6 +8,8 @@ import {
   Legend,
 } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
+import 'chart.js/auto';
+
 import { useMemo } from 'react';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -26,6 +28,9 @@ export default function RadarChart({
   color = 'rgba(91,124,255,1)',
 }: Props) {
   const { data, options } = useMemo(() => {
+    const filledColor = color.replace('1)', '0.3)');
+    const textColor = color.replace('1)', '1)'); // 원래 컬러 그대로 사용
+
     return {
       data: {
         labels,
@@ -35,23 +40,35 @@ export default function RadarChart({
             data: values,
             borderColor: color,
             borderWidth: 2,
-            pointBackgroundColor: color,
-            pointRadius: 4,
-            pointHoverRadius: 6,
-            fill: false, // 배경 제거
+            fill: true,
+            backgroundColor: filledColor,
+            pointBackgroundColor: filledColor,
+            pointRadius: 0,
+            pointHoverRadius: 0,
           },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: {
+            top: 0,
+            bottom: 0,
+            left: 50,
+            right: 50,
+          },
+        },
         plugins: {
           legend: {
             display: true,
-            position: 'top' as const,
+            position: 'top',
+            align: 'center',
             labels: {
-              color: '#1f2937',
+              color: textColor,
               font: { size: 14 },
+              boxWidth: 20,
+              padding: 30,
             },
           },
           tooltip: {
@@ -65,20 +82,51 @@ export default function RadarChart({
         scales: {
           r: {
             min: 0,
-            max: 100,
+            max: 20,
             ticks: {
-              stepSize: 20,
+              stepSize: 5,
               color: '#6b7280',
               backdropColor: 'transparent',
             },
             grid: {
               color: '#e5e7eb',
-              circular: true,
+              circular: false,
             },
             pointLabels: {
-              font: { size: 14 },
-              color: '#374151',
-            },
+              font: { size: 14, weight: 'bold' },
+              color: textColor,
+              padding: 5,
+              callback: function (label: string, index: number) {
+                const score = values[index];
+                const breakSymbols = ['&', '·'];
+
+                let breakIndex = -1;
+
+                // 모든 기호 위치 수집
+                const symbolIndexes = [];
+                for (const symbol of breakSymbols) {
+                  let i = label.indexOf(symbol);
+                  while (i !== -1) {
+                    symbolIndexes.push(i);
+                    i = label.indexOf(symbol, i + 1);
+                  }
+                }
+
+                // 두 번째 기호가 있다면 해당 위치 기준으로 줄바꿈
+                if (symbolIndexes.length >= 2) {
+                  const sorted = symbolIndexes.sort((a, b) => a - b);
+                  breakIndex = sorted[1];
+                }
+
+                if (breakIndex !== -1) {
+                  const line1 = label.slice(0, breakIndex + 1).trim(); // 기호 포함
+                  const line2 = label.slice(breakIndex + 1).trim();    // 나머지
+                  return [line1, line2, `${score}점`];
+                }
+
+                return [label, `${score}점`];
+              },
+            }
           },
         },
       },
@@ -86,8 +134,8 @@ export default function RadarChart({
   }, [labels, values, label, color]);
 
   return (
-    <div style={{ width: '100%', maxWidth: 500, height: 500, margin: 'auto' }}>
-      <Radar data={data} options={options} />
+    <div className="w-full max-w-[700px] h-[490px] mx-auto flex justify-center items-center">
+      <Radar data={data} options={options as any} />
     </div>
   );
 }

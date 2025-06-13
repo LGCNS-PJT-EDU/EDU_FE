@@ -1,10 +1,10 @@
-// src/pages/roadmap/RoadmapTemplate.tsx
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useRoadmapStore } from '@/store/roadmapStore';
 import SkeletonCanvas from './SkeletonCanvas';
 import RoadmapNode     from './RoadmapNode';
+import { relative } from 'path';
 
 /* ───────── 레이아웃 상수 ───────── */
 const NODE_SIZE        = 36;          // 아이콘 지름(px)
@@ -73,49 +73,86 @@ export default function RoadmapTemplate() {
     SKELETON_Y + (rows-1)*GAP_Y + NODE_SIZE/2           // 뼈대 끝
   ) + STROKE;
 
-  return (
-    <div className="relative mx-auto" style={{ width, height }}>
+  function useScale(width: number, MOBILE_MAX_WIDTH = 375) {
+    const [scale, setScale] = useState(1);
+    useEffect(() => {
+      const handler = () => {
+        setScale(window.innerWidth >= 768 ? 1 : Math.min(1, MOBILE_MAX_WIDTH / width));
+      };
+      handler();
+      window.addEventListener('resize', handler);
+      return () => window.removeEventListener('resize', handler);
+    }, [width, MOBILE_MAX_WIDTH]);
+    return scale;
+  }
 
-      {/* 뼈대 SVG */}
-      <SkeletonCanvas
-        cols={MAX_COLS}
-        rows={rows}
-        nodeSize={NODE_SIZE}
-        colGap={GAP_X}
-        rowGap={GAP_Y}
-        yOffset={SKELETON_Y}
-        stroke={STROKE}
-      />
+  // RoadmapTemplate 내부에서
+  const scale = useScale(width, 375);
 
-      {/* 노드 + 라벨 */}
-      <DndProvider backend={HTML5Backend}>
-        {positions.map((p, i) => {
-          const node = nodes[i];
+return (
+  <div className="relative w-full" style={{ height: height * scale }}>
+    <div
+      className="mx-auto"
+      style={{
+        width: width * scale,
+        height: height * scale,
+        transform: `scale(${scale})`,
+        transformOrigin: 'top left',
+        position: 'relative',
+      }}
+    >
+      <div
+        style={{
+          width,
+          height,
+          position: 'absolute',
+          left: 0,
+          top: 0,
+        }}
+      >
 
-          /* nodeStatus 결정 로직 currentId 없으면 'done' */
-          const status =
-            currentOrder === null || !node
-              ? 'todo'
-              : node.subjectOrder < currentOrder
-              ? 'done'
-              : node.subjectOrder === currentOrder
-              ? 'current'
-              : node.subjectOrder > currentOrder
-              ? 'todo'
-              : 'done';
+          {/* 뼈대 SVG */}
+          <SkeletonCanvas
+            cols={MAX_COLS}
+            rows={rows}
+            nodeSize={NODE_SIZE}
+            colGap={GAP_X}
+            rowGap={GAP_Y}
+            yOffset={SKELETON_Y}
+            stroke={STROKE}
+          />
 
-          return (
-            <RoadmapNode
-              key={i}
-              index={i}
-              x={p.x}
-              y={p.y}
-              showLabel={!!node}
-              nodeStatus={status}
-            />
-          );
-        })}
-      </DndProvider>
+          {/* 노드 + 라벨 */}
+          <DndProvider backend={HTML5Backend}>
+            {positions.map((p, i) => {
+              const node = nodes[i];
+
+              /* nodeStatus 결정 로직 currentId 없으면 'done' */
+              const status =
+                currentOrder === null || !node
+                  ? 'todo'
+                  : node.subjectOrder < currentOrder
+                  ? 'done'
+                  : node.subjectOrder === currentOrder
+                  ? 'current'
+                  : node.subjectOrder > currentOrder
+                  ? 'todo'
+                  : 'done';
+
+              return (
+                <RoadmapNode
+                  key={i}
+                  index={i}
+                  x={p.x}
+                  y={p.y}
+                  showLabel={!!node}
+                  nodeStatus={status}
+                />
+              );
+            })}
+          </DndProvider>
+        </div>
+      </div>
     </div>
   );
 }

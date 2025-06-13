@@ -9,6 +9,7 @@ import {
 } from '@/api/postTestService';
 import { getAccessToken } from "@/store/authGlobal";
 import { useNavigate } from "react-router-dom";
+import { SubjectDetail } from "./useSubjectDetail";
 
 export default function usePosttest(subjectId: number) {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ export default function usePosttest(subjectId: number) {
   const {
     data: subjectDetail,
     isLoading: isSubjectLoading,
-  } = useQuery({
+  } = useQuery<SubjectDetail>({
     queryKey: ["subjectDetail", subjectId],
     queryFn: () => fetchSubjectDetail(subjectId),
     enabled: !!subjectId,
@@ -42,14 +43,8 @@ export default function usePosttest(subjectId: number) {
   const [startTime] = useState(() => Date.now());
   const duration = Math.floor((Date.now() - startTime) / 1000);
 
-  const { mutate: submit, isPending: isSubmitting } = useMutation({
+  const { mutate: submit, isPending: isSubmitting, isSuccess, isError } = useMutation({
     mutationFn: submitPostTest,
-    onSuccess: () => {
-      alert("사전평가 제출이 완료되었습니다.");
-      /* 모달창 추가해줘야함 */
-      navigate("/roadmap")
-    },
-    onError: () => alert("사전평가 제출 실패"),
   });
 
   const choose = (value: string) => {
@@ -70,12 +65,14 @@ export default function usePosttest(subjectId: number) {
       return;
     }
 
+    const submitCnt = subjectDetail.postSubmitCount ?? 0;
+
     const payload: PostTestSubmitPayload = {
       roadmapId: subjectDetail.roadmapId,
       subjectId,
       startDate,
       duration,
-      submitCnt: 1,
+      submitCnt,
       answers: questions.map((q) => ({
         examId: q.id,
         examContent: q.question,
@@ -86,6 +83,7 @@ export default function usePosttest(subjectId: number) {
         userAnswer: Number(answers[q.id]),
       })),
     };
+    console.log('submit',payload)
     submit(payload);
   };
 
@@ -96,6 +94,9 @@ export default function usePosttest(subjectId: number) {
     answers,
     choose,
     submitAnswers,
+    submit,
     isSubmitting: isSubmitting || isQuestionsLoading || isSubjectLoading,
+    isSuccess,
+    isError,
   };
 }

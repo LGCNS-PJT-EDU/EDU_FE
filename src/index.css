@@ -14,7 +14,9 @@
   font-weight: 400;
   font-style: normal;
 }
-
+button{
+  cursor: pointer;
+}
 @custom-variant dark (&:is(.dark *));
 
 .custom-scroll::-webkit-scrollbar {
@@ -26,10 +28,6 @@
 }
 .custom-scroll::-webkit-scrollbar-track {
   background: transparent;
-}
-
-button{
-  cursor: pointer;
 }
 
 @theme inline {

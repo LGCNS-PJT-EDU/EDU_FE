@@ -1,4 +1,5 @@
 import api from '@/api/axios';
+import { SubjectDetail } from '@/hooks/useSubjectDetail';
 
 interface RawPostQuestion {
   questionId: number;
@@ -74,9 +75,9 @@ export async function fetchPostTestQuestions(
     const originalChoices: PostTestChoice[] = [q.choice1, q.choice2, q.choice3, q.choice4]
       .filter((c): c is string => Boolean(c))
       .map((text, idx) => ({
-        id: idx + 1,            // 원본 key (1~4)
+        id: idx + 1,            
         text,
-        value: String(idx + 1), // 서버로 보낼 값
+        value: String(idx + 1), 
       }));
     // 2. 셔플
     const shuffledChoices = shuffleArray(originalChoices);
@@ -94,7 +95,7 @@ export async function fetchPostTestQuestions(
       chapterNum: q.chapterNum,
       chapterName: q.chapterName,
       difficulty: q.difficulty,
-      answerNum: shuffledAnswerNum,
+      answerNum: q.answerNum,
     };
   });
 }
@@ -106,9 +107,11 @@ export async function submitPostTest(payload: PostTestSubmitPayload) {
 }
 
 //  로드맵 ID 포함된 서브젝트 상세 정보 조회
-export async function fetchSubjectDetail(subjectId: number): Promise<any> {
-  const res = await api.get<ApiResp<any>>("/api/roadmap/subject", {
+export async function fetchSubjectDetail(
+  subjectId: number
+): Promise<SubjectDetail> {
+  const res = await api.get<ApiResp<SubjectDetail>>("/api/roadmap/subject", {
     params: { subjectId },
   });
-  return res.data.data; // roadmapId 포함되어 있어야 함
+  return res.data.data; 
 }

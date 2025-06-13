@@ -6,7 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 
-export function useRoadmapQuery() {
+interface useRoadmapQueryOptions {
+  enabled?: boolean;
+  refetchOnMount?: boolean | "always";
+}
+
+export function useRoadmapQuery({
+  enabled = true,
+  refetchOnMount = false,
+}: useRoadmapQueryOptions = {}) {
+
   const uuid = useGuestUuidStore((s) => s.uuid);
 
   const query = useQuery< RoadmapPayload, Error >({
@@ -14,9 +23,11 @@ export function useRoadmapQuery() {
     queryFn: () => fetchRoadmap(uuid ?? "takeit"),
     staleTime: Infinity,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
     refetchOnReconnect: false,
     retry: false,
+
+    enabled,
+    refetchOnMount,
   });
 
   useEffect(() => {

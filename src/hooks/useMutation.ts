@@ -1,20 +1,35 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "@/api/axios";
+import { useAuthStore } from "@/store/authGlobal";
 
 interface LoginParams {
     email : string;
     password: string;
 }
 
-export const useLoginMutation = () => 
-    useMutation<string, Error, LoginParams>({
-        mutationFn: async ({email, password}: LoginParams):Promise<string> =>{
-        const res = await axios.post('api/user/signin', {email,password});
-        const token = res.headers['authorization']?.split(' ')[1];
-        if (!token) throw new Error('토큰이 없습니다');
-        return token;
-        }
-    });
+interface LoginResponse {
+  accessToken   : string;
+  privacyStatus : boolean;
+}
+
+export const useLoginMutation = () =>
+  useMutation<LoginResponse, Error, LoginParams>({
+    mutationFn: async ({ email, password }): Promise<LoginResponse> => {
+      const res = await axios.post('/api/user/signin', { email, password });
+
+      // (1) 헤더 백업용 토큰, (2) 본문 data 안 토큰 ― 둘 다 고려
+      const accessToken   = res.data?.data?.accessToken
+                         ?? res.headers['authorization']?.split(' ')[1];
+      const privacyStatus = res.data?.data?.privacyStatus;
+
+      if (!accessToken) throw new Error('토큰이 없습니다');
+      return { accessToken, privacyStatus };
+    },
+    /** 성공 시 자동으로 zustand store 업데이트 */
+    onSuccess: ({ accessToken, privacyStatus }) => {
+      useAuthStore.getState().setLogin(accessToken, privacyStatus);
+    },
+  });
 
 interface SignupParams {
     email: string;

@@ -9,6 +9,7 @@ import {
 } from "@/api/preTestService";
 import { getAccessToken } from "@/store/authGlobal";
 import { useNavigate } from "react-router-dom";
+import { SubjectDetail } from "./useSubjectDetail";
 
 export default function usePretest(subjectId: number) {
   const navigate = useNavigate();
@@ -30,11 +31,12 @@ export default function usePretest(subjectId: number) {
   const {
     data: subjectDetail,
     isLoading: isSubjectLoading,
-  } = useQuery({
+  } = useQuery<SubjectDetail>({
     queryKey: ["subjectDetail", subjectId],
     queryFn: () => fetchSubjectDetail(subjectId),
     enabled: !!subjectId,
   });
+
 
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -42,15 +44,8 @@ export default function usePretest(subjectId: number) {
   const [startTime] = useState(() => Date.now());
   const duration = Math.floor((Date.now() - startTime) / 1000);
 
-  const { mutate: submit, isPending: isSubmitting } = useMutation({
+  const { mutate: submit, isPending: isSubmitting, isSuccess, isError } = useMutation({
     mutationFn: submitPreTest,
-    onSuccess: () => {
-      alert("사전평가 제출 완료");
-      navigate("/roadmap");
-    },
-    onError: () => {
-      alert("제출 실패");
-    },
   });
 
   const choose = (value: string) => {
@@ -70,12 +65,14 @@ export default function usePretest(subjectId: number) {
       return;
     }
 
+    const submitCnt = subjectDetail.preSubmitCount ?? 0;
+
     const payload: PreTestSubmitPayload = {
       roadmapId: subjectDetail.roadmapId,
       subjectId,
       startDate,
       duration,
-      submitCnt: 1,
+      submitCnt,
       answers: questions.map((q) => ({
         examId: q.id,
         examContent: q.question,
@@ -96,6 +93,9 @@ export default function usePretest(subjectId: number) {
     answers,
     choose,
     submitAnswers,
+    submit,
     isSubmitting: isSubmitting || isQuestionsLoading || isSubjectLoading,
+    isSuccess,
+    isError,
   };
 }

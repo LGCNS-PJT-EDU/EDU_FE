@@ -28,9 +28,10 @@ export interface Subject {
   subjectOrder: number;
 }
 export interface RoadmapPayload {
-  uuid?: string;                    //roadmapService에서 사용하려고 optional 설정함
+  uuid?: string;
   userLocationSubjectId: number;
   subjects: Subject[];
+  roadmapName: string;
 }
 
 interface ApiResp<T> {

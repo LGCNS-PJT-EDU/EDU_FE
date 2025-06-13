@@ -21,6 +21,7 @@ export default function PosttestPage() {
     choose,
     submitAnswers,
     isSubmitting,
+    isSuccess,
   } = usePosttest(subjectId);
 
   const mappedQuestions = questions.map((q) => {
@@ -38,6 +39,10 @@ export default function PosttestPage() {
       choices: choiceArr,
     };
   });
+
+  const goSolution = () => navigate(`/solution?subjectId=${subjectId}&eval=post`, { replace: true });
+  const goRoadmap = () => navigate("/roadmap", { replace: true });
+
   return (
     <TestTemplate
       kind="post"
@@ -50,6 +55,10 @@ export default function PosttestPage() {
       isSubmitting={isSubmitting}
       hasStarted={hasStarted}
       setHasStarted={setHasStarted}
+      subjectId={subjectId}
+      showConfirm={isSuccess}
+      onConfirmNote={goSolution}
+      onCloseConfirm={goRoadmap}
     />
   )
 }
