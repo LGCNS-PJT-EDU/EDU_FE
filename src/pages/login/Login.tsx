@@ -11,6 +11,7 @@ import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png'
 
 import useLogin from '@/hooks/useLogin';
 import { useLoadingStore } from '@/store/useLoadingStore';
+import { useNavigate } from 'react-router-dom';
 
 const REDIRECT_BASE = import.meta.env.VITE_REDIRECT_DOMAIN;
 /* 1) 공급자별 고정 파라미터 */
@@ -68,9 +69,8 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const { startLoading, stopLoading } = useLoadingStore();
-
-  const saveAccessToken = useLogin();
   const LoginMutation = useLoginMutation();
+  const navigate = useNavigate();
 
   const handleLogin = async (): Promise<void> => {
     setEmailError('');
@@ -83,10 +83,8 @@ function Login() {
 
     /* react-query 사용한 쪽 */
     try {
-      const token = await LoginMutation.mutateAsync({ email, password });
-      if (!token) throw new Error('token missing');
-      saveAccessToken(token);
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+      await LoginMutation.mutateAsync({ email, password });
+      navigate('/roadmap')
     } catch (e) {
       console.log(e);
       setErrorMessage('이메일 또는 비밀번호가 잘못되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.');
