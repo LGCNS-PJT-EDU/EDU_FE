@@ -1,13 +1,15 @@
 import { useQuery, useQueries, UseQueryResult } from '@tanstack/react-query';
 import useLogout from '@/hooks/useLogout';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useProgress } from '@/hooks/useProgress';
 import CardGrid from '@/components/ui/CardGrid';
+import ReportCard from '@/components/ui/reportCard';
 import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
 
 import { fetchRoadmap } from '@/api/roadmapService';
 import { fetchSubjectDetail, SubjectDetail } from '@/hooks/useSubjectDetail';
 import { FeedbackItem, fetchUserFeedback } from '@/hooks/useReport';
+import { useInterviewHistory } from '@/hooks/useInterviewHistory';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface FeedbackItemWithSubjectId extends FeedbackItem {
@@ -26,9 +28,10 @@ function MyPage() {
   const logout = useLogout();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState<'favorite' | 'report'>('favorite');
+  const [activeTab, setActiveTab] = useState<'favorite' | 'report' | 'speechFeedback'>('favorite');
   const { data: progressData } = useProgress();
   const percent = Math.min(100, Math.round(progressData?.percent || 0));
+  const { data: speechData = [], isLoading: speechLoading } = useInterviewHistory();
 
   const { data: roadmap } = useQuery({
     queryKey: ['myRoadmap'],
@@ -121,6 +124,26 @@ function MyPage() {
 
   const reportCards = Array.from(reportCardsMap.values());
 
+  //중복제거
+  const uniqueNthMap = new Map<number, typeof speechData[0]>();
+
+  speechData.forEach((item) => {
+    if (!uniqueNthMap.has(item.nth)) {
+      uniqueNthMap.set(item.nth, item); 
+    }
+  });
+
+  // 중복 제거된 speechCards 생성
+  const speechCards = Array.from(uniqueNthMap.values()).map((item) => ({
+    reply_id: item.reply_id,
+    nth: item.nth,
+    interviewContent: item.interviewContent,
+    userReply: item.userReply,
+    aiFeedback: item.aiFeedback,
+    subId: item.subId,
+    interviewAnswer: item.interviewAnswer,
+  }));
+
   return (
     <div className="flex flex-col min-h-screen font-[pretendard] w-full px-4 sm:px-0">
       <div className="flex-grow">
@@ -148,35 +171,65 @@ function MyPage() {
         </div>
 
         {/* 탭 */}
-        <div className="inline-flex rounded-lg bg-[#f3f6fb] p-1 mb-5">
+        <div className="flex mb-6 border-b border-gray-200">
           <button
             onClick={() => setActiveTab('favorite')}
-            className={`px-4 py-2 text-sm rounded-md transition-all ${activeTab === 'favorite' ? 'bg-white text-gray-900 font-semibold shadow-sm' : 'text-gray-500'}`}
+            className={`mr-4 pb-2 border-b-2 ${activeTab === 'favorite'
+              ? 'border-[#6378EB] text-[#6378EB] font-bold'
+              : 'border-transparent text-gray-500'
+              }`}
           >
             추천 콘텐츠
           </button>
           <button
             onClick={() => setActiveTab('report')}
-            className={`px-4 py-2 text-sm rounded-md transition-all ${activeTab === 'report' ? 'bg-white text-gray-900 font-semibold shadow-sm' : 'text-gray-500'}`}
+            className={`mr-4 pb-2 border-b-2 ${activeTab === 'report'
+              ? 'border-[#6378EB] text-[#6378EB] font-bold'
+              : 'border-transparent text-gray-500'
+              }`}
           >
             평가 리포트
+          </button>
+          <button
+            onClick={() => setActiveTab('speechFeedback')}
+            className={`pb-2 border-b-2 ${activeTab === 'speechFeedback'
+              ? 'border-[#6378EB] text-[#6378EB] font-bold'
+              : 'border-transparent text-gray-500'
+              }`}
+          >
+            인터뷰 리포트
           </button>
         </div>
 
         {/* 콘텐츠 */}
-        {activeTab === 'favorite' ? (
-          <CardGrid
-            cards={cardList}
-            onButton1Click={(card) => window.open(card.detailUrl, '_blank')}
-          />
-        ) : (
-          <CardGrid
-            cards={reportCards}
-            onButton1Click={(card) => {
-              navigate(`/solution?subjectId=${card.subjectId}`);
-            }}
-          />
-        )}
+
+        {
+          activeTab === 'favorite' ? (
+            <CardGrid
+              cards={cardList}
+              onButton1Click={(card) => window.open(card.detailUrl, '_blank')}
+            />
+          ) : activeTab === 'report' ? (
+            <CardGrid
+              cards={reportCards}
+              onButton1Click={(card) => {
+                navigate(`/solution?subjectId=${card.subjectId}`);
+              }}
+            />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {speechCards.length === 0 ? (
+                <p className="text-gray-500">면접 기록이 없습니다.</p>
+              ) : (
+                speechCards.map((item) => (
+                  <ReportCard key={item.reply_id} item={item} />
+                ))
+              )}
+            </div>
+          )
+        }
+
+
       </div>
 
       {/* 푸터 */}

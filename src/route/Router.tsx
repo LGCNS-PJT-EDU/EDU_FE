@@ -42,7 +42,7 @@ const router = createBrowserRouter([
       { path: 'login/oauth2/code/:provider', element: <OAuthCallback /> },
       { path: 'selectspeech', element: <Selectspeech /> },
       { path: 'testspeech', element: <TestSpeech /> },
-      { path: 'speechfeedback', element: <SpeechFeedback /> },
+      { path: 'speechfeedback', element: <SpeechFeedback/> },
     ],
   },
 ]);
