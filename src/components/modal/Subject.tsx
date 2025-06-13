@@ -1,6 +1,7 @@
 import { useSubjectDetail } from '@/hooks/useSubjectDetail';
 import { useRoadmapStore } from '@/store/roadmapStore';
 import { useNavigate } from 'react-router-dom';
+import RecommendationCard from '@/components/ui/RecommendationCard';
 
 export interface SubjectRef {
   subjectId: number;
@@ -28,8 +29,8 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
     nodeOrder < rawCurrentOrder
       ? 'done'
       : nodeOrder === rawCurrentOrder
-      ? 'current'
-      : 'todo';
+        ? 'current'
+        : 'todo';
 
   const { data: detail, isLoading, isError } = useSubjectDetail(subjectId);
 
@@ -93,77 +94,71 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
               </ol>
 
               <h4 className="font-semibold mb-2">추천 콘텐츠</h4>
-              <ul className="list-disc pl-5 mb-4">
-                {detail.recommendContents && detail.recommendContents.length > 0 ? (
-                  detail.recommendContents.map((item) => (
-                    <li key={item.contentId} className="mb-1">
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-500 underline"
-                      >
-                        {item.title}
-                      </a>
-                      {item.comment && (
-                        <p className="text-sm text-gray-400">{item.comment}</p>
-                      )}
-                    </li>
-                  ))
-                ) : (
-                  <li className="text-sm text-gray-500">사전평가 완료 후 추천 콘텐츠가 제공됩니다.</li>
-                )}
-              </ul>
+              {(detail.recommendContents ?? []).length > 0 ? (
+                detail.recommendContents!.map((item) => (
+                  <RecommendationCard
+                    key={item.contentId}
+                    title={item.title}
+                    url={item.url}
+                    type={item.type}
+                    platform={item.platform}
+                    isAiRecommendation={item.isAiRecommendation}
+                    comment={item.comment}
+                  />
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">사전평가 완료 후 추천 콘텐츠가 제공됩니다.</p>
+              )}
             </div>
           )}
 
-          {/* 버튼 */}
-          {isLoading ? (
-            <p>로딩 중...</p>
-          ) : isError || !detail ? (
-            <p>불러오기 실패</p>
-          ) : (
-             <>
-              {status === 'todo' ? (
+        {/* 버튼 */}
+        {isLoading ? (
+          <p>로딩 중...</p>
+        ) : isError || !detail ? (
+          <p>불러오기 실패</p>
+        ) : (
+          <>
+            {status === 'todo' ? (
+              <button
+                className="w-full border border-gray-300 text-gray-600 bg-gray-100 py-2 px-4 rounded-lg"
+                onClick={onClose}
+              >
+                이전 과목을 먼저 이수해주세요!
+              </button>
+            ) : detail.preSubmitCount < 1 ? (
+              <button
+                className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg"
+                onClick={goPreTest}
+              >
+                사전평가 보러가기
+              </button>
+            ) : (
+              <>
                 <button
-                  className="w-full border border-gray-300 text-gray-600 bg-gray-100 py-2 px-4 rounded-lg"
-                  onClick={onClose}
+                  className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                  onClick={goPostTest}
                 >
-                  이전 과목을 먼저 이수해주세요!
+                  사후평가 보러가기
                 </button>
-              ) : detail.preSubmitCount < 1 ? (
                 <button
-                  className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg"
-                  onClick={goPreTest}
+                  className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                  onClick={goReport}
                 >
-                  사전평가 보러가기
+                  평가 리포트 보러가기
                 </button>
-              ) : (
-                <>
-                  <button
-                    className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
-                    onClick={goPostTest}
-                  >
-                    사후평가 보러가기
-                  </button>
-                  <button
-                    className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
-                    onClick={goReport}
-                  >
-                    평가 리포트 보러가기
-                  </button>
-                  <button
-                    className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
-                    onClick={goSolution}
-                  >
-                    오답 보러가기
-                  </button>
-                </>
-              )}
-            </>
-          )}
-        </div>
+                <button
+                  className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                  onClick={goSolution}
+                >
+                  오답 보러가기
+                </button>
+              </>
+            )}
+          </>
+        )}
       </div>
     </div>
+    </div >
   );
 }
