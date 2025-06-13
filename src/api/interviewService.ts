@@ -1,23 +1,36 @@
 import api from "@/api/axios";
 
 export interface InterviewFeedback {
-  interviewId: number;
-  userReply: string;
-  nth: number;
-  aiFeedback: string;
+  comment: string;
+  conceptSummary: string;
+  modelAnswer: string;
+  recommendKeywords: string[];
 }
 
+export interface AnswerRequest {
+  interviewId: number;
+  interviewContent: string;
+  userReply: string;
+}
+
+export interface SubmitInterviewAnswersRequest {
+  answers: AnswerRequest[];
+  nth: number;
+}
+
+export interface SubmitInterviewAnswersResponse {
+  stateCode: number;
+  message: string;
+  data: InterviewFeedback[];
+}
 export async function submitInterviewAnswers(
-  answers: { interviewId: number; userReply: string; nth: number }[]
+  payload: SubmitInterviewAnswersRequest
 ): Promise<InterviewFeedback[]> {
-  const payload = { answers };
-
-  console.log("서버 전송 payload:", payload);
-
-  const res = await api.post<{ data: InterviewFeedback[] }>(
+  const res = await api.post<SubmitInterviewAnswersResponse>(
     '/api/interview/answers',
     payload
   );
 
-  return res.data.data; 
+  return res.data.data;
 }
+

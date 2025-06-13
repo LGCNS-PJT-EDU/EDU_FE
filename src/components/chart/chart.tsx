@@ -82,9 +82,9 @@ export default function RadarChart({
         scales: {
           r: {
             min: 0,
-            max: 100,
+            max: 20,
             ticks: {
-              stepSize: 20,
+              stepSize: 5,
               color: '#6b7280',
               backdropColor: 'transparent',
             },
