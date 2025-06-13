@@ -9,6 +9,7 @@ import {
 } from "@/api/preTestService";
 import { getAccessToken } from "@/store/authGlobal";
 import { useNavigate } from "react-router-dom";
+import { SubjectDetail } from "./useSubjectDetail";
 
 export default function usePretest(subjectId: number) {
   const navigate = useNavigate();
@@ -30,11 +31,12 @@ export default function usePretest(subjectId: number) {
   const {
     data: subjectDetail,
     isLoading: isSubjectLoading,
-  } = useQuery({
+  } = useQuery<SubjectDetail>({
     queryKey: ["subjectDetail", subjectId],
     queryFn: () => fetchSubjectDetail(subjectId),
     enabled: !!subjectId,
   });
+
 
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -63,12 +65,14 @@ export default function usePretest(subjectId: number) {
       return;
     }
 
+    const submitCnt = subjectDetail.preSubmitCount ?? 0;
+
     const payload: PreTestSubmitPayload = {
       roadmapId: subjectDetail.roadmapId,
       subjectId,
       startDate,
       duration,
-      submitCnt: 1,
+      submitCnt,
       answers: questions.map((q) => ({
         examId: q.id,
         examContent: q.question,
@@ -89,6 +93,7 @@ export default function usePretest(subjectId: number) {
     answers,
     choose,
     submitAnswers,
+    submit,
     isSubmitting: isSubmitting || isQuestionsLoading || isSubjectLoading,
     isSuccess,
     isError,

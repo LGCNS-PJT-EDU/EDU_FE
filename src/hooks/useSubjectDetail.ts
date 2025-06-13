@@ -29,6 +29,7 @@ export interface SubjectDetail {
   subjectId: number;
   overview: string;
   chapters: Chapter[];
+  roadmapId: number;
   preSubmitCount: number;
   postSubmitCount: number;
   recommendContents?: ApiRecommendContent[];
@@ -38,6 +39,7 @@ interface ApiSubjectResponse {
   subject_name: string;
   subject_overview: string;
   chapters: Chapter[];
+  roadmapId: number;
   preSubmitCount: number;
   postSubmitCount: number;
   recommendContents: ApiRecommendContent[];
@@ -54,6 +56,7 @@ export async function fetchSubjectDetail(subjectId: number): Promise<SubjectDeta
   const data = response.data.data; 
 
   return {
+    roadmapId: data.roadmapId,
     subjectId,
     subjectName: data.subject_name,
     overview: data.subject_overview,
