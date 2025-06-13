@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import pixel_texture from "@/asset/img/common/pixel_texture.png"
 import main from '@/asset/img/common/main.png';
 import { useCheckEmailMutation, useSignupMutation } from '@/hooks/useMutation';
-import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png'
+import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png' 
+import SignupTermsModal from '@/components/modal/SignupTermsModal';
+import { AnimatePresence, motion } from 'framer-motion';
 
 function Signup() {
   const [email, setEmail] = useState<string>('');
@@ -13,9 +15,14 @@ function Signup() {
   const [password, setPassword] = useState<string>('');
   const [passwordCheck, setPasswordCheck] = useState<string>('');
 
+  const [pwValid, setPwValid]               = useState(false);
+  const [pwMatch, setPwMatch]               = useState<boolean | null>(null);
+
   const navigate = useNavigate();
   const checkEmailMutation = useCheckEmailMutation();
   const signupMutation = useSignupMutation();
+
+  const [agreed, setAgreed] = useState(false);
 
   // 이메일 유효성 검사
   const isValidEmail = (email: string): boolean => {
@@ -44,45 +51,36 @@ function Signup() {
 
   // 비밀번호 유효성 검사
   const isPasswordValid = (pw: string): boolean => {
-    if (pw.length < 6 || pw.length > 20) return false;
+    if (pw.length < 8 || pw.length > 15) return false;
+    const hasEng = /[A-Za-z]/.test(pw);
+    const hasNum = /[0-9]/.test(pw);
+    const hasSpc = /[^A-Za-z0-9]/.test(pw);
+    return hasEng && hasNum && hasSpc;
+  };
 
-    const upper = /[A-Z]/.test(pw);
-    const lower = /[a-z]/.test(pw);
-    const number = /[0-9]/.test(pw);
-    const special = /[^A-Za-z0-9]/.test(pw);
-
-    const count = [upper, lower, number, special].filter(Boolean).length;
-
-    return count >= 2;
+  // 비밀번호 입력 변화 핸들러
+  const handlePwChange = (v: string) => {
+    setPassword(v);
+    const valid = isPasswordValid(v);
+    setPwValid(valid);
+    // 비밀번호 바뀔 때마다 일치 여부 재평가
+    setPwMatch(passwordCheck ? v === passwordCheck : null);
+  };
+  // 비밀번호 확인 입력 변화 핸들러
+  const handlePwCheckChange = (v: string) => {
+    setPasswordCheck(v);
+    setPwMatch(v ? password === v : null);
   };
 
   // 회원가입 처리
   const handleSignup = async () => {
-    if (!isEmailAvailable) {
-      alert('이메일 중복 확인을 해주세요.');
-      return;
-    }
-
-    if (!isPasswordValid(password)) {
-      alert(
-        '비밀번호는 6-20자이며, 영문 대/소문자, 숫자, 특수문자 중 2가지 이상 조합이어야 합니다.'
-      );
-      return;
-    }
-
-    if (password !== passwordCheck) {
-      alert('비밀번호가 일치하지 않습니다.');
-      return;
-    }
-
-    try {
-      await signupMutation.mutateAsync({ email, nickname, password });
-      alert('회원가입 완료되었습니다!');
-      navigate('/login');
-    } catch (e) {
-      alert('다시 확인해주세요.');
-    }
+    if (!agreed || !isEmailAvailable || !pwValid || !pwMatch) return;
+    await signupMutation.mutateAsync({ email, nickname, password });
+    navigate('/login');
   };
+
+  const canShowPwSection   = isEmailAvailable;
+  const canShowJoinButton  = canShowPwSection && pwValid && pwMatch && agreed;
 
   return (
     <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex flex-col md:flex-row items-center md:items-start justify-center gap-[200px] overflow-hidden px-0 md:px-4">
@@ -115,12 +113,13 @@ function Signup() {
                       max-md:-mx-4
                       mb-25 mt-80 md:my-15
                       translate-y-8 md:translate-y-0
-                      p-10 md:p-[60px_70px]
+                      p-10 md:p-[60px_40px]
                       bg-white rounded-[40px] md:rounded-[30px]
                       flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] 
                       border border-[#E0E0E0] min-h-[calc(100vh-200px)]">
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
         <h2 className="mt-2 mb-3 text-xl font-semibold">회원가입</h2>
+
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-[#373F41]">닉네임</label>
           <input
@@ -146,51 +145,87 @@ function Signup() {
             <button
               type="button"
               onClick={handleCheckEmail}
-              className="px-3 py-2 whitespace-nowrap text-sm bg-[#6378EB] text-white rounded-lg"
+              disabled={!isValidEmail(email)}
+              className="px-3 py-2 text-sm rounded-lg
+                         bg-[#6378EB] text-white disabled:bg-gray-300"
             >
               중복확인
             </button>
           </div>
-
-          <label className="text-sm font-semibold text-[#373F41]">비밀번호</label>
-          <input
-            type="password"
-            value={password}
-            placeholder="비밀번호"
-            onChange={(e) => setPassword(e.target.value)}
-            className="border border-[#ccc] px-4 py-2 rounded-lg text-sm"
-          />
-
-          <label className="text-sm font-semibold text-[#373F41]">비밀번호 확인</label>
-          <input
-            type="password"
-            value={passwordCheck}
-            placeholder="비밀번호 확인"
-            onChange={(e) => setPasswordCheck(e.target.value)}
-            className="border border-[#ccc] px-4 py-2 rounded-lg text-sm"
-          />
-
-          {passwordCheck && (
-            <p
-              className={`text-sm mt-1 ${password === passwordCheck ? 'text-green-600' : 'text-red-500'}`}
-            >
-              {password === passwordCheck
-                ? '비밀번호가 일치합니다.'
-                : '비밀번호가 일치하지 않습니다.'}
+          {isEmailAvailable !== null && (
+            <p className={`text-sm mt-1 ${isEmailAvailable ? 'text-green-600' : 'text-red-500'}`}>
+              {isEmailAvailable ? '사용 가능한 이메일입니다.' : '이미 사용 중인 이메일입니다.'}
             </p>
           )}
-
-          <p className="text-xs text-[#999] mt-2">
-            6~20자 / 영문 대·소문자, 숫자, 특수문자 중 2가지 이상 조합
-          </p>
-
-          <button
-            className="mt-6 py-3 bg-[#6378EB] text-white rounded-xl font-semibold hover:bg-[#3fa9b8] transition"
-            onClick={handleSignup}
-          >
-            Join In
-          </button>
         </div>
+        <AnimatePresence>
+          {canShowPwSection && (
+            <motion.div
+              key="pw-section"
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0,  opacity: 1 }}
+              exit={{ y: 30, opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="flex flex-col gap-2"
+            >
+              <label className="text-sm font-semibold text-[#373F41]">비밀번호</label>
+              <input
+                type="password"
+                value={password}
+                placeholder="비밀번호"
+                onChange={(e) => handlePwChange(e.target.value)}
+                className="border border-[#ccc] px-4 py-2 rounded-lg text-sm"
+              />
+              {!password && (
+                <p className="ml-3 text-xs text-[#999] mt-2">
+                  8~15자 / 영문, 숫자, 특수문자 모두 포함
+                </p>
+              )}
+              {password && (
+                <p className={`text-sm mt-1 ${pwValid ? 'text-green-600' : 'text-red-500'}`}>
+                  {pwValid
+                    ? '사용 가능한 비밀번호입니다.'
+                    : '8~15자 / 영문, 숫자, 특수문자 모두 포함'}
+                </p>
+              )}
+              <label className="text-sm font-semibold text-[#373F41]">비밀번호 확인</label>
+              <input
+                type="password"
+                value={passwordCheck}
+                placeholder="비밀번호 확인"
+                onChange={(e) => handlePwCheckChange(e.target.value)}
+                className="border border-[#ccc] px-4 py-2 rounded-lg text-sm"
+              />
+              {pwMatch !== null && (
+                <p className={`text-sm mt-1 ${pwMatch ? 'text-green-600' : 'text-red-500'}`}>
+                  {pwMatch ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'}
+                </p>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {canShowJoinButton && (
+            <motion.div
+              key="join-btn"
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0,  opacity: 1 }}
+              exit={{ y: 30, opacity: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              <button
+                className="w-full py-3 bg-[#6378EB] text-white rounded-xl font-semibold hover:bg-[#3fa9b8] transition"
+                onClick={handleSignup}
+              >
+                Join In
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {!agreed && (
+          <SignupTermsModal onAgree={() => setAgreed(true)} />
+        )}
       </div>
     </div>
   );
