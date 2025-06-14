@@ -158,35 +158,31 @@ export default function AgreeModal({ onAgree, onClose }: AgreeModalProps) {
           </label>
 
           <label className="flex items-center space-x-2 font-medium">
-            <input
-              type="checkbox"
-              checked={all}
-              onChange={(e) => toggleAll(e.target.checked)}
-            />
+            <input type="checkbox" checked={all} onChange={(e) => toggleAll(e.target.checked)} />
             <span className="text-sm">모두 동의</span>
           </label>
         </div>
 
         {/* 동의하고 계속 버튼 */}
         <AnimatePresence>
-        {all && (
-          <motion.div
-            key="agree-btn"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0,  opacity: 1 }}
-            exit={{ y: 30, opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="w-full mt-2"
+          {all && (
+            <motion.div
+              key="agree-btn"
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 30, opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="w-full mt-2"
             >
-            <Button
+              <Button
                 className="w-full"
                 style={{ backgroundColor: '#6378EB', color: '#fff' }}
                 onClick={onAgree}
-            >
+              >
                 동의하고 계속
-            </Button>
-          </motion.div>
-        )}
+              </Button>
+            </motion.div>
+          )}
         </AnimatePresence>
       </motion.div>
     </div>

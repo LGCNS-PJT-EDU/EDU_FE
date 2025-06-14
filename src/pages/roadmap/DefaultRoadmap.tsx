@@ -22,20 +22,20 @@ export default function DefaultRoadmap() {
     if (data?.subjects) setInitial(data.subjects);
   }, [data, setInitial]);
 
-  const isLoggedIn            = useIsLoggedIn();
-  const navigate              = useNavigate();
-  const { showSnackbar }      = useSnackbarStore();
+  const isLoggedIn = useIsLoggedIn();
+  const navigate = useNavigate();
+  const { showSnackbar } = useSnackbarStore();
   const { startLoading, stopLoading } = useLoadingStore();
-  const queryClient = useQueryClient();      
+  const queryClient = useQueryClient();
 
-  const [loginModalOpen,  setLoginModalOpen]  = useState(false);
-  const [selectModalOpen, setSelectModalOpen] = useState(false); 
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [selectModalOpen, setSelectModalOpen] = useState(false);
 
-  const { mutate: assign, isPending, isSuccess } = useMutation<
-    ApiResp<null>,
-    Error,
-    'FE' | 'BE'
-  >({
+  const {
+    mutate: assign,
+    isPending,
+    isSuccess,
+  } = useMutation<ApiResp<null>, Error, 'FE' | 'BE'>({
     mutationFn: assignDefaultRoadmap,
     onSuccess: () => {
       showSnackbar('기본 로드맵이 성공적으로 할당되었습니다!');
@@ -43,7 +43,7 @@ export default function DefaultRoadmap() {
     },
     onError: (e) => {
       showSnackbar('기본 로드맵 할당 실패');
-    }
+    },
   });
 
   const handleChooseClick = useCallback(() => {
@@ -54,9 +54,8 @@ export default function DefaultRoadmap() {
     }
   }, [isLoggedIn]);
 
-  if (isLoading)  return <p className="text-center mt-10">불러오는 중…</p>;
-  if (isError || !data)
-    return <p className="text-center mt-10">로드맵 로딩 실패</p>;
+  if (isLoading) return <p className="text-center mt-10">불러오는 중…</p>;
+  if (isError || !data) return <p className="text-center mt-10">로드맵 로딩 실패</p>;
 
   return (
     <section className="relative py-10">

@@ -3,12 +3,9 @@ import { useSubjectDetail } from '@/hooks/useSubjectDetail';
 import { useRoadmapStore } from '@/store/roadmapStore';
 import { useNavigate } from 'react-router-dom';
 import RecommendationCard from '@/components/ui/RecommendationCard';
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
-import {
-  Sheet,
-  SheetContent,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 
 function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = useState(false);
@@ -101,7 +98,8 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
               </span>
             </h4>
             <ol
-              className={`mb-5 space-y-2 overflow-hidden transition-all duration-300 ease-in-out ${showChapters ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+              className={`mb-5 space-y-2 overflow-hidden transition-all duration-300 ease-in-out ${showChapters ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
+            >
               {detail.chapters
                 .sort((a, b) => a.chapterOrder - b.chapterOrder)
                 .map((chapter) => (
@@ -114,14 +112,12 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
                 ))}
             </ol>
 
-
             {/* 설명 영역 */}
             <h4 className="font-semibold mb-2">❓ {firstPart}</h4>
             <p className="leading-relaxed mb-2 bg-[#f9fafa] p-4 rounded-md border-l-4 border-[#b1dfe5] text-sm text-gray-700">
               {remainingOverview}
             </p>
-            <p className="leading-relaxed mb-5 text-sm text-gray-700">
-            </p>
+            <p className="leading-relaxed mb-5 text-sm text-gray-700"></p>
 
             {/* 추천 콘텐츠 영역 */}
             <h4 className="font-semibold mb-2">🎯 추천 콘텐츠</h4>
@@ -132,7 +128,8 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
             ) : (
               <p className="text-sm text-gray-500">사전평가 완료 후 추천 콘텐츠가 제공됩니다.</p>
             )}
-          </>)}
+          </>
+        )}
       </div>
     </>
   );
@@ -170,9 +167,7 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
           </button>
         </div>
         <div className="overflow-y-auto px-6 flex-grow">
-          <div className="pt-0 flex flex-col gap-4">
-            {content}
-          </div>
+          <div className="pt-0 flex flex-col gap-4">{content}</div>
           {/* 하단 버튼 영역 */}
           {!isLoading && !isError && detail && (
             <>

@@ -1,5 +1,5 @@
-import api from "@/api/axios";
-import { RoadmapPayload, Subject } from "./diagnosisService"; 
+import api from '@/api/axios';
+import { RoadmapPayload, Subject } from './diagnosisService';
 
 export interface ApiResp<T> {
   stateCode: number;
@@ -27,18 +27,14 @@ export async function updateRoadmap(payload: SubjectUpdateReq[]): Promise<void> 
 }
 
 export const fetchDefaultRoadmap = (roadmap: 'FE' | 'BE') =>
-  api.get<ApiResp<RoadmapPayload>>('/api/roadmap/default', { params: { roadmap } })
+  api
+    .get<ApiResp<RoadmapPayload>>('/api/roadmap/default', { params: { roadmap } })
     .then((res) => res.data.data);
 
-export const assignDefaultRoadmap = (
-  type: 'FE' | 'BE',
-): Promise<ApiResp<null>> =>
-  api.post<ApiResp<null>>(
-      '/api/roadmap/default',
-      null,
-      { params: { roadmap: type } }
-    )
-    .then(res => res.data);
+export const assignDefaultRoadmap = (type: 'FE' | 'BE'): Promise<ApiResp<null>> =>
+  api
+    .post<ApiResp<null>>('/api/roadmap/default', null, { params: { roadmap: type } })
+    .then((res) => res.data);
 
 // 타입이 필요할 경우 여기서 export
 export type { RoadmapPayload };

@@ -28,8 +28,8 @@ export const data = {
     {
       label: '사용자 수',
       data: labels.map(() => Math.random() * 10),
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      borderColor: '#6378eb',
+      backgroundColor: '#6378eb',
     },
   ],
 };
@@ -42,7 +42,7 @@ function DashboardLabelCard({ title, value }: { title: string; value: number }) 
   return (
     <div className="flex flex-col gap-[10px] rounded-md border p-[20px]">
       <h2 className="text-lg font-bold">{title}</h2>
-      <p className="text-2xl font-bold">{value}</p>
+      <p className="text-2xl font-bold text-[#6378eb]">{value}</p>
     </div>
   );
 }
@@ -52,9 +52,9 @@ export default function Dashboard() {
     <BaseAdminPage title="대시보드">
       <div className="grid grid-cols-2 gap-[20px]">
         <DashboardLabelCard title="전체 사용자 수" value={100} />
-        <DashboardLabelCard title="전체 문항 수" value={100} />
+        <DashboardLabelCard title="전체 과목 수" value={100} />
         <DashboardLabelCard title="전체 문제 수" value={100} />
-        <DashboardLabelCard title="전체 문제 수" value={100} />
+        <DashboardLabelCard title="전체 추천 컨텐츠 수" value={100} />
       </div>
       <div className="mt-[20px]">
         <UserChart />

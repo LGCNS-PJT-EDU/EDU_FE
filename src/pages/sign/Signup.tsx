@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import pixel_texture from '@/asset/img/common/pixel_texture.png';
 import main from '@/asset/img/common/main.png';
 import { useCheckEmailMutation, useSignupMutation } from '@/hooks/useMutation';
-import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png' 
+import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png';
 import SignupTermsModal from '@/components/modal/SignupTermsModal';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -15,8 +15,8 @@ function Signup() {
   const [password, setPassword] = useState<string>('');
   const [passwordCheck, setPasswordCheck] = useState<string>('');
 
-  const [pwValid, setPwValid]               = useState(false);
-  const [pwMatch, setPwMatch]               = useState<boolean | null>(null);
+  const [pwValid, setPwValid] = useState(false);
+  const [pwMatch, setPwMatch] = useState<boolean | null>(null);
 
   const navigate = useNavigate();
   const checkEmailMutation = useCheckEmailMutation();
@@ -79,8 +79,8 @@ function Signup() {
     navigate('/login');
   };
 
-  const canShowPwSection   = isEmailAvailable;
-  const canShowJoinButton  = canShowPwSection && pwValid && pwMatch && agreed;
+  const canShowPwSection = isEmailAvailable;
+  const canShowJoinButton = canShowPwSection && pwValid && pwMatch && agreed;
 
   return (
     <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex flex-col md:flex-row items-center md:items-start justify-center gap-[200px] overflow-hidden px-0 md:px-4">
@@ -165,7 +165,7 @@ function Signup() {
             <motion.div
               key="pw-section"
               initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0,  opacity: 1 }}
+              animate={{ y: 0, opacity: 1 }}
               exit={{ y: 30, opacity: 0 }}
               transition={{ duration: 0.25 }}
               className="flex flex-col gap-2"
@@ -212,7 +212,7 @@ function Signup() {
             <motion.div
               key="join-btn"
               initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0,  opacity: 1 }}
+              animate={{ y: 0, opacity: 1 }}
               exit={{ y: 30, opacity: 0 }}
               transition={{ duration: 0.25 }}
             >
@@ -225,9 +225,7 @@ function Signup() {
             </motion.div>
           )}
         </AnimatePresence>
-        {!agreed && (
-          <SignupTermsModal onAgree={() => setAgreed(true)} />
-        )}
+        {!agreed && <SignupTermsModal onAgree={() => setAgreed(true)} />}
       </div>
     </div>
   );

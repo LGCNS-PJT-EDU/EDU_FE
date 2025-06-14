@@ -19,11 +19,9 @@ import DefaultRoadmap from '@/pages/roadmap/DefaultRoadmap';
 import AdminLayouts from '@/components/layout/AdminLayouts';
 import Dashboard from '@/pages/admin/Dashboard';
 import UserListPage from '@/pages/admin/UserListPage';
-import UserDetailPage from '@/pages/admin/UserDetailPage';
 import QuestionListPage from '@/pages/admin/QuestionListPage';
-import QuestionDetailPage from '@/pages/admin/QuestionDetailPage';
-import LectureListPage from '@/pages/admin/LectureListPage';
-import LectureDetailPage from '@/pages/admin/LectureDetailPage';
+import SubjectListPage from '@/pages/admin/SubjectListPage';
+import ContentListPage from '@/pages/admin/ContentsListPage';
 
 const router = createBrowserRouter([
   {
@@ -60,11 +58,9 @@ const router = createBrowserRouter([
       { path: '', element: <Navigate to="/admin/dashboard" /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'users', element: <UserListPage /> },
-      { path: 'users/:id', element: <UserDetailPage /> },
+      { path: 'subjects', element: <SubjectListPage /> },
       { path: 'questions', element: <QuestionListPage /> },
-      { path: 'questions/:id', element: <QuestionDetailPage /> },
-      { path: 'lectures', element: <LectureListPage /> },
-      { path: 'lectures/:id', element: <LectureDetailPage /> },
+      { path: 'contents', element: <ContentListPage /> },
     ],
   },
 ]);

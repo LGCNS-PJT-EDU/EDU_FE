@@ -84,7 +84,7 @@ function Login() {
     /* react-query 사용한 쪽 */
     try {
       await LoginMutation.mutateAsync({ email, password });
-      navigate('/roadmap')
+      navigate('/roadmap');
     } catch (e) {
       console.log(e);
       setErrorMessage(

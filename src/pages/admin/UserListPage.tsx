@@ -10,6 +10,7 @@ import BaseAdminPage from './BaseAdminPage';
 import { fetchUserList, User } from '@/api/adminService';
 import AdminPagination from './AdminPagination';
 import AdminDataTable from './AdminDataTable';
+import AdminDataFilter from './AdminDataFilter';
 
 const columns: ColumnDef<User>[] = [
   {
@@ -47,7 +48,7 @@ const columns: ColumnDef<User>[] = [
     header: '상태',
     cell: ({ row }) => (
       <div
-        className={`w-[10px] h-[10px] rounded-full ${row.getValue('isActive') ? 'bg-green-600' : 'bg-red-600'}`}
+        className={`w-[10px] h-[10px] rounded-full ${row.getValue('isActive') ? 'bg-[#6378eb]' : 'bg-[#73ccd7]'}`}
       ></div>
     ),
   },
@@ -69,9 +70,9 @@ export default function UserListPage() {
   const pageIndex = Number(searchParams.get('page')) || 1;
 
   const query = useQuery({
-    queryKey: ['users'],
+    queryKey: ['users', { ...searchParams }],
     queryFn: async () => {
-      return await fetchUserList({ pageSize: 10, pageIndex: pageIndex - 1 });
+      return await fetchUserList({ pageSize: 10, pageIndex: pageIndex - 1, ...searchParams });
     },
   });
 
@@ -89,8 +90,30 @@ export default function UserListPage() {
     });
   };
 
+  const handleSubmit = (data: { nickname: string; email: string }) => {
+    setSearchParams((prev) => {
+      data.nickname ? prev.set('nickname', data.nickname) : prev.delete('nickname');
+      data.email ? prev.set('email', data.email) : prev.delete('email');
+      prev.set('page', '1');
+      return prev;
+    });
+  };
+
   return (
     <BaseAdminPage title="사용자 관리">
+      <AdminDataFilter
+        onSubmit={handleSubmit}
+        items={[
+          {
+            name: 'nickname',
+            label: '닉네임',
+          },
+          {
+            name: 'email',
+            label: '이메일',
+          },
+        ]}
+      />
       <AdminDataTable table={table} columns={columns} query={query} />
       <AdminPagination
         pageIndex={pageIndex}
