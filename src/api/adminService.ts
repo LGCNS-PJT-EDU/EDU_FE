@@ -13,6 +13,7 @@ export interface PageableData<T> {
     pageSize: number;
   };
   totalPages: number;
+  totalElements: number;
 }
 
 export type LoginType = 'LOCAL' | 'KAKAO' | 'NAVER' | 'GOOGLE';
@@ -40,25 +41,34 @@ export interface User {
 export interface PageableReq {
   page: number;
   size: number;
+  nickname?: string;
+  email?: string;
 }
 
 export const fetchUserList = async (request: PageableReq): Promise<PageableData<User>> => {
     const params = new URLSearchParams();
     params.append('page', request.page.toString());
     params.append('size', request.size.toString());
+    if (request.nickname) {
+      params.append('nickname', request.nickname.trim());
+    }
+    if (request.email) {
+      params.append('email', request.email.trim());
+    }
     const res = await api.get<ApiResp<PageableData<User>>>('/api/admin/users?' + params.toString());
     return res.data.data;
 };
 
+export type SubType = 'FE' | 'BE';
+export type SubEssential = 'Y' | 'N';
 export interface Subject {
   id: string;
   subId: number;
   subNm: string;
-  subType: string;
-  subEssential: string;
+  subType: SubType;
+  subEssential: SubEssential;
   baseSubOrder: number;
-  subOverview: string;
-  trackId: number;
+  assignmentCount: number;
 }
 
 export const fetchSubjectList = async (request: PageableReq): Promise<PageableData<Subject>> => {
@@ -69,20 +79,19 @@ export const fetchSubjectList = async (request: PageableReq): Promise<PageableDa
       id: `${index + 1}`,
       subId: index + 1,
       subNm: `과목${index + 1}`,
-      subType: index % 2 === 0 ? '필수' : '선택',
+      subType: index % 2 === 0 ? 'FE' : 'BE',
       subEssential: index % 2 === 0 ? 'Y' : 'N',
       baseSubOrder: index + 1,
-      subOverview: `과목${index + 1}에 대한 개요 설명입니다.`,
-      trackId: Math.floor(index / 3) + 1, // 3개 과목마다 다른 트랙 ID 할당
+      assignmentCount: index + 1,
     })),
     pageable: {
       pageNumber: 0,
       pageSize: 10,
     },
     totalPages: 3,
+    totalElements: 10,
   };
 };
-
 export interface Content {
   totalContentId: number;
   contentTitle: string;
@@ -115,6 +124,7 @@ export const fetchContentList = async (request: PageableReq): Promise<PageableDa
       pageSize: 10,
     },
     totalPages: 3,
+    totalElements: 10,
   };
 };
 
@@ -139,5 +149,6 @@ export const fetchQuestionList = async (request: PageableReq): Promise<PageableD
       pageSize: 10,
     },
     totalPages: 3,
+    totalElements: 10,
   };
 };
