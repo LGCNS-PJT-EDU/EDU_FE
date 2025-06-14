@@ -15,14 +15,22 @@ export interface PageableData<T> {
   totalPages: number;
 }
 
+export type LoginType = 'LOCAL' | 'KAKAO' | 'NAVER' | 'GOOGLE';
+export type PriceLevel =
+  | 'FREE'
+  | 'UNDER_50K'
+  | 'BETWEEN_50K_100K'
+  | 'BETWEEN_100K_200K'
+  | 'BETWEEN_200K_500K'
+  | 'OVER_500K';
 export interface User {
   id: string;
   userId: number;
   email: string;
   nickname: string;
-  loginType: string;
+  loginType: LoginType;
   lectureAmount: string;
-  priceLevel: string;
+  priceLevel: PriceLevel;
   isActive: boolean;
   likeBooks: boolean;
   PrivacyStatus: boolean;
@@ -42,9 +50,27 @@ export const fetchUserList = async (request: PageableReq): Promise<PageableData<
       userId: index + 1,
       email: `user${index + 1}@user.com`,
       nickname: `user${index + 1}`,
-      loginType: 'LOCAL',
+      loginType:
+        index % 4 === 0
+          ? 'LOCAL'
+          : index % 4 === 1
+            ? 'KAKAO'
+            : index % 4 === 2
+              ? 'NAVER'
+              : 'GOOGLE',
       lectureAmount: '10',
-      priceLevel: '10',
+      priceLevel:
+        index % 6 === 0
+          ? 'FREE'
+          : index % 6 === 1
+            ? 'UNDER_50K'
+            : index % 6 === 2
+              ? 'BETWEEN_50K_100K'
+              : index % 6 === 3
+                ? 'BETWEEN_100K_200K'
+                : index % 6 === 4
+                  ? 'BETWEEN_200K_500K'
+                  : 'OVER_500K',
       isActive: true,
       likeBooks: false,
       PrivacyStatus: false,

@@ -7,10 +7,11 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import BaseAdminPage from './BaseAdminPage';
-import { fetchUserList, User } from '@/api/adminService';
+import { fetchUserList, LoginType, PriceLevel, User } from '@/api/adminService';
 import AdminPagination from './AdminPagination';
 import AdminDataTable from './AdminDataTable';
 import AdminDataFilter from './AdminDataFilter';
+import { Badge } from '@/components/ui/badge';
 
 const columns: ColumnDef<User>[] = [
   {
@@ -31,7 +32,22 @@ const columns: ColumnDef<User>[] = [
   {
     accessorKey: 'loginType',
     header: '로그인 타입',
-    cell: ({ row }) => <div>{row.getValue('loginType')}</div>,
+    cell: ({ row }) => {
+      const loginType = row.getValue('loginType') as LoginType;
+      const getLoginTypeColor = (loginType: LoginType) => {
+        switch (loginType) {
+          case 'LOCAL':
+            return 'bg-[#6378eb]';
+          case 'KAKAO':
+            return 'bg-[#FEE500] text-[#000000]';
+          case 'NAVER':
+            return 'bg-[#03c75a]';
+          case 'GOOGLE':
+            return 'bg-[#000000]';
+        }
+      };
+      return <Badge className={`${getLoginTypeColor(loginType)}`}>{loginType}</Badge>;
+    },
   },
   {
     accessorKey: 'lectureAmount',
@@ -40,8 +56,27 @@ const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: 'priceLevel',
-    header: '가격 수준',
-    cell: ({ row }) => <div>{row.getValue('priceLevel')}</div>,
+    header: '희망 소비 금액',
+    cell: ({ row }) => {
+      const priceLevel = row.getValue('priceLevel') as PriceLevel;
+      const getPriceLevelLabel = (priceLevel: PriceLevel) => {
+        switch (priceLevel) {
+          case 'FREE':
+            return '무료';
+          case 'UNDER_50K':
+            return '5만원 이하';
+          case 'BETWEEN_50K_100K':
+            return '5만원 이상 10만원 이하';
+          case 'BETWEEN_100K_200K':
+            return '10만원 이상 20만원 이하';
+          case 'BETWEEN_200K_500K':
+            return '20만원 이상 50만원 이하';
+          case 'OVER_500K':
+            return '50만원 이상';
+        }
+      };
+      return <Badge variant="outline">{getPriceLevelLabel(priceLevel)}</Badge>;
+    },
   },
   {
     accessorKey: 'isActive',
@@ -55,7 +90,7 @@ const columns: ColumnDef<User>[] = [
   {
     accessorKey: 'likeBooks',
     header: '책 선호 여부',
-    cell: ({ row }) => <div>{row.getValue('likeBooks') ? '좋아요' : '싫어요'}</div>,
+    cell: ({ row }) => <div>{row.getValue('likeBooks') ? '예' : '아니오'}</div>,
   },
   {
     accessorKey: 'PrivacyStatus',
