@@ -12,6 +12,7 @@ import AdminPagination from './AdminPagination';
 import AdminDataTable from './AdminDataTable';
 import AdminDataFilter from './AdminDataFilter';
 import { queryClient } from '@/App';
+import { useEffect } from 'react';
 
 const columns: ColumnDef<Subject>[] = [
   {
@@ -50,13 +51,15 @@ export default function SubjectListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number(searchParams.get('page')) || 1;
+  const subNm = searchParams.get('subNm') || '';
 
   const query = useQuery({
-    queryKey: ['admin-subjects'],
+    queryKey: subNm ? ['admin-subjects', { page, subNm }] : ['admin-subjects-without-filter'],
     queryFn: async () => {
       const data = await fetchSubjectList({
         page: page - 1,
         size: 10,
+        subNm,
       });
       return {
         ...data,
@@ -87,7 +90,6 @@ export default function SubjectListPage() {
       data.subNm ? prev.set('subNm', data.subNm) : prev.delete('subNm');
       data.subType ? prev.set('subType', data.subType) : prev.delete('subType');
       prev.set('page', '1');
-      queryClient.invalidateQueries({ queryKey: ['admin-subjects'] });
       return prev;
     });
   };
@@ -97,10 +99,17 @@ export default function SubjectListPage() {
       prev.delete('subNm');
       prev.delete('subType');
       prev.set('page', '1');
-      queryClient.invalidateQueries({ queryKey: ['admin-subjects'] });
       return prev;
     });
   };
+
+  useEffect(() => {
+    if (subNm) {
+      queryClient.invalidateQueries({ queryKey: ['admin-subjects', { page, subNm }] });
+    } else {
+      queryClient.invalidateQueries({ queryKey: ['admin-subjects-without-filter'] });
+    }
+  }, [page, subNm]);
 
   return (
     <BaseAdminPage title="과목 관리">
