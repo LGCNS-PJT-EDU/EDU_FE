@@ -171,7 +171,7 @@ function MyPage() {
           </div>
         </div>
 
-        {/* 탭 */}
+        {/* 탭뷰 */}
         <div className="flex mb-6 border-b border-gray-200">
           <button
             onClick={() => setActiveTab('favorite')}
