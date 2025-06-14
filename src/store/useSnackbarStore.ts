@@ -1,6 +1,6 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
-export type SnackbarType = "success" | "error" | "info";
+export type SnackbarType = 'success' | 'error' | 'info';
 
 interface SnackbarState {
   isOpen: boolean;
@@ -12,9 +12,8 @@ interface SnackbarState {
 
 export const useSnackbarStore = create<SnackbarState>((set) => ({
   isOpen: false,
-  message: "",
-  type: "info",
-  showSnackbar: (message, type = "info") =>
-    set({ isOpen: true, message, type }),
+  message: '',
+  type: 'info',
+  showSnackbar: (message, type = 'info') => set({ isOpen: true, message, type }),
   hideSnackbar: () => set({ isOpen: false }),
 }));

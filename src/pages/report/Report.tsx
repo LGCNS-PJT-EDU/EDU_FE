@@ -1,6 +1,6 @@
 import weakness from '@/asset/img/report/weakness.png';
 import good from '@/asset/img/report/good.png';
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
 import RadarChart from '@/components/chart/chart';
 import BarChart from '@/components/chart/Barchart';
@@ -15,13 +15,13 @@ function normalizeScoresTo100(scores: Record<string, number>) {
   const actualTotal = Object.values(chapters).reduce((sum, val) => sum + val, 0);
 
   const totalPercentage = Math.round((actualTotal / total) * 100);
-  const chapterPercentages = Object.values(chapters).map(
-    (score) => Math.round((score / total) * 100)
+  const chapterPercentages = Object.values(chapters).map((score) =>
+    Math.round((score / total) * 100)
   );
 
   return {
     total: totalPercentage,
-    chapters: chapterPercentages
+    chapters: chapterPercentages,
   };
 }
 
@@ -84,14 +84,20 @@ export default function Report() {
       <div className="relative w-full max-w-[700px] h-[600px] mx-auto mt-2">
         {/* 버튼 */}
         {idx > 0 && (
-          <button className="absolute left-[-5rem] top-1/2 -translate-y-1/2 z-10" onClick={() => setIdx(idx - 1)}>
+          <button
+            className="absolute left-[-5rem] top-1/2 -translate-y-1/2 z-10"
+            onClick={() => setIdx(idx - 1)}
+          >
             <MdChevronLeft size={40} className="text-blue-500" />
           </button>
         )}
 
         {/* → 버튼 */}
         {idx < 2 && (
-          <button className="absolute right-[-5rem] top-1/2 -translate-y-1/2 z-10" onClick={() => setIdx(idx + 1)}>
+          <button
+            className="absolute right-[-5rem] top-1/2 -translate-y-1/2 z-10"
+            onClick={() => setIdx(idx + 1)}
+          >
             <MdChevronRight size={40} className="text-blue-500" />
           </button>
         )}
@@ -107,10 +113,20 @@ export default function Report() {
             style={{ transform: `translateX(-${idx * 100}%)` }}
           >
             <div className="w-full flex-shrink-0">
-              <RadarChart labels={labels} values={preScores} label="Pre" color="rgba(91, 124, 255, 1)" />
+              <RadarChart
+                labels={labels}
+                values={preScores}
+                label="Pre"
+                color="rgba(91, 124, 255, 1)"
+              />
             </div>
             <div className="w-full flex-shrink-0">
-              <RadarChart labels={labels} values={postScores} label="Post" color="rgba(255, 106, 176, 1)" />
+              <RadarChart
+                labels={labels}
+                values={postScores}
+                label="Post"
+                color="rgba(255, 106, 176, 1)"
+              />
             </div>
             <div className="w-full flex-shrink-0">
               <BarChart pre={preTotal} post={postTotal} final={post.feedback.final} />
@@ -127,7 +143,15 @@ export default function Report() {
               <th className="w-[60px] py-3 text-center"></th>
               {labels.map((k) => (
                 <th key={k} className="px-2 py-3 text-center font-bold">
-                  {k.length > 11 ? <>{k.slice(0, 17)}<br />{k.slice(17)}</> : k}
+                  {k.length > 11 ? (
+                    <>
+                      {k.slice(0, 17)}
+                      <br />
+                      {k.slice(17)}
+                    </>
+                  ) : (
+                    k
+                  )}
                 </th>
               ))}
             </tr>
@@ -142,7 +166,11 @@ export default function Report() {
                   {(idx === 0 ? pre.feedback.strength[label] : post.feedback.strength[label])
                     ?.split('.')
                     .filter(Boolean)
-                    .map((s, j) => <div key={j} className="pb-[2px]">{s.trim() + '.'}</div>) || '—'}
+                    .map((s, j) => (
+                      <div key={j} className="pb-[2px]">
+                        {s.trim() + '.'}
+                      </div>
+                    )) || '—'}
                 </td>
               ))}
             </tr>
@@ -155,7 +183,11 @@ export default function Report() {
                   {(idx === 0 ? pre.feedback.weakness[label] : post.feedback.weakness[label])
                     ?.split('.')
                     .filter(Boolean)
-                    .map((s, j) => <div key={j} className="pb-[2px]">{s.trim() + '.'}</div>) || '—'}
+                    .map((s, j) => (
+                      <div key={j} className="pb-[2px]">
+                        {s.trim() + '.'}
+                      </div>
+                    )) || '—'}
                 </td>
               ))}
             </tr>

@@ -7,7 +7,6 @@ interface RecommendationContent {
   platform: string;
   isAiRecommendation: boolean;
   comment?: string;
-
 }
 
 function getYoutubeThumbnail(url: string): string | null {
@@ -27,7 +26,7 @@ const RecommendationCard: React.FC<RecommendationContent> = ({
   const thumbnail = getYoutubeThumbnail(url);
 
   // 공통 카드 스타일
-  const cardClass = "w-full bg-white rounded-xl border p-4 shadow transition-all duration-300";
+  const cardClass = 'w-full bg-white rounded-xl border p-4 shadow transition-all duration-300';
 
   return (
     <div className={`${cardClass} mb-3`}>
@@ -61,7 +60,6 @@ const RecommendationCard: React.FC<RecommendationContent> = ({
             </div>
 
             <p className="text-sm text-gray-500">{platform} · {type}</p>
-
             {comment && (
               <button
                 onClick={() => setIsDetailOpen(true)}
@@ -84,9 +82,7 @@ const RecommendationCard: React.FC<RecommendationContent> = ({
               &times;
             </button>
           </div>
-          <p className="whitespace-pre-wrap leading-relaxed">
-            {comment}
-          </p>
+          <p className="whitespace-pre-wrap leading-relaxed">{comment}</p>
         </div>
       )}
     </div>

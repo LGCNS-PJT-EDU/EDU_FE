@@ -20,12 +20,12 @@ export default function useRoadmapEdit() {
           subjectId: n.id,
           subjectName: n.label,
           subjectOrder: idx + 1,
-        })),
+        }))
       ),
     onSuccess: () => {
       showSnackbar('로드맵이 저장되었습니다!', 'success');
       setEditing(false);
-      queryClient.invalidateQueries({ queryKey: ["roadmap", uuid] });
+      queryClient.invalidateQueries({ queryKey: ['roadmap', uuid] });
     },
     onError: () => {
       showSnackbar('저장 실패 · 다시 시도해 주세요', 'error');

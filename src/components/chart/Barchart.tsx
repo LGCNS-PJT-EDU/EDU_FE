@@ -23,14 +23,8 @@ export default function BarChart({ pre, post, final }: Props) {
       {
         label: '점수',
         data: [pre, post],
-        backgroundColor: [
-          'rgba(91, 124, 255, 0.4)',
-          'rgba(255, 106, 176, 0.4)',
-        ],
-        borderColor: [
-          'rgba(91, 124, 255, 0.8)',
-          'rgba(255, 106, 176, 0.8)',
-        ],
+        backgroundColor: ['rgba(91, 124, 255, 0.4)', 'rgba(255, 106, 176, 0.4)'],
+        borderColor: ['rgba(91, 124, 255, 0.8)', 'rgba(255, 106, 176, 0.8)'],
         borderWidth: 0,
         borderRadius: 4,
         borderSkipped: false,
@@ -56,7 +50,7 @@ export default function BarChart({ pre, post, final }: Props) {
       x: {
         grid: {
           display: false,
-          categoryPercentage: 0.3, 
+          categoryPercentage: 0.3,
         },
       },
     },

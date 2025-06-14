@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSpeech } from '@/hooks/useSpeech';
 
-
 interface Props {
   question: {
     interviewId: number;
@@ -13,98 +12,94 @@ interface Props {
 }
 
 const QuestionSpeechCard: React.FC<Props> = ({ question, onTranscriptComplete }) => {
-  const { transcript,
-  listening,
-  startListening,
-  stopRecording,
-  speak,
-  speakWithCallback,
-  resetTranscript,
-  resetAudioBlob,
-  audioBlob, } = useSpeech();
+  const {
+    transcript,
+    listening,
+    startListening,
+    stopRecording,
+    speak,
+    speakWithCallback,
+    resetTranscript,
+    resetAudioBlob,
+    audioBlob,
+  } = useSpeech();
 
   const [feedback, setFeedback] = useState('');
   const [localTranscript, setLocalTranscript] = useState('');
-  const [seconds,setSeconds]=useState(0);
-  const [countdown, setCountdown] =useState(5); // 카운트 다운
+  const [seconds, setSeconds] = useState(0);
+  const [countdown, setCountdown] = useState(5); // 카운트 다운
   const [showCountdown, setShowCountdown] = useState(true);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log('[TTS] 질문 읽기 시작');
+      speakWithCallback(question.interviewContent, () => {
+        console.log('[TTS] 종료됨');
+        startCountdown(); // TTS 끝나면 카운트다운 시작
+      });
+    }, 1000);
 
-useEffect(() => {
-  const timer = setTimeout(() => {
-    console.log('[TTS] 질문 읽기 시작');
-    speakWithCallback(question.interviewContent, () => {
-       console.log('[TTS] 종료됨');
-      startCountdown(); // TTS 끝나면 카운트다운 시작
-    });
-  }, 1000);
-
-  return () => clearTimeout(timer);
-}, [question.interviewId]);
-
+    return () => clearTimeout(timer);
+  }, [question.interviewId]);
 
   useEffect(() => {
-  if (transcript) {
-    setLocalTranscript(transcript);
-    onTranscriptComplete(question.interviewId, transcript); //상위 컴포넌트에 최신 답변을 전달하기 
-  }
-}, [transcript]);
-
+    if (transcript) {
+      setLocalTranscript(transcript);
+      onTranscriptComplete(question.interviewId, transcript); //상위 컴포넌트에 최신 답변을 전달하기
+    }
+  }, [transcript]);
 
   useEffect(() => {
-  console.log('listening 상태:', listening);
-  if (!listening) return; // 듣고 있는 중이면 타이머 증가 안함 
+    console.log('listening 상태:', listening);
+    if (!listening) return; // 듣고 있는 중이면 타이머 증가 안함
 
-  const interval = setInterval(() => {
-    setSeconds((prev) => prev + 1);
-  }, 1000);
+    const interval = setInterval(() => {
+      setSeconds((prev) => prev + 1);
+    }, 1000);
 
-  return () => clearInterval(interval);
-}, [listening]);
+    return () => clearInterval(interval);
+  }, [listening]);
 
-useEffect(() => {
-  // 이전 질문에서 녹음 중이었다면 자동 종료
-  if (listening) {
-    console.log('질문 변경 감지 → 녹음 중지');
-    stopRecording();
-  }
-  resetTranscript();
-  resetAudioBlob();
-  setSeconds(0);
-  setShowCountdown(false);
-}, [question.interviewId]);
+  useEffect(() => {
+    // 이전 질문에서 녹음 중이었다면 자동 종료
+    if (listening) {
+      console.log('질문 변경 감지 → 녹음 중지');
+      stopRecording();
+    }
+    resetTranscript();
+    resetAudioBlob();
+    setSeconds(0);
+    setShowCountdown(false);
+  }, [question.interviewId]);
 
+  // 타이머 형식
+  const formatTime = (totalSeconds: number) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  };
 
-// 타이머 형식
-const formatTime = (totalSeconds: number) => {
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-};
+  const COUNTDOWN_START = 5;
 
-const COUNTDOWN_START = 5;
+  // 카운트다운 시작
+  const startCountdown = () => {
+    setCountdown(COUNTDOWN_START); // 타이머 초기화
+    setShowCountdown(true);
 
-// 카운트다운 시작
-const startCountdown = () => {
-  setCountdown(COUNTDOWN_START); // 타이머 초기화 
-  setShowCountdown(true);
+    const countdownTimer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdownTimer);
+          setShowCountdown(false);
+          handleStart(); // 녹음 시작
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
 
-  const countdownTimer = setInterval(() => {
-    setCountdown((prev) => {
-      if (prev <= 1) {
-        clearInterval(countdownTimer);
-        setShowCountdown(false);
-        handleStart(); // 녹음 시작
-        return 0;
-      }
-      return prev - 1;
-    });
-  }, 1000);
-};
-
-
-
-// 녹음 시작 
+  // 녹음 시작
   const handleStart = () => {
     resetTranscript();
     resetAudioBlob();
@@ -114,23 +109,22 @@ const startCountdown = () => {
     startListening();
   };
 
-  //녹음 종료 
+  //녹음 종료
   const handleStop = () => {
-  stopRecording();
-  setLocalTranscript(transcript);  
-  onTranscriptComplete(question.interviewId, transcript); // 상위 컴포넌트에도 전달
-};
-
+    stopRecording();
+    setLocalTranscript(transcript);
+    onTranscriptComplete(question.interviewId, transcript); // 상위 컴포넌트에도 전달
+  };
 
   // 다운로드용 링크 생성
-const handleDownload = () => {
-  if (!audioBlob) return;
-  const url = URL.createObjectURL(audioBlob); // Blob을 브라우저에서 접근 가능한 임시 URL로 변환
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `interview_${question.interviewId}.webm`;
-  a.click();
-};
+  const handleDownload = () => {
+    if (!audioBlob) return;
+    const url = URL.createObjectURL(audioBlob); // Blob을 브라우저에서 접근 가능한 임시 URL로 변환
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `interview_${question.interviewId}.webm`;
+    a.click();
+  };
 
   const handlePlayQuestion = () => {
     speak(question.interviewContent);
@@ -138,12 +132,8 @@ const handleDownload = () => {
 
   return (
     <section className="border border-cyan-300 rounded-xl p-6 bg-white shadow-sm">
-    
       {/* 질문 텍스트 */}
-      <h3 className="text-xl font-bold text-gray-800 mb-4">
-        Q. {question.interviewContent}
-      </h3>
-
+      <h3 className="text-xl font-bold text-gray-800 mb-4">Q. {question.interviewContent}</h3>
 
       {/* 질문 다시 듣기 버튼 */}
       <div className="mb-4">
@@ -163,39 +153,36 @@ const handleDownload = () => {
         {showCountdown ? '잠시 후 녹음이 시작됩니다.' : ''}
       </p>
 
-
       {/* 녹음 종료 버튼 */}
-{listening && (
-  <div className="flex justify-center mb-4">
-    <button
-      onClick={handleStop}
-      className="px-5 py-2 rounded-md bg-red-500 text-white text-sm font-semibold hover:bg-red-600"
-    >
-      🛑 녹음 종료
-    </button>
-  </div>
-)}
+      {listening && (
+        <div className="flex justify-center mb-4">
+          <button
+            onClick={handleStop}
+            className="px-5 py-2 rounded-md bg-red-500 text-white text-sm font-semibold hover:bg-red-600"
+          >
+            🛑 녹음 종료
+          </button>
+        </div>
+      )}
 
-{/* 다운로드 버튼 */}
-{audioBlob && (
-  <div className="flex justify-center mb-4">
-    <button
-      onClick={handleDownload}
-      className="px-4 py-2 rounded-md bg-green-500 text-white text-sm font-semibold hover:bg-green-600"
-    >
-      ⬇ 녹음 파일 다운로드
-    </button>
-  </div>
-)}
+      {/* 다운로드 버튼 */}
+      {audioBlob && (
+        <div className="flex justify-center mb-4">
+          <button
+            onClick={handleDownload}
+            className="px-4 py-2 rounded-md bg-green-500 text-white text-sm font-semibold hover:bg-green-600"
+          >
+            ⬇ 녹음 파일 다운로드
+          </button>
+        </div>
+      )}
 
-      {/* 음성 인식 결과 */} 
-{localTranscript && (
-  <div className="bg-gray-100 text-sm text-gray-800 p-4 rounded-md mb-4 min-h-[60px]">
-    {localTranscript}
-  </div>
-)}
-
-
+      {/* 음성 인식 결과 */}
+      {localTranscript && (
+        <div className="bg-gray-100 text-sm text-gray-800 p-4 rounded-md mb-4 min-h-[60px]">
+          {localTranscript}
+        </div>
+      )}
     </section>
   );
 };

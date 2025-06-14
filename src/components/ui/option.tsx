@@ -4,16 +4,16 @@ import { FaCheck, FaTimes } from 'react-icons/fa';
 
 export interface Choice {
   choiceId: number;
-  choiceNum: number;     // 1,2,3,4 같은 번호
+  choiceNum: number; // 1,2,3,4 같은 번호
   choice: string;
   value: string;
 }
 
 export interface StateColors {
-  normalBg?: string;     // 기본 배경
-  selectedBg?: string;   // 체크(quiz) 모드에서 선택됐을 때
-  correctBg?: string;    // 정답인 경우
-  incorrectBg?: string;  // 오답인 경우
+  normalBg?: string; // 기본 배경
+  selectedBg?: string; // 체크(quiz) 모드에서 선택됐을 때
+  correctBg?: string; // 정답인 경우
+  incorrectBg?: string; // 오답인 경우
 }
 
 export interface OptionsProps {
@@ -50,7 +50,7 @@ export const Options: React.FC<OptionsProps> = ({
 
   return (
     <div className="flex flex-col gap-4">
-      {choices.map(c => {
+      {choices.map((c) => {
         const isSelected = selectedValue === c.value;
         const isCorrect = showResult && c.value === correctValue;
         const isWrong = showResult && isSelected && selectedValue !== correctValue;
@@ -65,6 +65,7 @@ export const Options: React.FC<OptionsProps> = ({
         const indicator = (() => {
           if (!showResult) {
             // quiz 모드
+
             return indicatorType === 'number'
               ? c.choiceNum
               : (isSelected ? <FaCheck size={14} /> : null);
@@ -89,8 +90,8 @@ export const Options: React.FC<OptionsProps> = ({
         let prefixBgColor = '#DBDFE3';
         if (isCorrect) prefixBgColor = '#7FCBA0';
         else if (isWrong) prefixBgColor = '#DD4B4B';
-        else if (!showResult && isSelected) prefixBgColor = '#51BACB';
 
+        else if (!showResult && isSelected) prefixBgColor = '#51BACB';
 
         return (
           <button
@@ -101,7 +102,7 @@ export const Options: React.FC<OptionsProps> = ({
             style={{ backgroundColor: bgColor, border: `2px solid ${borderColor}`, }}
           >
             <span
-              className='flex h-5 w-5 items-center justify-center rounded-full text-white'
+              className="flex h-5 w-5 items-center justify-center rounded-full text-white"
               style={{ backgroundColor: prefixBgColor }}
             >
               {indicator}

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 import api from '@/api/axios';
 
 export interface Chapter {
@@ -53,7 +53,7 @@ export async function fetchSubjectDetail(subjectId: number): Promise<SubjectDeta
     }
   );
 
-  const data = response.data.data; 
+  const data = response.data.data;
 
   return {
     roadmapId: data.roadmapId,
@@ -64,8 +64,7 @@ export async function fetchSubjectDetail(subjectId: number): Promise<SubjectDeta
     preSubmitCount: data.preSubmitCount,
     postSubmitCount: data.postSubmitCount,
     recommendContents: data.recommendContents ?? [],
-  }
-
+  };
 }
 
 export function useSubjectDetail(subjectId: number) {
@@ -73,15 +72,15 @@ export function useSubjectDetail(subjectId: number) {
     queryKey: ['subjectDetail', subjectId],
     queryFn: () => fetchSubjectDetail(subjectId),
     enabled: !!subjectId,
-  })
+  });
 }
 
 export function useAllRecommendContents(subjectIds: number[]) {
   return useQuery({
     queryKey: ['allRecommendContents', subjectIds],
     queryFn: async () => {
-      const results = await Promise.all(subjectIds.map(id => fetchSubjectDetail(id)));
-      return results.flatMap(detail => detail.recommendContents || []);
+      const results = await Promise.all(subjectIds.map((id) => fetchSubjectDetail(id)));
+      return results.flatMap((detail) => detail.recommendContents || []);
     },
     enabled: subjectIds.length > 0,
   });

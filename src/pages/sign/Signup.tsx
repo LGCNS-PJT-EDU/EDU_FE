@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import pixel_texture from "@/asset/img/common/pixel_texture.png"
+import pixel_texture from '@/asset/img/common/pixel_texture.png';
 import main from '@/asset/img/common/main.png';
 import { useCheckEmailMutation, useSignupMutation } from '@/hooks/useMutation';
-import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png' 
+import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png';
 import SignupTermsModal from '@/components/modal/SignupTermsModal';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -15,8 +15,8 @@ function Signup() {
   const [password, setPassword] = useState<string>('');
   const [passwordCheck, setPasswordCheck] = useState<string>('');
 
-  const [pwValid, setPwValid]               = useState(false);
-  const [pwMatch, setPwMatch]               = useState<boolean | null>(null);
+  const [pwValid, setPwValid] = useState(false);
+  const [pwMatch, setPwMatch] = useState<boolean | null>(null);
 
   const navigate = useNavigate();
   const checkEmailMutation = useCheckEmailMutation();
@@ -45,7 +45,7 @@ function Signup() {
       setIsEmailAvailable(isAvailable);
       alert(isAvailable ? '사용 가능한 이메일입니다.' : '이미 사용 중인 이메일입니다.');
     } catch {
-      alert('중복 확인을 다시 해주세요!')
+      alert('중복 확인을 다시 해주세요!');
     }
   };
 
@@ -79,8 +79,8 @@ function Signup() {
     navigate('/login');
   };
 
-  const canShowPwSection   = isEmailAvailable;
-  const canShowJoinButton  = canShowPwSection && pwValid && pwMatch && agreed;
+  const canShowPwSection = isEmailAvailable;
+  const canShowJoinButton = canShowPwSection && pwValid && pwMatch && agreed;
 
   return (
     <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex flex-col md:flex-row items-center md:items-start justify-center gap-[200px] overflow-hidden px-0 md:px-4">
@@ -106,9 +106,10 @@ function Signup() {
           </p>
         </div>
       </div>
-      
+
       {/* 회원가입 박스 */}
-      <div className="relative w-full max-w-[450px]
+      <div
+        className="relative w-full max-w-[450px]
                       md:w-full md:max-w-[400px]
                       max-md:-mx-4
                       mb-25 mt-80 md:my-15
@@ -116,7 +117,8 @@ function Signup() {
                       p-10 md:p-[60px_40px]
                       bg-white rounded-[40px] md:rounded-[30px]
                       flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] 
-                      border border-[#E0E0E0] min-h-[calc(100vh-200px)]">
+                      border border-[#E0E0E0] min-h-[calc(100vh-200px)]"
+      >
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
         <h2 className="mt-2 mb-3 text-xl font-semibold">회원가입</h2>
 
@@ -163,7 +165,7 @@ function Signup() {
             <motion.div
               key="pw-section"
               initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0,  opacity: 1 }}
+              animate={{ y: 0, opacity: 1 }}
               exit={{ y: 30, opacity: 0 }}
               transition={{ duration: 0.25 }}
               className="flex flex-col gap-2"
@@ -210,7 +212,7 @@ function Signup() {
             <motion.div
               key="join-btn"
               initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0,  opacity: 1 }}
+              animate={{ y: 0, opacity: 1 }}
               exit={{ y: 30, opacity: 0 }}
               transition={{ duration: 0.25 }}
             >
@@ -223,9 +225,7 @@ function Signup() {
             </motion.div>
           )}
         </AnimatePresence>
-        {!agreed && (
-          <SignupTermsModal onAgree={() => setAgreed(true)} />
-        )}
+        {!agreed && <SignupTermsModal onAgree={() => setAgreed(true)} />}
       </div>
     </div>
   );

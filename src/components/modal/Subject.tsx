@@ -3,6 +3,7 @@ import { useSubjectDetail } from '@/hooks/useSubjectDetail';
 import { useRoadmapStore } from '@/store/roadmapStore';
 import { useNavigate } from 'react-router-dom';
 import RecommendationCard from '@/components/ui/RecommendationCard';
+
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
@@ -41,6 +42,7 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
   const nodeData = nodes.find((n) => n.id === subjectId);
   const nodeOrder = nodeData?.subjectOrder ?? Infinity;
   const status = nodeOrder < rawCurrentOrder ? 'done' : nodeOrder === rawCurrentOrder ? 'current' : 'todo';
+
 
   const { data: detail, isLoading, isError } = useSubjectDetail(subjectId);
 

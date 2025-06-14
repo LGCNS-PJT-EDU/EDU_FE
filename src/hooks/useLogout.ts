@@ -16,8 +16,7 @@ export default function useLogout() {
       console.warn('서버 로그아웃 요청 실패(무시)', e);
     }
     setLogout();
-    showSnackbar('로그아웃 되었습니다') 
+    showSnackbar('로그아웃 되었습니다');
     navigate('/', { replace: true });
   }, [navigate, setLogout]);
 }
- 
