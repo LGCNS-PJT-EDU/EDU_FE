@@ -7,7 +7,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import BaseAdminPage from './BaseAdminPage';
-import { fetchUserList, LoginType, PriceLevel, User } from '@/api/adminService';
+import { fetchUserList, LoginType, PriceLevel, StudyTime, User } from '@/api/adminService';
 import AdminPagination from './AdminPagination';
 import AdminDataTable from './AdminDataTable';
 import AdminDataFilter from './AdminDataFilter';
@@ -51,12 +51,29 @@ const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: 'lectureAmount',
-    header: '강의 수',
-    cell: ({ row }) => <div>{row.getValue('lectureAmount')}</div>,
+    header: '1일 학습 가능 시간',
+    cell: ({ row }) => {
+      const lectureAmount = row.getValue('lectureAmount') as StudyTime;
+      const getLectureAmountLabel = (lectureAmount: StudyTime) => {
+        switch (lectureAmount) {
+          case 'HOUR_1':
+            return '1시간 이하';
+          case 'HOUR_3':
+            return '1시간 이상 3시간 이하';
+          case 'HOUR_5':
+            return '3시간 이상 5시간 이하';
+          case 'HOUR_10':
+            return '5시간 이상 10시간 이하';
+          case 'OVER_10':
+            return '10시간 이상';
+        }
+      };
+      return <Badge variant="outline">{getLectureAmountLabel(lectureAmount)}</Badge>;
+    },
   },
   {
     accessorKey: 'priceLevel',
-    header: '희망 소비 금액',
+    header: '예산',
     cell: ({ row }) => {
       const priceLevel = row.getValue('priceLevel') as PriceLevel;
       const getPriceLevelLabel = (priceLevel: PriceLevel) => {

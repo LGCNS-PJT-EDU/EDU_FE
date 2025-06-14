@@ -23,13 +23,14 @@ export type PriceLevel =
   | 'BETWEEN_100K_200K'
   | 'BETWEEN_200K_500K'
   | 'OVER_500K';
+export type StudyTime = 'HOUR_1' | 'HOUR_3' | 'HOUR_5' | 'HOUR_10' | 'OVER_10';
 export interface User {
   id: string;
   userId: number;
   email: string;
   nickname: string;
   loginType: LoginType;
-  lectureAmount: string;
+  lectureAmount: StudyTime;
   priceLevel: PriceLevel;
   isActive: boolean;
   likeBooks: boolean;
@@ -58,7 +59,16 @@ export const fetchUserList = async (request: PageableReq): Promise<PageableData<
             : index % 4 === 2
               ? 'NAVER'
               : 'GOOGLE',
-      lectureAmount: '10',
+      lectureAmount:
+        index % 5 === 0
+          ? 'HOUR_1'
+          : index % 5 === 1
+            ? 'HOUR_3'
+            : index % 5 === 2
+              ? 'HOUR_5'
+              : index % 5 === 3
+                ? 'HOUR_10'
+                : 'OVER_10',
       priceLevel:
         index % 6 === 0
           ? 'FREE'
