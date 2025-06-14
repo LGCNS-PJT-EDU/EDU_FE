@@ -126,7 +126,7 @@ export default function TestTemplate({
           {/* 오른쪽: 시작 카드 */}
           <div className="relative flex-1 rounded-2xl bg-[#E6EEFF] p-8 border-2 min-h-[300px] flex flex-col justify-between">
             <div>
-              <p className="text-sm text-gray-600">🕒 진단 소요시간 5분, 약 10문제</p>
+              <p className="text-sm text-gray-600">🕒 진단 소요시간 5분, 약 10문제</p> {/* 바꿔야 함 */}
               <h2 className="mt-4 text-xl font-bold">문제를 시작해볼까요?</h2>
               <p className="mt-2 flex gap-2 text-sm text-[#4A4A4A]">
                 <img src={Isolation} alt="isolation" className="w-[15px]" />

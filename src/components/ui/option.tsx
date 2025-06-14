@@ -20,7 +20,7 @@ export interface OptionsProps {
   choices: Choice[];
   selectedValue?: string;
   onChoose?: (value: string) => void;
-  
+
   /** 오답노트 모드로 전환할지 여부 */
   showResult?: boolean;
   /** 진짜 정답의 value */
@@ -42,9 +42,9 @@ export const Options: React.FC<OptionsProps> = ({
 }) => {
   // 디폴트 색상
   const {
-    normalBg    = '#F6F5F8',
-    selectedBg  = '#C9EBEF',
-    correctBg   = '#A3E55C',
+    normalBg = '#F6F5F8',
+    selectedBg = '#C9EBEF',
+    correctBg = '#A3E55C',
     incorrectBg = '#F87171',
   } = stateColors;
 
@@ -52,13 +52,13 @@ export const Options: React.FC<OptionsProps> = ({
     <div className="flex flex-col gap-4">
       {choices.map(c => {
         const isSelected = selectedValue === c.value;
-        const isCorrect  = showResult && c.value === correctValue;
-        const isWrong    = showResult && isSelected && selectedValue !== correctValue;
+        const isCorrect = showResult && c.value === correctValue;
+        const isWrong = showResult && isSelected && selectedValue !== correctValue;
 
         // 배경색 결정
         let bgColor = normalBg;
-        if (isCorrect)            bgColor = correctBg;
-        else if (isWrong)         bgColor = incorrectBg;
+        if (isCorrect) bgColor = correctBg;
+        else if (isWrong) bgColor = incorrectBg;
         else if (!showResult && isSelected) bgColor = selectedBg;
 
         // prefix 표시(✔, ✖, 또는 번호)
@@ -67,11 +67,11 @@ export const Options: React.FC<OptionsProps> = ({
             // quiz 모드
             return indicatorType === 'number'
               ? c.choiceNum
-              : (isSelected ? <FaCheck size={14}/> : null);
+              : (isSelected ? <FaCheck size={14} /> : null);
           } else {
             // 오답노트 모드
-            if (isCorrect) return <FaCheck size={14}/>;
-            if (isWrong)   return <FaTimes size={14}/>;
+            if (isCorrect) return <FaCheck size={14} />;
+            if (isWrong) return <FaTimes size={14} />;
             return indicatorType === 'number'
               ? c.choiceNum
               : null;
@@ -80,15 +80,15 @@ export const Options: React.FC<OptionsProps> = ({
 
         // 선택지 테두리 색: 정답(녹색), 오답(빨강), 기본(투명)
         const borderColor = isCorrect
-          ? '#5CAA51'
+          ? '#1ABC9C'    
           : isWrong
-          ? '#FF0000'
-          : 'transparent';
+            ? '#E74C3C'    
+            : 'transparent';
 
         // prefix 배경색
         let prefixBgColor = '#DBDFE3';
-        if (isCorrect)           prefixBgColor = '#5CAA51';
-        else if (isWrong)        prefixBgColor = '#FF0000';
+        if (isCorrect) prefixBgColor = '#7FCBA0';
+        else if (isWrong) prefixBgColor = '#DD4B4B';
         else if (!showResult && isSelected) prefixBgColor = '#51BACB';
 
 
@@ -97,7 +97,7 @@ export const Options: React.FC<OptionsProps> = ({
             key={c.choiceId}
             onClick={() => onChoose?.(c.value)}
             disabled={showResult}
-            className="flex w-full items-center gap-3 rounded-[15px] border border-transparent px-4 py-3"
+            className="flex w-full items-center gap-3 rounded-[10px] border border-transparent px-4 py-3"
             style={{ backgroundColor: bgColor, border: `2px solid ${borderColor}`, }}
           >
             <span
