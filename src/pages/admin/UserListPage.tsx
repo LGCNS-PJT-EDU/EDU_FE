@@ -18,71 +18,72 @@ import { useSearchParams } from 'react-router-dom';
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from '@/components/ui/pagination';
 import BaseAdminPage from './BaseAdminPage';
-
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { fetchUserList, User } from '@/api/adminService';
+import { Button } from '@/components/ui/button';
 
 const columns: ColumnDef<User>[] = [
   {
-    accessorKey: 'id',
+    accessorKey: 'userId',
     header: '아이디',
-    cell: ({ row }) => <div className="capitalize">{row.getValue('id')}</div>,
+    cell: ({ row }) => <div>{row.getValue('userId')}</div>,
   },
   {
     accessorKey: 'email',
-    header: () => {
-      return <div className="text-left">이메일</div>;
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>,
+    header: '이메일',
+    cell: ({ row }) => <div>{row.getValue('email')}</div>,
   },
   {
-    accessorKey: 'phone',
-    header: () => <div className="text-right">전화번호</div>,
-    cell: ({ row }) => {
-      const phone = row.getValue('phone') as string;
-      return <div className="text-right font-medium">{phone}</div>;
-    },
+    accessorKey: 'nickname',
+    header: '닉네임',
+    cell: ({ row }) => <div>{row.getValue('nickname')}</div>,
+  },
+  {
+    accessorKey: 'loginType',
+    header: '로그인 타입',
+    cell: ({ row }) => <div>{row.getValue('loginType')}</div>,
+  },
+  {
+    accessorKey: 'lectureAmount',
+    header: '강의 수',
+    cell: ({ row }) => <div>{row.getValue('lectureAmount')}</div>,
+  },
+  {
+    accessorKey: 'priceLevel',
+    header: '가격 수준',
+    cell: ({ row }) => <div>{row.getValue('priceLevel')}</div>,
+  },
+  {
+    accessorKey: 'isActive',
+    header: '활성화 여부',
+    cell: ({ row }) => <div>{row.getValue('isActive') ? '활성화' : '비활성화'}</div>,
+  },
+  {
+    accessorKey: 'likeBooks',
+    header: '좋아요 여부',
+    cell: ({ row }) => <div>{row.getValue('likeBooks') ? '좋아요' : '싫어요'}</div>,
+  },
+  {
+    accessorKey: 'PrivacyStatus',
+    header: '개인정보 수집 동의 여부',
+    cell: ({ row }) => <div>{row.getValue('PrivacyStatus') ? '동의' : '미동의'}</div>,
   },
 ];
 
 export default function UserListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const userId = searchParams.get('id') || 1;
+  const pageIndex = Number(searchParams.get('page')) || 1;
 
   const query = useQuery({
-    queryKey: ['users', userId],
-    queryFn: () => [
-      {
-        id: 1,
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '1234567890',
-        address: '123 Main St, Anytown, USA',
-        createdAt: '2021-01-01',
-        updatedAt: '2021-01-01',
-      },
-    ],
+    queryKey: ['users', pageIndex], 
+    queryFn: () => fetchUserList({ pageSize: 10, pageIndex: pageIndex - 1 }),
   });
 
-  query.data?.[0].id;
-
   const table = useReactTable({
-    data: query.data || [],
+    data: query.data?.content || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -92,7 +93,7 @@ export default function UserListPage() {
     <BaseAdminPage title="사용자 관리">
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-gray-100">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -121,7 +122,7 @@ export default function UserListPage() {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                    검색 결과가 없습니다.
                 </TableCell>
               </TableRow>
             )}
@@ -131,16 +132,32 @@ export default function UserListPage() {
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious href="#" />
+            <Button variant="outline" disabled={pageIndex === 1} onClick={() => {
+              setSearchParams((prev) => {
+                prev.set('page', (Number(prev.get('page')) - 1).toString());
+                return prev;
+              });
+            }}>이전</Button>
           </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
+          {
+            Array.from({length: query.data?.totalPages || 0}, (_, index) => (
+              <PaginationItem key={index}>
+                <Button variant={ pageIndex === index + 1 ? "default" : "ghost"} onClick={() => {
+                  setSearchParams((prev) => {
+                    prev.set('page', (index + 1).toString());
+                    return prev;
+                  });
+                }}>{index + 1}</Button>
+              </PaginationItem>
+            ))
+          }
+          <PaginationItem>  
+            <Button variant="outline" disabled={!query.data?.totalPages || pageIndex === query.data?.totalPages} onClick={() => {
+              setSearchParams((prev) => {
+                prev.set('page', (Number(prev.get('page')) + 1).toString());
+                return prev;
+              });
+            }}>다음</Button>
           </PaginationItem>
         </PaginationContent>
       </Pagination>
