@@ -18,17 +18,18 @@ export default function ConfirmModal({
   onClose,
   imgSrc,
   imgAlt,
-  title = "알림",
+  title = '알림',
   message,
-  confirmText = "확인",
+  confirmText = '확인',
   onConfirm,
 }: Props) {
   const image = imgSrc ?? takeRabbit;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="relative w-[80vw] md:w-full max-w-[22rem] md:max-w-sm p-6 md:p-8 rounded-2xl bg-white shadow-xl"
-           style={{ maxHeight: '90vh', overflowY: 'auto' }}
+      <div
+        className="relative w-[80vw] md:w-full max-w-[22rem] md:max-w-sm p-6 md:p-8 rounded-2xl bg-white shadow-xl"
+        style={{ maxHeight: '90vh', overflowY: 'auto' }}
       >
         {/* 닫기 버튼 */}
         <button

@@ -12,10 +12,9 @@ export default function useLogin() {
   return useCallback<(token: string) => Promise<void>>(
     async (token) => {
       setLogin(token);
-      showSnackbar('로그인 성공!')
+      showSnackbar('로그인 성공!');
       navigate('/roadmap', { replace: true });
     },
     [setLogin, navigate]
   );
 }
- 

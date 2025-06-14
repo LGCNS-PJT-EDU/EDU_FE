@@ -43,8 +43,7 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, onButton1Click }) => {
         <div key={groupIdx} className="mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 font-[pretendard]">
             {group.map((card, idx) => {
-              const youtubeThumbnail =
-                card.detailUrl && getYoutubeThumbnail(card.detailUrl);
+              const youtubeThumbnail = card.detailUrl && getYoutubeThumbnail(card.detailUrl);
 
               return (
                 <div key={idx}>

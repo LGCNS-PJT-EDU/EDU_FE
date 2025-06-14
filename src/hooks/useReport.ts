@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 import axios from '@/api/axios';
 
 export interface FeedbackItem {
@@ -10,7 +10,7 @@ export interface FeedbackItem {
     strength: Record<string, string>;
     weakness: Record<string, string>;
     final: string;
-  }
+  };
 }
 interface ApiResponse<T> {
   stateCode: number;
@@ -22,8 +22,8 @@ export const fetchUserFeedback = async (subjectId: number) => {
   const res = await axios.get<ApiResponse<FeedbackItem[]>>('/api/feedback/retrieve', {
     params: { subjectId },
   });
-  console.log("subjectId 확인:", subjectId);
-  console.log("응답 확인", res.data); // 확인용
+  console.log('subjectId 확인:', subjectId);
+  console.log('응답 확인', res.data); // 확인용
   return res.data?.data ?? [];
 };
 

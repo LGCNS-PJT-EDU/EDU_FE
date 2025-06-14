@@ -1,6 +1,6 @@
 // src/store/guestUuidStore.ts
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface GuestUuidState {
   uuid: string | null;
@@ -14,8 +14,8 @@ export const useGuestUuidStore = create<GuestUuidState>()(
       setUuid: (u) => set({ uuid: u }),
     }),
     {
-      name: "roadmapUuid",
+      name: 'roadmapUuid',
       storage: createJSONStorage(() => localStorage),
-    },
-  ),
+    }
+  )
 );
