@@ -10,9 +10,11 @@ interface AdminDataFilterItem<SearchDataType extends FieldValues> {
 
 export default function AdminDataFilter<SearchDataType extends FieldValues>({
   onSubmit,
+  onReset,
   items,
 }: {
   onSubmit: (data: SearchDataType) => void;
+  onReset: () => void;
   items: AdminDataFilterItem<SearchDataType>[];
 }) {
   const form = useForm<SearchDataType>();
@@ -27,7 +29,7 @@ export default function AdminDataFilter<SearchDataType extends FieldValues>({
           </div>
         ))}
         <Button type="submit">검색</Button>
-        <Button type="reset" variant="outline">
+        <Button type="reset" variant="outline" onClick={onReset}>
           초기화
         </Button>
       </div>

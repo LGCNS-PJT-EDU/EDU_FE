@@ -105,10 +105,20 @@ export default function ContentsListPage() {
     });
   };
 
+  const handleReset = () => {
+    setSearchParams((prev) => {
+      prev.delete('contentTitle');
+      prev.delete('contentType');
+      prev.set('page', '1');
+      return prev;
+    });
+  };
+
   return (
     <BaseAdminPage title="컨텐츠 관리">
       <AdminDataFilter
         onSubmit={handleSubmit}
+        onReset={handleReset}
         items={[
           {
             name: 'contentTitle',

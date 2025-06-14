@@ -151,10 +151,20 @@ export default function UserListPage() {
     });
   };
 
+  const handleReset = () => {
+    setSearchParams((prev) => {
+      prev.delete('nickname');
+      prev.delete('email');
+      prev.set('page', '1');
+      return prev;
+    });
+  };
+
   return (
     <BaseAdminPage title="사용자 관리">
       <AdminDataFilter
         onSubmit={handleSubmit}
+        onReset={handleReset}
         items={[
           {
             name: 'nickname',

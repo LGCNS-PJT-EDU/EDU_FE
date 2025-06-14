@@ -80,10 +80,20 @@ export default function QuestionListPage() {
     });
   };
 
+  const handleReset = () => {
+    setSearchParams((prev) => {
+      prev.delete('question');
+      prev.delete('questionType');
+      prev.set('page', '1');
+      return prev;
+    });
+  };
+  
   return (
     <BaseAdminPage title="질문 관리">
       <AdminDataFilter
         onSubmit={handleSubmit}
+        onReset={handleReset}
         items={[
           {
             name: 'question',
