@@ -119,12 +119,12 @@ const columns: ColumnDef<User>[] = [
 export default function UserListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const pageIndex = Number(searchParams.get('page')) || 1;
+  const page = Number(searchParams.get('page')) || 1;
 
   const query = useQuery({
     queryKey: ['users', { ...searchParams }],
     queryFn: async () => {
-      return await fetchUserList({ pageSize: 10, pageIndex: pageIndex - 1, ...searchParams });
+      return await fetchUserList({ page: page - 1, size: 10 });
     },
   });
 
@@ -178,7 +178,7 @@ export default function UserListPage() {
       />
       <AdminDataTable table={table} columns={columns} query={query} />
       <AdminPagination
-        pageIndex={pageIndex}
+        pageIndex={page}
         totalPages={query.data?.totalPages || 0}
         setPage={setPage}
       />
