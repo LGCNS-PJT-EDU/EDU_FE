@@ -1,3 +1,5 @@
+import api from "./axios";
+
 interface ApiResp<T> {
   stateCode: number;
   message: string;
@@ -36,59 +38,16 @@ export interface User {
 }
 
 export interface PageableReq {
-  pageSize: number;
-  pageIndex: number;
+  page: number;
+  size: number;
 }
 
 export const fetchUserList = async (request: PageableReq): Promise<PageableData<User>> => {
-  //   const res = await api.post<ApiResp<PageableData<User>>>('/api/interview/answers', request);
-  //   return res.data.data;
-  return {
-    content: Array.from({ length: 10 }, (_, index) => ({
-      id: `${index + 1}`,
-      userId: index + 1,
-      email: `user${index + 1}@user.com`,
-      nickname: `user${index + 1}`,
-      loginType:
-        index % 4 === 0
-          ? 'LOCAL'
-          : index % 4 === 1
-            ? 'KAKAO'
-            : index % 4 === 2
-              ? 'NAVER'
-              : 'GOOGLE',
-      lectureAmount:
-        index % 5 === 0
-          ? 'HOUR_1'
-          : index % 5 === 1
-            ? 'HOUR_3'
-            : index % 5 === 2
-              ? 'HOUR_5'
-              : index % 5 === 3
-                ? 'HOUR_10'
-                : 'OVER_10',
-      priceLevel:
-        index % 6 === 0
-          ? 'FREE'
-          : index % 6 === 1
-            ? 'UNDER_50K'
-            : index % 6 === 2
-              ? 'BETWEEN_50K_100K'
-              : index % 6 === 3
-                ? 'BETWEEN_100K_200K'
-                : index % 6 === 4
-                  ? 'BETWEEN_200K_500K'
-                  : 'OVER_500K',
-      isActive: true,
-      likeBooks: false,
-      PrivacyStatus: false,
-    })),
-    pageable: {
-      pageNumber: 0,
-      pageSize: 10,
-    },
-    totalPages: 3,
-  };
+    const params = new URLSearchParams();
+    params.append('page', request.page.toString());
+    params.append('size', request.size.toString());
+    const res = await api.get<ApiResp<PageableData<User>>>('/api/admin/users?' + params.toString());
+    return res.data.data;
 };
 
 export interface Subject {

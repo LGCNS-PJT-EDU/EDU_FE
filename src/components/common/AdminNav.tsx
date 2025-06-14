@@ -26,7 +26,7 @@ export default function AdminNav() {
         <NavItem path="/admin/dashboard" label="대시보드" icon={<Home />} />
         <NavItem path="/admin/users" label="사용자 관리" icon={<Users />} />
         <NavItem path="/admin/subjects" label="과목 관리" icon={<Book />} />
-        <NavItem path="/admin/questions" label="문제 관리" icon={<FileQuestion />} />
+        <NavItem path="/admin/questions" label="문제 관리 (에러)" icon={<FileQuestion />} />
         <NavItem path="/admin/contents" label="추천 컨텐츠 관리" icon={<Lightbulb />} />
       </div>
     </div>
