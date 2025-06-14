@@ -84,10 +84,10 @@ export default function TestTemplate({
   onConfirmNote,
   onCloseConfirm,
 }: AssesmentProps & {
-  subjectId: number;
-  showConfirm: boolean;
-  onConfirmNote: () => void;
-  onCloseConfirm: () => void;
+  subjectId?: number;
+  showConfirm?: boolean;
+  onConfirmNote?: () => void;
+  onCloseConfirm?: () => void;
 }) {
   const { time, headline, sub, submitLabel } = introCopy[kind];
   const currentQ = questions[currentIdx];
@@ -101,7 +101,7 @@ export default function TestTemplate({
     setShowConfirmModal(true);
   };
 
-  if (showConfirm) {
+  if (showConfirm && onConfirmNote && onCloseConfirm) {
     return (
       <ConfirmModal
         title="제출이 완료되었습니다"
