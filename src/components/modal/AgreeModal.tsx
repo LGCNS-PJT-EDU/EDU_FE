@@ -15,8 +15,8 @@ export default function AgreeModal({ onAgree, onClose }: AgreeModalProps) {
   const [openRecord, setOpenRecord] = useState(false);
   const [openPolicy, setOpenPolicy] = useState(false);
 
-  const allAgreed      = agreeRecord && agreePolicy;
-  const toggleAllAgree = (checked: boolean) => {
+  const all = agreeRecord && agreePolicy;
+  const toggleAll = (checked: boolean) => {
     setAgreeRecord(checked);
     setAgreePolicy(checked);
   };
@@ -145,25 +145,34 @@ export default function AgreeModal({ onAgree, onClose }: AgreeModalProps) {
           <label className="flex items-center space-x-2 font-medium">
             <input
               type="checkbox"
-              checked={allAgreed}
-              onChange={(e) => toggleAllAgree(e.target.checked)}
+              checked={all}
+              onChange={(e) => toggleAll(e.target.checked)}
             />
             <span className="text-sm">모두 동의</span>
           </label>
         </div>
 
         {/* 동의하고 계속 버튼 */}
-        <Button
-          className="w-full"
-          style={{
-            backgroundColor: allAgreed ? '#6378EB' : '#D7DBFF',
-            color: '#fff',
-          }}
-          disabled={!allAgreed}
-          onClick={onAgree}
-        >
-          동의하고 계속
-        </Button>
+        <AnimatePresence>
+        {all && (
+          <motion.div
+            key="agree-btn"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0,  opacity: 1 }}
+            exit={{ y: 30, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="w-full mt-2"
+            >
+            <Button
+                className="w-full"
+                style={{ backgroundColor: '#6378EB', color: '#fff' }}
+                onClick={onAgree}
+            >
+                동의하고 계속
+            </Button>
+          </motion.div>
+        )}
+        </AnimatePresence>
       </motion.div>
     </div>
   );
