@@ -1,5 +1,3 @@
-import api from './axios';
-
 interface ApiResp<T> {
   stateCode: number;
   message: string;
@@ -15,14 +13,23 @@ export interface PageableData<T> {
   totalPages: number;
 }
 
+export type LoginType = 'LOCAL' | 'KAKAO' | 'NAVER' | 'GOOGLE';
+export type PriceLevel =
+  | 'FREE'
+  | 'UNDER_50K'
+  | 'BETWEEN_50K_100K'
+  | 'BETWEEN_100K_200K'
+  | 'BETWEEN_200K_500K'
+  | 'OVER_500K';
+export type StudyTime = 'HOUR_1' | 'HOUR_3' | 'HOUR_5' | 'HOUR_10' | 'OVER_10';
 export interface User {
   id: string;
   userId: number;
   email: string;
   nickname: string;
-  loginType: string;
-  lectureAmount: string;
-  priceLevel: string;
+  loginType: LoginType;
+  lectureAmount: StudyTime;
+  priceLevel: PriceLevel;
   isActive: boolean;
   likeBooks: boolean;
   PrivacyStatus: boolean;
@@ -42,9 +49,36 @@ export const fetchUserList = async (request: PageableReq): Promise<PageableData<
       userId: index + 1,
       email: `user${index + 1}@user.com`,
       nickname: `user${index + 1}`,
-      loginType: 'LOCAL',
-      lectureAmount: '10',
-      priceLevel: '10',
+      loginType:
+        index % 4 === 0
+          ? 'LOCAL'
+          : index % 4 === 1
+            ? 'KAKAO'
+            : index % 4 === 2
+              ? 'NAVER'
+              : 'GOOGLE',
+      lectureAmount:
+        index % 5 === 0
+          ? 'HOUR_1'
+          : index % 5 === 1
+            ? 'HOUR_3'
+            : index % 5 === 2
+              ? 'HOUR_5'
+              : index % 5 === 3
+                ? 'HOUR_10'
+                : 'OVER_10',
+      priceLevel:
+        index % 6 === 0
+          ? 'FREE'
+          : index % 6 === 1
+            ? 'UNDER_50K'
+            : index % 6 === 2
+              ? 'BETWEEN_50K_100K'
+              : index % 6 === 3
+                ? 'BETWEEN_100K_200K'
+                : index % 6 === 4
+                  ? 'BETWEEN_200K_500K'
+                  : 'OVER_500K',
       isActive: true,
       likeBooks: false,
       PrivacyStatus: false,
@@ -132,6 +166,7 @@ export interface Question {
 }
 
 export const fetchQuestionList = async (request: PageableReq): Promise<PageableData<Question>> => {
+  window.location.href = '/admin/not-authorized';
   //   const res = await api.post<ApiResp<PageableData<Question>>>('/api/questions', request);
   //   return res.data.data;
   return {

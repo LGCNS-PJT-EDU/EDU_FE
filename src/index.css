@@ -14,20 +14,40 @@
   font-weight: 400;
   font-style: normal;
 }
-button{
+
+button {
   cursor: pointer;
 }
+
 @custom-variant dark (&:is(.dark *));
 
 .custom-scroll::-webkit-scrollbar {
   width: 6px;
 }
+
 .custom-scroll::-webkit-scrollbar-thumb {
   background-color: #cbd5e1;
   border-radius: 4px;
 }
+
 .custom-scroll::-webkit-scrollbar-track {
   background: transparent;
+}
+
+@keyframes dropdown {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.animate-dropdown {
+  animation: dropdown 0.2s ease-out forwards;
 }
 
 @theme inline {
@@ -155,13 +175,16 @@ button{
 
 /* 3D 카드용 공통 스타일 */
 .card-3d {
-  transform-style: preserve-3d;      /* 내부 요소도 3D로 회전 */
-  perspective: 1000px;               /* 원근감 */
+  transform-style: preserve-3d;
+  /* 내부 요소도 3D로 회전 */
+  perspective: 1000px;
+  /* 원근감 */
 }
 
 .card-face {
   @apply absolute inset-0 flex items-center justify-center backface-hidden;
-  backface-visibility: hidden;       /* 뒤집힌 면 숨김 */
+  backface-visibility: hidden;
+  /* 뒤집힌 면 숨김 */
 }
 
 .card-face--back {

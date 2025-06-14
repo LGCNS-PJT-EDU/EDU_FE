@@ -91,10 +91,20 @@ export default function SubjectListPage() {
     });
   };
 
+  const handleReset = () => {
+    setSearchParams((prev) => {
+      prev.delete('subNm');
+      prev.delete('subType');
+      prev.set('page', '1');
+      return prev;
+    });
+  };
+
   return (
     <BaseAdminPage title="과목 관리">
       <AdminDataFilter
         onSubmit={handleSubmit}
+        onReset={handleReset}
         items={[
           {
             name: 'subNm',
