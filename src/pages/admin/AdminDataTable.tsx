@@ -50,7 +50,7 @@ export default function AdminDataTable<RowDataType extends { id: string }>({
             ))}
           </TableBody>
         )}
-        {query.isFetched && (
+        {query.isFetched && !query.isLoading && (
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
