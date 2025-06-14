@@ -3,18 +3,18 @@ import api from '@/api/axios';
 import { useQuery } from '@tanstack/react-query';
 
 interface Subject {
-    subId: number;
-    subjectNm: string;
-    isComplete: boolean
+  subId: number;
+  subjectNm: string;
+  isComplete: boolean;
 }
 
 interface ApiResponse {
-    stateCode: number;
-    message: string;
-    data: {
-        existingSubjectIds: Subject[];
-        missingSubjectIds: Subject[];
-    };
+  stateCode: number;
+  message: string;
+  data: {
+    existingSubjectIds: Subject[];
+    missingSubjectIds: Subject[];
+  };
 }
 
 const fetchSubjects = async (): Promise<ApiResponse['data']> => {

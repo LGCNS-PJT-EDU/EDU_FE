@@ -7,7 +7,6 @@ interface RecommendationContent {
   platform: string;
   isAiRecommendation: boolean;
   comment?: string;
-
 }
 
 function getYoutubeThumbnail(url: string): string | null {
@@ -27,7 +26,7 @@ const RecommendationCard: React.FC<RecommendationContent> = ({
   const thumbnail = getYoutubeThumbnail(url);
 
   // 공통 카드 스타일
-  const cardClass = "w-full bg-white rounded-xl border p-4 shadow transition-all duration-300";
+  const cardClass = 'w-full bg-white rounded-xl border p-4 shadow transition-all duration-300';
 
   return (
     <div className={`${cardClass} mb-3`}>
@@ -45,7 +44,12 @@ const RecommendationCard: React.FC<RecommendationContent> = ({
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <a href={url} target="_blank" rel="noopener noreferrer" className="text-base font-bold text-[#6378EB]">
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-base font-bold text-[#6378EB]"
+              >
                 {title}
               </a>
               {isAiRecommendation && (
@@ -54,7 +58,9 @@ const RecommendationCard: React.FC<RecommendationContent> = ({
                 </span>
               )}
             </div>
-            <p className="text-sm text-gray-500">{platform} · {type}</p>
+            <p className="text-sm text-gray-500">
+              {platform} · {type}
+            </p>
 
             {comment && (
               <button
@@ -78,9 +84,7 @@ const RecommendationCard: React.FC<RecommendationContent> = ({
               &times;
             </button>
           </div>
-          <p className="whitespace-pre-wrap leading-relaxed">
-            {comment}
-          </p>
+          <p className="whitespace-pre-wrap leading-relaxed">{comment}</p>
         </div>
       )}
     </div>

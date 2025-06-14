@@ -7,7 +7,7 @@ import { X } from 'lucide-react';
 import { SUBJECT_IMAGES } from '@/pages/roadmap_old/subjectImages';
 
 interface NodeItemProps {
-  node: { id: number; label: string; subjectOverview: string;};
+  node: { id: number; label: string; subjectOverview: string };
   index: number;
 }
 

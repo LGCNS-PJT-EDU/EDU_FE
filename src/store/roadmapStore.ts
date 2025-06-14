@@ -4,7 +4,7 @@ export interface NodeData {
   id: number;
   label: string;
   subjectOrder: number;
-  subjectOverview: string;          // snake → camel
+  subjectOverview: string; // snake → camel
 }
 
 export interface RoadmapStore {
@@ -48,10 +48,7 @@ export const useRoadmapStore = create<RoadmapStore>((set, get) => ({
 
   addNode: (label) =>
     set((s) => ({
-      nodes: [
-        ...s.nodes,
-        { id: Date.now(), label, subjectOrder: 0, subjectOverview: '' },
-      ],
+      nodes: [...s.nodes, { id: Date.now(), label, subjectOrder: 0, subjectOverview: '' }],
     })),
 
   deleteNode: (index) =>
@@ -70,12 +67,14 @@ export const useRoadmapStore = create<RoadmapStore>((set, get) => ({
       return { nodes: copy };
     }),
 
-  setInitial: (subjects: {
-    subjectId: number;
-    subjectName: string;
-    subjectOrder: number;
-    subject_overview?: string | null;
-  }[]) =>
+  setInitial: (
+    subjects: {
+      subjectId: number;
+      subjectName: string;
+      subjectOrder: number;
+      subject_overview?: string | null;
+    }[]
+  ) =>
     set(() => ({
       nodes: subjects.map((s) => ({
         id: s.subjectId,

@@ -1,16 +1,16 @@
-import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-import takeitR from "@/asset/img/diagnosis/takeit_pixel.png";
-import blue_star from "@/asset/img/diagnosis/blue_star.png";
-import gold_star from "@/asset/img/diagnosis/gold_star.png";
-import smallRabbit from "@/asset/img/diagnosis/smallRabbit.png";
-import Isolation from "@/asset/img/diagnosis/Isolation_Mode.png";
-import pixel_texture from "@/asset/img/common/pixel_texture.png";
-import startBtn from "@/asset/img/diagnosis/startBtn.png";
-import { Options } from "../ui/option";
-import { useState } from "react";
-import ConfirmModal from "../modal/ConfirmModal";
+import { SlArrowLeft, SlArrowRight } from 'react-icons/sl';
+import takeitR from '@/asset/img/diagnosis/takeit_pixel.png';
+import blue_star from '@/asset/img/diagnosis/blue_star.png';
+import gold_star from '@/asset/img/diagnosis/gold_star.png';
+import smallRabbit from '@/asset/img/diagnosis/smallRabbit.png';
+import Isolation from '@/asset/img/diagnosis/Isolation_Mode.png';
+import pixel_texture from '@/asset/img/common/pixel_texture.png';
+import startBtn from '@/asset/img/diagnosis/startBtn.png';
+import { Options } from '../ui/option';
+import { useState } from 'react';
+import ConfirmModal from '../modal/ConfirmModal';
 
-export type AssesmentKind = "diagnosis" | "pre" | "post";
+export type AssesmentKind = 'diagnosis' | 'pre' | 'post';
 
 interface Choice {
   choiceId: number;
@@ -48,22 +48,22 @@ export interface AssesmentProps {
 
 const introCopy = {
   diagnosis: {
-    time: "⏱ 진단 소요시간 5분, 약 10문제",
-    headline: "문제를 시작해볼까요?",
-    sub: "개발 로드맵 확인하러 가기",
-    submitLabel: "로드맵 생성",
+    time: '⏱ 진단 소요시간 5분, 약 10문제',
+    headline: '문제를 시작해볼까요?',
+    sub: '개발 로드맵 확인하러 가기',
+    submitLabel: '로드맵 생성',
   },
   pre: {
-    time: "⏱ 약 5분, 10문제",
-    headline: "학습 전 실력을 측정해볼까요?",
-    sub: "지금 내 수준을 확인해보세요",
-    submitLabel: "제출",
+    time: '⏱ 약 5분, 10문제',
+    headline: '학습 전 실력을 측정해볼까요?',
+    sub: '지금 내 수준을 확인해보세요',
+    submitLabel: '제출',
   },
   post: {
-    time: "⏱ 약 5분, 15문제",
-    headline: "학습 후 실력이 얼마나 향상됐을까요?",
-    sub: "변화를 숫자로 확인해보세요",
-    submitLabel: "제출",
+    time: '⏱ 약 5분, 15문제',
+    headline: '학습 후 실력이 얼마나 향상됐을까요?',
+    sub: '변화를 숫자로 확인해보세요',
+    submitLabel: '제출',
   },
 } as const;
 
@@ -120,7 +120,11 @@ export default function TestTemplate({
           {/* 왼쪽: 진행 통계 */}
           <div className="flex flex-row gap-6 lg:flex-col">
             <StatCard title="전체 질문 갯수" value={totalCount} />
-            <StatCard title="현재 응답 갯수" value={Object.keys(answers).length} bgColor="#C6EDF2" />
+            <StatCard
+              title="현재 응답 갯수"
+              value={Object.keys(answers).length}
+              bgColor="#C6EDF2"
+            />
           </div>
 
           {/* 오른쪽: 시작 카드 */}
@@ -155,10 +159,7 @@ export default function TestTemplate({
   }
 
   return (
-    <div
-      className="flex h-[calc(100vh-70px)] w-full flex-col items-center justify-center gap-8 px-8 py-8 font-[pretendard]"
-
-    >
+    <div className="flex h-[calc(100vh-70px)] w-full flex-col items-center justify-center gap-8 px-8 py-8 font-[pretendard]">
       <div className="flex w-full max-w-[800px] flex-col gap-6 lg:flex-row">
         {/* 진행 통계 */}
         <div className="flex flex-row gap-6 lg:flex-col">
@@ -187,8 +188,9 @@ export default function TestTemplate({
               <button
                 onClick={() => setCurrentIdx(currentIdx - 1)}
                 disabled={currentIdx === 0}
-                className={`flex items-center gap-1 rounded-[8px] bg-[#D7DBFF] px-6 py-3 text-[#6378EB] ${currentIdx === 0 && "cursor-not-allowed opacity-40"
-                  }`}
+                className={`flex items-center gap-1 rounded-[8px] bg-[#D7DBFF] px-6 py-3 text-[#6378EB] ${
+                  currentIdx === 0 && 'cursor-not-allowed opacity-40'
+                }`}
               >
                 <SlArrowLeft className="h-4 w-4" /> 이전 문제로
               </button>
@@ -197,8 +199,9 @@ export default function TestTemplate({
                 <button
                   onClick={() => setCurrentIdx(currentIdx + 1)}
                   disabled={!isAnswered}
-                  className={`flex items-center gap-1 rounded-[8px] bg-[#6378EB] px-6 py-3 text-white ${!isAnswered && "cursor-not-allowed opacity-40"
-                    }`}
+                  className={`flex items-center gap-1 rounded-[8px] bg-[#6378EB] px-6 py-3 text-white ${
+                    !isAnswered && 'cursor-not-allowed opacity-40'
+                  }`}
                 >
                   다음 문제로 <SlArrowRight className="h-4 w-4" />
                 </button>
@@ -206,10 +209,11 @@ export default function TestTemplate({
                 <button
                   onClick={handleSubmit}
                   disabled={!isAnswered || isSubmitting}
-                  className={`rounded-[8px] bg-[#51BACB] px-6 py-3 text-white ${(!isAnswered || isSubmitting) && "cursor-not-allowed"
-                    }`}
+                  className={`rounded-[8px] bg-[#51BACB] px-6 py-3 text-white ${
+                    (!isAnswered || isSubmitting) && 'cursor-not-allowed'
+                  }`}
                 >
-                  {isSubmitting ? "제출 중…" : submitLabel}
+                  {isSubmitting ? '제출 중…' : submitLabel}
                 </button>
               )}
             </div>
@@ -219,7 +223,7 @@ export default function TestTemplate({
     </div>
   );
 }
-const StatCard = ({ title, value, bgColor = "#F2F2F2" }: StatCardProps) => (
+const StatCard = ({ title, value, bgColor = '#F2F2F2' }: StatCardProps) => (
   <div
     className="flex h-[70px] w-[200px] flex-col items-center justify-center rounded-[15px] px-10"
     style={{ backgroundColor: bgColor }}

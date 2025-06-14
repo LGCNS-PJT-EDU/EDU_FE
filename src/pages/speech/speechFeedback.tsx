@@ -38,10 +38,7 @@ const SpeechFeedbackPage: React.FC = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-center p-6 text-gray-600">
         피드백 데이터를 찾을 수 없습니다. <br />
-        <button
-          onClick={() => navigate('/')}
-          className="mt-4 underline text-blue-500"
-        >
+        <button onClick={() => navigate('/')} className="mt-4 underline text-blue-500">
           홈으로 돌아가기
         </button>
       </div>
@@ -63,9 +60,7 @@ const SpeechFeedbackPage: React.FC = () => {
 
           <div className="text-sm text-gray-800">
             <strong>🗣 나의 답변:</strong>
-            <p className="mt-1 bg-gray-50 p-2 rounded text-gray-600">
-              {item.userReply || '없음'}
-            </p>
+            <p className="mt-1 bg-gray-50 p-2 rounded text-gray-600">{item.userReply || '없음'}</p>
           </div>
 
           <div className="text-sm text-gray-800">
@@ -81,7 +76,7 @@ const SpeechFeedbackPage: React.FC = () => {
               {item.interviewAnswer || '없음'}
             </p>
           </div>
-          
+
           <div className="text-sm text-gray-800">
             <strong>🧩 추천 키워드:</strong>
             <p className="mt-1 bg-green-50 p-2 rounded text-gray-700">
