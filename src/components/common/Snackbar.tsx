@@ -1,6 +1,6 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
-import { useSnackbarStore } from "@/store/useSnackbarStore";
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { useSnackbarStore } from '@/store/useSnackbarStore';
 
 export default function Snackbar() {
   const { isOpen, message, type, hideSnackbar } = useSnackbarStore();
@@ -13,9 +13,9 @@ export default function Snackbar() {
   }, [isOpen, hideSnackbar]);
 
   const bg = {
-    success: "bg-green-500",
-    error: "bg-red-500",
-    info: "bg-blue-500",
+    success: 'bg-green-500',
+    error: 'bg-red-500',
+    info: 'bg-blue-500',
   }[type];
 
   return (

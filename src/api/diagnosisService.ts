@@ -1,4 +1,4 @@
-import api from "@/api/axios";
+import api from '@/api/axios';
 
 export interface Choice {
   choiceId: number;
@@ -41,17 +41,12 @@ interface ApiResp<T> {
 }
 
 export async function fetchDiagnosisQuestions(): Promise<RawData> {
-  const res = await api.get<ApiResp<RawData>>("/api/diagnosis");
+  const res = await api.get<ApiResp<RawData>>('/api/diagnosis');
   return res.data.data;
 }
 
-export async function submitDiagnosis(
-  payload: DiagnosisAnswerReq[],
-): Promise<RoadmapPayload> {
-  const res = await api.post<ApiResp<RoadmapPayload>>(
-    "/api/diagnosis",
-    payload,
-  );
-  console.log("진단 결과 로드맵:", res.data);
+export async function submitDiagnosis(payload: DiagnosisAnswerReq[]): Promise<RoadmapPayload> {
+  const res = await api.post<ApiResp<RoadmapPayload>>('/api/diagnosis', payload);
+  console.log('진단 결과 로드맵:', res.data);
   return res.data.data;
 }

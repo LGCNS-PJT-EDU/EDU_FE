@@ -3,12 +3,12 @@ import { useDrag, useDrop } from 'react-dnd';
 import { X } from 'lucide-react';
 import { useRoadmapStore } from '@/store/roadmapStore';
 import { useSnackbarStore } from '@/store/useSnackbarStore';
-import nodeDoneImg    from '@/asset/img/roadmap/subject/doneNode.png';
+import nodeDoneImg from '@/asset/img/roadmap/subject/doneNode.png';
 import nodeCurrentImg from '@/asset/img/roadmap/subject/currentNode.png';
-import nodeTodoImg    from '@/asset/img/roadmap/subject/todoNode.png';
-import arrow      from '@/asset/img/common/pixel_arrow.png';
+import nodeTodoImg from '@/asset/img/roadmap/subject/todoNode.png';
+import arrow from '@/asset/img/common/pixel_arrow.png';
 
-const NODE_SIZE    = 36;
+const NODE_SIZE = 36;
 const LABEL_OFFSET = 8;
 
 interface Props {
@@ -19,26 +19,22 @@ interface Props {
   nodeStatus: 'done' | 'current' | 'todo';
 }
 
-export default function RoadmapNode({
-  index, x, y, showLabel, nodeStatus,
-}: Props) {
+export default function RoadmapNode({ index, x, y, showLabel, nodeStatus }: Props) {
   /* Zustand */
-  const node          = useRoadmapStore((s) => s.nodes[index]);  
-  const rawOrder      = useRoadmapStore((s) => s.currentOrder);
-  const currentOrder  = rawOrder ?? 0;  
-  const reorderNode   = useRoadmapStore((s) => s.reorderNode);
-  const deleteNode    = useRoadmapStore((s) => s.deleteNode);
-  const editing       = useRoadmapStore((s) => s.editing);
-  const openModal     = useRoadmapStore((s) => s.openModal);
+  const node = useRoadmapStore((s) => s.nodes[index]);
+  const rawOrder = useRoadmapStore((s) => s.currentOrder);
+  const currentOrder = rawOrder ?? 0;
+  const reorderNode = useRoadmapStore((s) => s.reorderNode);
+  const deleteNode = useRoadmapStore((s) => s.deleteNode);
+  const editing = useRoadmapStore((s) => s.editing);
+  const openModal = useRoadmapStore((s) => s.openModal);
 
   /* Snackbar */
-  const showSnackbar  = useSnackbarStore((s) => s.showSnackbar);
+  const showSnackbar = useSnackbarStore((s) => s.showSnackbar);
 
   /* 아이콘 선택 */
   const iconSrc =
-    nodeStatus === 'done'    ? nodeDoneImg
-    : nodeStatus === 'current' ? nodeCurrentImg
-    : nodeTodoImg;
+    nodeStatus === 'done' ? nodeDoneImg : nodeStatus === 'current' ? nodeCurrentImg : nodeTodoImg;
   const isCurrent = nodeStatus === 'current';
 
   /* Drag & Drop */
@@ -50,7 +46,7 @@ export default function RoadmapNode({
       if (!dragNode || !node) return;
 
       const sameGroup =
-        (dragNode.subjectOrder <  currentOrder && node.subjectOrder <  currentOrder) ||
+        (dragNode.subjectOrder < currentOrder && node.subjectOrder < currentOrder) ||
         (dragNode.subjectOrder >= currentOrder && node.subjectOrder >= currentOrder);
 
       if (!sameGroup) {
@@ -80,12 +76,7 @@ export default function RoadmapNode({
         className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer"
         onClick={() => !editing && openModal(index)}
       >
-        <img
-          src={iconSrc}
-          alt=""
-          className="w-7 h-7"
-          style={{ opacity: isDragging ? 0.5 : 1 }}
-        />
+        <img src={iconSrc} alt="" className="w-7 h-7" style={{ opacity: isDragging ? 0.5 : 1 }} />
 
         {editing && (
           <button
@@ -101,7 +92,7 @@ export default function RoadmapNode({
       </div>
       {isCurrent && (
         <img
-          style={{ left: x, top: y-55 }}
+          style={{ left: x, top: y - 55 }}
           src={arrow}
           alt="현재 위치"
           className="absolute -top- left-1/2 -translate-x-1/2 w-9 h-7"

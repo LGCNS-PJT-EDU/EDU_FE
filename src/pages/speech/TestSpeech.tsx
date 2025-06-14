@@ -96,9 +96,7 @@ const TestSpeech: React.FC = () => {
         {/* 헤더 */}
         <div className="flex justify-between items-center mb-4">
           {currentQuestion && (
-            <h2 className="text-xl font-semibold text-gray-800">
-              {currentQuestion.subjectName}
-            </h2>
+            <h2 className="text-xl font-semibold text-gray-800">{currentQuestion.subjectName}</h2>
           )}
 
           <span className="text-base font-semibold text-cyan-700 bg-cyan-100 px-2 py-1 rounded-md shadow-sm">

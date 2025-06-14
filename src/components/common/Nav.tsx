@@ -14,7 +14,6 @@ function Nav() {
   const isLogin = !!accessToken;
   const logout = useLogout();
 
-
   const baseBtnClass =
     'bg-transparent border-none font-[pretendard] text-[#373F41] text-base hover:text-[#6378EB] transition-all';
 
@@ -61,11 +60,8 @@ function Nav() {
             </a>
           </div>
 
-          { /* 햄부기온앤온 */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setOpen(true)}
-          >
+          {/* 햄부기온앤온 */}
+          <button className="md:hidden p-2" onClick={() => setOpen(true)}>
             <Menu size={28} />
           </button>
 
@@ -140,10 +136,7 @@ function Nav() {
               className="fixed top-0 right-0 h-full w-64 bg-[#E4EBFF] z-50 shadow-lg
                          flex flex-col pt-4 px-6"
             >
-              <button
-                onClick={() => setOpen(false)}
-                className="self-end p-2 text-black"
-              >
+              <button onClick={() => setOpen(false)} className="self-end p-2 text-black">
                 <X size={24} />
               </button>
 
@@ -157,7 +150,10 @@ function Nav() {
                 {!isLogin ? (
                   <>
                     <button
-                      onClick={() => { navigate('/login'); setOpen(false); }}
+                      onClick={() => {
+                        navigate('/login');
+                        setOpen(false);
+                      }}
                       className={`w-1/2 h-full z-10 ${
                         getPosition() === 'left' ? 'text-white' : 'text-[#505050]'
                       }`}
@@ -165,7 +161,10 @@ function Nav() {
                       LogIn
                     </button>
                     <button
-                      onClick={() => { navigate('/signup'); setOpen(false); }}
+                      onClick={() => {
+                        navigate('/signup');
+                        setOpen(false);
+                      }}
                       className={`w-1/2 h-full z-10 ${
                         getPosition() === 'right' ? 'text-white' : 'text-[#505050]'
                       }`}
@@ -176,7 +175,10 @@ function Nav() {
                 ) : (
                   <>
                     <button
-                      onClick={() => { navigate('/mypage'); setOpen(false); }}
+                      onClick={() => {
+                        navigate('/mypage');
+                        setOpen(false);
+                      }}
                       className={`w-1/2 h-full z-10 ${
                         getPosition() === 'left' ? 'text-white' : 'text-[#505050]'
                       }`}
@@ -184,7 +186,10 @@ function Nav() {
                       MyPage
                     </button>
                     <button
-                      onClick={() => { logout(); setOpen(false); }}
+                      onClick={() => {
+                        logout();
+                        setOpen(false);
+                      }}
                       className={`w-1/2 h-full z-10 ${
                         getPosition() === 'right' ? 'text-white' : 'text-[#505050]'
                       }`}

@@ -1,16 +1,16 @@
-import TestTemplate from "@/components/test/TestTemplate";
-import usePretest from "@/hooks/usePretest";
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import TestTemplate from '@/components/test/TestTemplate';
+import usePretest from '@/hooks/usePretest';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function PretestPage() {
   const [hasStarted, setHasStarted] = useState(false);
   const [params] = useSearchParams();
-  const subjectId = Number(params.get("subjectId") || 0);
+  const subjectId = Number(params.get('subjectId') || 0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!subjectId) navigate("/roadmap");
+    if (!subjectId) navigate('/roadmap');
   }, [subjectId, navigate]);
 
   const {
@@ -35,13 +35,13 @@ export default function PretestPage() {
     return {
       diagnosisId: q.id,
       question: q.question,
-      questionType: "객관식",
+      questionType: '객관식',
       choices: choiceArr,
     };
   });
 
   const goSolution = () => navigate(`/solution?subjectId=${subjectId}&eval=pre`, { replace: true });
-  const goRoadmap = () => navigate("/roadmap", { replace: true });
+  const goRoadmap = () => navigate('/roadmap', { replace: true });
 
   return (
     <TestTemplate

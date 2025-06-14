@@ -8,7 +8,7 @@ interface RawPreQuestion {
   choice2?: string;
   choice3?: string;
   choice4?: string;
-  answerNum: number; 
+  answerNum: number;
   chapterNum: number;
   chapterName: string;
   difficulty: string;
@@ -37,7 +37,7 @@ export interface PreTestQuestion {
   chapterNum: number;
   chapterName: string;
   difficulty: string;
-  answerNum: number; 
+  answerNum: number;
 }
 
 export interface PreTestSubmitPayload {
@@ -66,21 +66,17 @@ function shuffleArray<T>(arr: T[]): T[] {
 }
 
 // 사전 평가 문제 조회
-export async function fetchPreTestQuestions(
-  subjectId: number,
-): Promise<PreTestQuestion[]> {
-  const res = await api.get<ApiResp<RawPreQuestion[]>>("/api/exam/pre", {
+export async function fetchPreTestQuestions(subjectId: number): Promise<PreTestQuestion[]> {
+  const res = await api.get<ApiResp<RawPreQuestion[]>>('/api/exam/pre', {
     params: { subjectId },
-  }
-
-  );
+  });
 
   return (res.data.data ?? []).map<PreTestQuestion>((q) => {
     // 1. 원본 choices 구성
     const originalChoices: PreTestChoice[] = [q.choice1, q.choice2, q.choice3, q.choice4]
       .filter((c): c is string => Boolean(c))
       .map((text, idx) => ({
-        id: idx + 1,            // 원본 key (1~4)
+        id: idx + 1, // 원본 key (1~4)
         text,
         value: String(idx + 1), // 서버로 보낼 값
       }));
@@ -91,9 +87,7 @@ export async function fetchPreTestQuestions(
     // 3. 원래 answerNum에 해당하는 choice가 셔플된 배열의 몇 번째인지 다시 계산
     const originalAnswerId = q.answerNum;
     const correctChoice = shuffledChoices.find((c) => c.id === originalAnswerId);
-    const shuffledAnswerNum = correctChoice
-      ? shuffledChoices.indexOf(correctChoice) + 1
-      : 1; // fallback
+    const shuffledAnswerNum = correctChoice ? shuffledChoices.indexOf(correctChoice) + 1 : 1; // fallback
 
     return {
       id: q.questionId,
@@ -102,22 +96,20 @@ export async function fetchPreTestQuestions(
       chapterNum: q.chapterNum,
       chapterName: q.chapterName,
       difficulty: q.difficulty,
-      answerNum: q.answerNum, 
+      answerNum: q.answerNum,
     };
   });
 }
 
 // 사전 평가 결과 제출
 export async function submitPreTest(payload: PreTestSubmitPayload) {
-  const res = await api.post<ApiResp<any>>("/api/exam/pre", payload);
+  const res = await api.post<ApiResp<any>>('/api/exam/pre', payload);
   return res.data;
 }
 
 // 로드맵 ID 포함된 서브젝트 상세 정보 조회
-export async function fetchSubjectDetail(
-  subjectId: number,
-): Promise<SubjectDetail> {
-  const res = await api.get<ApiResp<SubjectDetail>>("/api/roadmap/subject", {
+export async function fetchSubjectDetail(subjectId: number): Promise<SubjectDetail> {
+  const res = await api.get<ApiResp<SubjectDetail>>('/api/roadmap/subject', {
     params: { subjectId },
   });
   return res.data.data;

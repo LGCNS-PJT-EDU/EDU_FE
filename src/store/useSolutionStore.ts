@@ -1,21 +1,20 @@
-import { create } from 'zustand'
+import { create } from 'zustand';
 
-export type EvalType = 'pre' | 'post'
+export type EvalType = 'pre' | 'post';
 
 interface SolutionState {
-  evalType: EvalType
-  setEvalType: (t: EvalType) => void
+  evalType: EvalType;
+  setEvalType: (t: EvalType) => void;
 
   // qId -> selected value
-  answers: Record<string, string>
-  setAnswer: (qId: string, value: string) => void
+  answers: Record<string, string>;
+  setAnswer: (qId: string, value: string) => void;
 }
 
-export const useSolutionStore = create<SolutionState>(set => ({
+export const useSolutionStore = create<SolutionState>((set) => ({
   evalType: 'pre',
-  setEvalType: evalType => set({ evalType }),
+  setEvalType: (evalType) => set({ evalType }),
 
   answers: {},
-  setAnswer: (qId, value) =>
-    set(state => ({ answers: { ...state.answers, [qId]: value } })),
-}))
+  setAnswer: (qId, value) => set((state) => ({ answers: { ...state.answers, [qId]: value } })),
+}));
