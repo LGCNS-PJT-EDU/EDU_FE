@@ -1,6 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 
 import { useQuery } from '@tanstack/react-query';
+import BaseAdminPage from './BaseAdminPage';
 
 export default function UserDetailPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,5 +23,13 @@ export default function UserDetailPage() {
 
   query.data?.id;
 
-  return <div>UserDetailPage</div>;
+  return (
+    <BaseAdminPage title="사용자 상세">
+      <div className="flex flex-col gap-[20px]">
+        <div className="flex flex-col gap-[10px]">
+          <h2 className="text-lg font-bold">사용자 상세</h2>
+        </div>
+      </div>
+    </BaseAdminPage>
+  );
 }

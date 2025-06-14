@@ -24,6 +24,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import BaseAdminPage from './BaseAdminPage';
 
 export type User = {
   id: number;
@@ -44,9 +45,7 @@ const columns: ColumnDef<User>[] = [
   {
     accessorKey: 'email',
     header: () => {
-      return (
-        <div className="text-left">이메일</div>
-      );
+      return <div className="text-left">이메일</div>;
     },
     cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>,
   },
@@ -90,8 +89,7 @@ export default function UserListPage() {
   });
 
   return (
-    <div className="w-full flex flex-col gap-[20px]">
-      <h1 className="text-2xl font-bold mb-[20px]">사용자 관리</h1>
+    <BaseAdminPage title="사용자 관리">
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -146,6 +144,6 @@ export default function UserListPage() {
           </PaginationItem>
         </PaginationContent>
       </Pagination>
-    </div>
+    </BaseAdminPage>
   );
 }
