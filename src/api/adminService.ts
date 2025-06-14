@@ -16,6 +16,7 @@ export interface PageableData<T> {
 }
 
 export interface User {
+  id: string;
   userId: number;
   email: string;
   nickname: string;
@@ -37,6 +38,7 @@ export const fetchUserList = async (request: PageableReq): Promise<PageableData<
   //   return res.data.data;
   return {
     content: Array.from({ length: 10 }, (_, index) => ({
+      id: `${index + 1}`,
       userId: index + 1,
       email: `user${index + 1}@user.com`,
       nickname: `user${index + 1}`,

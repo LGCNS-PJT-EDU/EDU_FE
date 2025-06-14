@@ -9,8 +9,10 @@ import {
 import { ColumnDef, Table as TanstackTable, flexRender } from '@tanstack/react-table';
 import { UseQueryResult } from '@tanstack/react-query';
 import { PageableData } from '@/api/adminService';
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
-export default function AdminDataTable<RowDataType>({
+export default function AdminDataTable<RowDataType extends { id: string }>({
   table,
   columns,
   query,
@@ -19,7 +21,10 @@ export default function AdminDataTable<RowDataType>({
   columns: ColumnDef<RowDataType>[];
   query: UseQueryResult<PageableData<RowDataType>, Error>;
 }) {
-  return (
+  const navigate = useNavigate();
+  const pathname = useLocation().pathname;
+
+    return (
     <div className="rounded-md border">
       <Table>
         <TableHeader className="bg-gray-100">
@@ -54,7 +59,9 @@ export default function AdminDataTable<RowDataType>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'} onClick={() => {
+                  navigate(`${pathname}/${row.original.id}`);
+                }}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
