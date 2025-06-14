@@ -62,15 +62,18 @@ const columns: ColumnDef<ContentWithId>[] = [
 export default function ContentsListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const pageIndex = Number(searchParams.get('page')) || 1;
+  const page = Number(searchParams.get('page')) || 1;
+  const contentTitle = searchParams.get('contentTitle') || '';
+  const contentType = searchParams.get('contentType') || '';
 
   const query = useQuery({
-    queryKey: ['contents', { ...searchParams }],
+    queryKey: contentTitle || contentType ? ['admin-contents', { page, contentTitle, contentType }] : ['admin-contents-without-filter'],
     queryFn: async () => {
       const data = await fetchContentList({
-        pageSize: 10,
-        pageIndex: pageIndex - 1,
-        ...searchParams,
+        page: page - 1,
+        size: 10,
+        contentTitle,
+        contentType,
       });
       return {
         ...data,
@@ -132,7 +135,7 @@ export default function ContentsListPage() {
       />
       <AdminDataTable table={table} columns={columns} query={query} />
       <AdminPagination
-        pageIndex={pageIndex}
+        pageIndex={page}
         totalPages={query.data?.totalPages || 0}
         setPage={setPage}
       />
