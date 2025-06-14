@@ -27,6 +27,9 @@ export default function AdminDataFilter<SearchDataType extends FieldValues>({
           </div>
         ))}
         <Button type="submit">검색</Button>
+        <Button type="reset" variant="outline">
+          초기화
+        </Button>
       </div>
     </form>
   );
