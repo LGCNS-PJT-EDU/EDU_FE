@@ -12,6 +12,7 @@ import AdminPagination from './AdminPagination';
 import AdminDataTable from './AdminDataTable';
 import AdminDataFilter from './AdminDataFilter';
 import { Badge } from '@/components/ui/badge';
+import { queryClient } from '@/App';
 
 const columns: ColumnDef<User>[] = [
   {
@@ -122,7 +123,7 @@ export default function UserListPage() {
   const page = Number(searchParams.get('page')) || 1;
 
   const query = useQuery({
-    queryKey: ['users', { ...searchParams }],
+    queryKey: ['admin-users'],
     queryFn: async () => {
       return await fetchUserList({ page: page - 1, size: 10 });
     },
@@ -138,6 +139,7 @@ export default function UserListPage() {
   const setPage = (page: number) => {
     setSearchParams((prev) => {
       prev.set('page', page.toString());
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
       return prev;
     });
   };
@@ -147,6 +149,7 @@ export default function UserListPage() {
       data.nickname ? prev.set('nickname', data.nickname) : prev.delete('nickname');
       data.email ? prev.set('email', data.email) : prev.delete('email');
       prev.set('page', '1');
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
       return prev;
     });
   };

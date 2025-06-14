@@ -8,7 +8,7 @@ import LoadingOverlay from './components/common/LoadingOverlay';
 import Snackbar from './components/common/Snackbar';
 import ConfirmModal from './components/modal/ConfirmModal';
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export default function App() {
   const [sessionExpired, setSessionExpired] = useState(false);
