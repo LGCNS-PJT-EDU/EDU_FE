@@ -26,11 +26,7 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
   const nodeData = nodes.find((n) => n.id === subjectId);
   const nodeOrder = nodeData?.subjectOrder ?? Infinity;
   const status =
-    nodeOrder < rawCurrentOrder
-      ? 'done'
-      : nodeOrder === rawCurrentOrder
-        ? 'current'
-        : 'todo';
+    nodeOrder < rawCurrentOrder ? 'done' : nodeOrder === rawCurrentOrder ? 'current' : 'todo';
 
   const { data: detail, isLoading, isError } = useSubjectDetail(subjectId);
 
@@ -62,7 +58,6 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
     <div className="fixed inset-0 z-[1000] font-[Pretendard]">
       <div className="w-full h-full bg-black/50 flex items-center justify-center">
         <div className="relative w-[90%] max-w-[540px] bg-white rounded-2xl p-8 shadow-[0_12px_24px_rgba(0,0,0,0.2)] flex flex-col max-h-[80vh]">
-
           {/* 닫기 버튼 */}
           <button
             className="absolute top-4 right-5 text-[28px] text-gray-400 hover:text-gray-600"
@@ -112,53 +107,53 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
             </div>
           )}
 
-        {/* 버튼 */}
-        {isLoading ? (
-          <p>로딩 중...</p>
-        ) : isError || !detail ? (
-          <p>불러오기 실패</p>
-        ) : (
-          <>
-            {status === 'todo' ? (
-              <button
-                className="w-full border border-gray-300 text-gray-600 bg-gray-100 py-2 px-4 rounded-lg"
-                onClick={onClose}
-              >
-                이전 과목을 먼저 이수해주세요!
-              </button>
-            ) : detail.preSubmitCount < 1 ? (
-              <button
-                className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg"
-                onClick={goPreTest}
-              >
-                사전평가 보러가기
-              </button>
-            ) : (
-              <>
+          {/* 버튼 */}
+          {isLoading ? (
+            <p>로딩 중...</p>
+          ) : isError || !detail ? (
+            <p>불러오기 실패</p>
+          ) : (
+            <>
+              {status === 'todo' ? (
                 <button
-                  className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
-                  onClick={goPostTest}
+                  className="w-full border border-gray-300 text-gray-600 bg-gray-100 py-2 px-4 rounded-lg"
+                  onClick={onClose}
                 >
-                  사후평가 보러가기
+                  이전 과목을 먼저 이수해주세요!
                 </button>
+              ) : detail.preSubmitCount < 1 ? (
                 <button
-                  className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
-                  onClick={goReport}
+                  className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg"
+                  onClick={goPreTest}
                 >
-                  평가 리포트 보러가기
+                  사전평가 보러가기
                 </button>
-                <button
-                  className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
-                  onClick={goSolution}
-                >
-                  오답 보러가기
-                </button>
-              </>
-            )}
-          </>
-        )}
+              ) : (
+                <>
+                  <button
+                    className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                    onClick={goPostTest}
+                  >
+                    사후평가 보러가기
+                  </button>
+                  <button
+                    className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                    onClick={goReport}
+                  >
+                    평가 리포트 보러가기
+                  </button>
+                  <button
+                    className="w-full border border-[#34ABB9] text-[#34ABB9] bg-[#D8F2F3] py-2 px-4 rounded-lg mb-2"
+                    onClick={goSolution}
+                  >
+                    오답 보러가기
+                  </button>
+                </>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
-    </div >
   );
 }

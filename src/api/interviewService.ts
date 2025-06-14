@@ -1,4 +1,4 @@
-import api from "@/api/axios";
+import api from '@/api/axios';
 
 export interface InterviewFeedback {
   comment: string;
@@ -26,11 +26,7 @@ export interface SubmitInterviewAnswersResponse {
 export async function submitInterviewAnswers(
   payload: SubmitInterviewAnswersRequest
 ): Promise<InterviewFeedback[]> {
-  const res = await api.post<SubmitInterviewAnswersResponse>(
-    '/api/interview/answers',
-    payload
-  );
+  const res = await api.post<SubmitInterviewAnswersResponse>('/api/interview/answers', payload);
 
   return res.data.data;
 }
-

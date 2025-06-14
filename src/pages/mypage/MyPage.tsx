@@ -49,10 +49,9 @@ function MyPage() {
   });
 
   const cardList = subjectDetailsResults
-    .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
-      r.status === 'success' &&
-      !!r.data?.recommendContents?.length &&
-      r.data.preSubmitCount > 0
+    .filter(
+      (r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
+        r.status === 'success' && !!r.data?.recommendContents?.length && r.data.preSubmitCount > 0
     )
     .flatMap((r) =>
       r.data.recommendContents!.map((content) => ({
@@ -125,11 +124,11 @@ function MyPage() {
   const reportCards = Array.from(reportCardsMap.values());
 
   //중복제거
-  const uniqueNthMap = new Map<number, typeof speechData[0]>();
+  const uniqueNthMap = new Map<number, (typeof speechData)[0]>();
 
   speechData.forEach((item) => {
     if (!uniqueNthMap.has(item.nth)) {
-      uniqueNthMap.set(item.nth, item); 
+      uniqueNthMap.set(item.nth, item);
     }
   });
 
@@ -158,7 +157,9 @@ function MyPage() {
           <div className="mb-4 text-[20px] font-medium">
             {progressData?.nickname}님, 오늘도 학습을 진행해볼까요?
             <br className="block sm:hidden" />
-            <span className="block sm:inline font-bold mt-1 sm:mt-0 text-left w-full">{percent}%</span>
+            <span className="block sm:inline font-bold mt-1 sm:mt-0 text-left w-full">
+              {percent}%
+            </span>
           </div>
           <div className="w-full max-w-md flex items-center gap-2 pr-2">
             <div className="w-full h-6 border-2 border-[#59C5CD] px-[3px] py-[3px] box-border">
@@ -174,28 +175,31 @@ function MyPage() {
         <div className="flex mb-6 border-b border-gray-200">
           <button
             onClick={() => setActiveTab('favorite')}
-            className={`mr-4 pb-2 border-b-2 ${activeTab === 'favorite'
-              ? 'border-[#6378EB] text-[#6378EB] font-bold'
-              : 'border-transparent text-gray-500'
-              }`}
+            className={`mr-4 pb-2 border-b-2 ${
+              activeTab === 'favorite'
+                ? 'border-[#6378EB] text-[#6378EB] font-bold'
+                : 'border-transparent text-gray-500'
+            }`}
           >
             추천 콘텐츠
           </button>
           <button
             onClick={() => setActiveTab('report')}
-            className={`mr-4 pb-2 border-b-2 ${activeTab === 'report'
-              ? 'border-[#6378EB] text-[#6378EB] font-bold'
-              : 'border-transparent text-gray-500'
-              }`}
+            className={`mr-4 pb-2 border-b-2 ${
+              activeTab === 'report'
+                ? 'border-[#6378EB] text-[#6378EB] font-bold'
+                : 'border-transparent text-gray-500'
+            }`}
           >
             평가 리포트
           </button>
           <button
             onClick={() => setActiveTab('speechFeedback')}
-            className={`pb-2 border-b-2 ${activeTab === 'speechFeedback'
-              ? 'border-[#6378EB] text-[#6378EB] font-bold'
-              : 'border-transparent text-gray-500'
-              }`}
+            className={`pb-2 border-b-2 ${
+              activeTab === 'speechFeedback'
+                ? 'border-[#6378EB] text-[#6378EB] font-bold'
+                : 'border-transparent text-gray-500'
+            }`}
           >
             인터뷰 리포트
           </button>
@@ -203,38 +207,34 @@ function MyPage() {
 
         {/* 콘텐츠 */}
 
-        {
-          activeTab === 'favorite' ? (
-            <CardGrid
-              cards={cardList}
-              onButton1Click={(card) => window.open(card.detailUrl, '_blank')}
-            />
-          ) : activeTab === 'report' ? (
-            <CardGrid
-              cards={reportCards}
-              onButton1Click={(card) => {
-                navigate(`/solution?subjectId=${card.subjectId}`);
-              }}
-            />
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {speechCards.length === 0 ? (
-                <p className="text-gray-500">면접 기록이 없습니다.</p>
-              ) : (
-                speechCards.map((item) => (
-                  <ReportCard key={item.reply_id} item={item} />
-                ))
-              )}
-            </div>
-          )
-        }
-
-
+        {activeTab === 'favorite' ? (
+          <CardGrid
+            cards={cardList}
+            onButton1Click={(card) => window.open(card.detailUrl, '_blank')}
+          />
+        ) : activeTab === 'report' ? (
+          <CardGrid
+            cards={reportCards}
+            onButton1Click={(card) => {
+              navigate(`/solution?subjectId=${card.subjectId}`);
+            }}
+          />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {speechCards.length === 0 ? (
+              <p className="text-gray-500">면접 기록이 없습니다.</p>
+            ) : (
+              speechCards.map((item) => <ReportCard key={item.reply_id} item={item} />)
+            )}
+          </div>
+        )}
       </div>
 
       {/* 푸터 */}
       <div className="mt-auto w-full max-w-md mx-auto py-4 text-center">
-        <button onClick={logout} className="mr-2">로그아웃</button>
+        <button onClick={logout} className="mr-2">
+          로그아웃
+        </button>
         <span className="mx-2">|</span>
         <button className="ml-2">회원탈퇴</button>
       </div>

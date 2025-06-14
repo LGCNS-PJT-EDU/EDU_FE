@@ -1,14 +1,14 @@
-import { useDiagnosis } from "@/hooks/useDiagnosis";
-import TestTemplate from "@/components/test/TestTemplate";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import ConfirmModal from "@/components/modal/ConfirmModal";
+import { useDiagnosis } from '@/hooks/useDiagnosis';
+import TestTemplate from '@/components/test/TestTemplate';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import ConfirmModal from '@/components/modal/ConfirmModal';
 
-export default function DiagnosisPage(){
+export default function DiagnosisPage() {
   const [hasStarted, setHasStarted] = useState(false);
-  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const navigate = useNavigate();
-  
+
   const {
     raw,
     questions,
@@ -30,7 +30,7 @@ export default function DiagnosisPage(){
     setHasStarted(true);
   };
   const onCancleReDiagnose = () => {
-    navigate("/", { replace: true});
+    navigate('/', { replace: true });
   };
 
   return (
@@ -38,14 +38,16 @@ export default function DiagnosisPage(){
       {confirmOpen && (
         <ConfirmModal
           title="기존 로드맵이 있습니다"
-          message={"진단을 다시 진행하면 기존 로드맵과 \n학습 이력이 삭제됩니다.😢\n계속 진행하시겠습니까?"}
+          message={
+            '진단을 다시 진행하면 기존 로드맵과 \n학습 이력이 삭제됩니다.😢\n계속 진행하시겠습니까?'
+          }
           confirmText="네 진행할게요"
           onConfirm={onConfirmReDiagnose}
           onClose={onCancleReDiagnose}
         />
       )}
       <TestTemplate
-        kind="diagnosis"       
+        kind="diagnosis"
         questions={questions}
         currentIdx={currentIdx}
         setCurrentIdx={setCurrentIdx}
@@ -58,5 +60,5 @@ export default function DiagnosisPage(){
         isLoadingQuestions={isQuestionsLoading}
       />
     </>
-  )
+  );
 }

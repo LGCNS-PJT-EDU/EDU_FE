@@ -79,7 +79,7 @@ export default function FlipCard({ title, subtitle, desc, back }: FlipCardProps)
                 className={cardClass}
                 initial={{ rotateY: 0, scale: 0.8 }}
                 animate={{ rotateY: 180, scale: MODAL_SCALE }}
-                exit={{ rotateY: 0, scale: 0.8, transition: { duration: 0.15 }, }}
+                exit={{ rotateY: 0, scale: 0.8, transition: { duration: 0.15 } }}
                 transition={spring}
               >
                 <Faces />

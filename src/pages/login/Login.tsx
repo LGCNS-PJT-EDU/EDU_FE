@@ -7,7 +7,7 @@ import kakao from '@/asset/img/login/btn_kakao.svg';
 import naver from '@/asset/img/login/btn_naver.svg';
 import pixel_texture from '@/asset/img/common/pixel_texture.png';
 import main from '@/asset/img/common/main.png';
-import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png'
+import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png';
 
 import useLogin from '@/hooks/useLogin';
 import { useLoadingStore } from '@/store/useLoadingStore';
@@ -89,11 +89,13 @@ function Login() {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     } catch (e) {
       console.log(e);
-      setErrorMessage('이메일 또는 비밀번호가 잘못되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.');
+      setErrorMessage(
+        '이메일 또는 비밀번호가 잘못되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.'
+      );
     } finally {
       stopLoading();
     }
-  }
+  };
 
   return (
     <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex flex-col md:flex-row items-center md:items-start justify-center gap-[200px] overflow-hidden px-0 md:px-4">
@@ -113,13 +115,16 @@ function Login() {
         <div className="z-20 text-[#373f41]">
           <img src={main} alt="main" className="w-[200px] mb-[10px]" />
           <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">
-            개발자의 꿈,<br />지금 TakeIT과 시작해보세요
+            개발자의 꿈,
+            <br />
+            지금 TakeIT과 시작해보세요
           </p>
         </div>
       </div>
 
       {/* 로그인 박스 */}
-      <div className="relative w-full max-w-[450px]
+      <div
+        className="relative w-full max-w-[450px]
                       md:w-full md:max-w-[400px]
                       max-md:-mx-4
                       mb-25 mt-80 md:my-15
@@ -127,7 +132,8 @@ function Login() {
                       p-10 md:p-[60px_70px]
                       bg-white rounded-[40px] md:rounded-[30px]
                       flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] 
-                      border border-[#E0E0E0] min-h-[calc(100vh-200px)]">
+                      border border-[#E0E0E0] min-h-[calc(100vh-200px)]"
+      >
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
         <h2 className="mt-1 mb-1 text-xl font-semibold">Login</h2>
 
@@ -222,4 +228,3 @@ function Login() {
   );
 }
 export default Login;
- 

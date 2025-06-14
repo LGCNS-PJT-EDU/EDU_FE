@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Main from '@/pages/Main';
 import Login from '@/pages/login/Login';
 import MyPage from '@/pages/mypage/MyPage';
@@ -16,6 +16,10 @@ import TestSpeech from '@/pages/speech/TestSpeech';
 import Selectspeech from '@/pages/speech/selectSpeech';
 import SpeechFeedback from '@/pages/speech/speechFeedback';
 import DefaultRoadmap from '@/pages/roadmap/DefaultRoadmap';
+import AdminLayouts from '@/components/layout/AdminLayouts';
+import Dashboard from '@/pages/admin/Dashboard';
+import UserListPage from '@/pages/admin/UserListPage';
+import UserDetailPage from '@/pages/admin/UserDetailPage';
 
 const router = createBrowserRouter([
   {
@@ -42,7 +46,17 @@ const router = createBrowserRouter([
       { path: 'login/oauth2/code/:provider', element: <OAuthCallback /> },
       { path: 'selectspeech', element: <Selectspeech /> },
       { path: 'testspeech', element: <TestSpeech /> },
-      { path: 'speechfeedback', element: <SpeechFeedback/> },
+      { path: 'speechfeedback', element: <SpeechFeedback /> },
+    ],
+  },
+  {
+    path: '/admin',
+    element: <AdminLayouts />,
+    children: [
+      { path: '', element: <Navigate to="/admin/users" /> },
+      { path: 'dashboard', element: <Dashboard /> },
+      { path: 'users', element: <UserListPage /> },
+      { path: 'users/:id', element: <UserDetailPage /> },
     ],
   },
 ]);

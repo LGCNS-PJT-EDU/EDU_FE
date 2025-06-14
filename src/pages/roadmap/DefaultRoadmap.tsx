@@ -4,7 +4,7 @@ import { useDefaultRoadmapQuery } from '@/hooks/useDefaultRoadmapQuery';
 import RoadmapTemplate from './RoadmapTemplate';
 
 export default function DefaultRoadmap() {
-  const { type } = useParams();           // ':type' → 'FE' | 'BE'
+  const { type } = useParams(); // ':type' → 'FE' | 'BE'
   const roadmapType = type === 'FE' ? 'FE' : type === 'BE' ? 'BE' : null;
   if (!roadmapType) return <Navigate to="/" replace />;
 
@@ -13,7 +13,7 @@ export default function DefaultRoadmap() {
 
   if (data?.subjects) setInitial(data.subjects);
 
-  if (isLoading)  return <p className="text-center mt-10">불러오는 중…</p>;
+  if (isLoading) return <p className="text-center mt-10">불러오는 중…</p>;
   if (isError || !data) return <p className="text-center mt-10">로드맵 로딩 실패</p>;
 
   return (

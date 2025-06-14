@@ -34,23 +34,26 @@ api.interceptors.request.use((cfg: InternalAxiosRequestConfig) => {
 let refreshing = false;
 let queue: ((t: string | null) => void)[] = [];
 
-const pushQueue     = (cb: (t: string | null) => void) => queue.push(cb);
-const resolveQueue  = (token: string | null) => { queue.forEach(f => f(token)); queue = []; };
+const pushQueue = (cb: (t: string | null) => void) => queue.push(cb);
+const resolveQueue = (token: string | null) => {
+  queue.forEach((f) => f(token));
+  queue = [];
+};
 
 api.interceptors.response.use(
   (res) => res,
   async (err: AxiosError) => {
     if (!err.config) return Promise.reject(err);
 
-    const cfg       = err.config;
-    const { status }= err.response ?? {};
+    const cfg = err.config;
+    const { status } = err.response ?? {};
 
     if (isRefreshUrl(cfg.url)) {
       useAuthStore.getState().setLogout();
       window.dispatchEvent(new Event('sessionExpired'));
       return Promise.reject(err);
     }
-    
+
     if (status !== 401 || (cfg as any)._retry) {
       return Promise.reject(err);
     }
@@ -69,9 +72,7 @@ api.interceptors.response.use(
     refreshing = true;
     try {
       const r = await api.post('/api/user/refresh');
-      const newAccess =
-        r.data?.data?.accessToken ??
-        r.headers['authorization']?.split(' ')[1];
+      const newAccess = r.data?.data?.accessToken ?? r.headers['authorization']?.split(' ')[1];
 
       if (!newAccess) throw new Error('refresh failed');
 

@@ -120,13 +120,13 @@ export default function RadarChart({
 
                 if (breakIndex !== -1) {
                   const line1 = label.slice(0, breakIndex + 1).trim(); // 기호 포함
-                  const line2 = label.slice(breakIndex + 1).trim();    // 나머지
+                  const line2 = label.slice(breakIndex + 1).trim(); // 나머지
                   return [line1, line2, `${score}점`];
                 }
 
                 return [label, `${score}점`];
               },
-            }
+            },
           },
         },
       },
