@@ -1,34 +1,35 @@
 import { useEffect, useState } from 'react';
+import { useLoginMutation } from '@/hooks/useMutation';
 import axios from '@/api/axios';
 
 import google from '@/asset/img/login/btn_google.svg';
 import kakao from '@/asset/img/login/btn_kakao.svg';
 import naver from '@/asset/img/login/btn_naver.svg';
-import pixel_texture from '@/asset/img/login/pixel texture.png';
-import cloud from '@/asset/img/login/cloud.png';
-import cloud_down from '@/asset/img/login/cloud_down.png';
-import star from '@/asset/img/login/star.png';
+import pixel_texture from '@/asset/img/common/pixel_texture.png';
 import main from '@/asset/img/common/main.png';
+import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png'
 
 import useLogin from '@/hooks/useLogin';
+import { useLoadingStore } from '@/store/useLoadingStore';
 
+const REDIRECT_BASE = import.meta.env.VITE_REDIRECT_DOMAIN;
 /* 1) 공급자별 고정 파라미터 */
 const OAUTH = {
   naver: {
     authUrl: 'https://nid.naver.com/oauth2.0/authorize',
     clientId: 'bG5y9c7SsXkdkxq2I14X',
-    redirect: 'https://takeit.academy/login/oauth2/code/naver',
+    redirect: `${REDIRECT_BASE}/login/oauth2/code/naver`,
     scope: 'name email',
   },
   kakao: {
     authUrl: 'https://kauth.kakao.com/oauth/authorize',
     clientId: '0257e0d9342333ce55ef60c412d20c5f',
-    redirect: 'https://takeit.academy/login/oauth2/code/kakao',
+    redirect: `${REDIRECT_BASE}/login/oauth2/code/kakao`,
   },
   google: {
     authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
     clientId: '478095454422-f3q1th169ltqv6i6bq5g92oaa7e2l6h8.apps.googleusercontent.com',
-    redirect: 'https://takeit.academy/login/oauth2/code/google',
+    redirect: `${REDIRECT_BASE}/login/oauth2/code/google`,
     scope: 'openid email profile',
   },
 } as const;
@@ -66,7 +67,10 @@ function Login() {
   const [passwordError, setPasswordError] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  const { startLoading, stopLoading } = useLoadingStore();
+
   const saveAccessToken = useLogin();
+  const LoginMutation = useLoginMutation();
 
   const handleLogin = async (): Promise<void> => {
     setEmailError('');
@@ -74,67 +78,56 @@ function Login() {
     setErrorMessage('');
 
     if (!email) setEmailError('아이디를 입력해 주세요.');
-    if (!password) setPasswordError('비밀번호를 입력해주세요.')
+    if (!password) setPasswordError('비밀번호를 입력해주세요.');
     if (!email || !password) return;
 
+    /* react-query 사용한 쪽 */
     try {
-      const res = await axios.post('/api/user/signin', {
-        email,
-        password,
-      });
-
-      const token = res.headers['authorization']?.split(' ')[1];
+      const token = await LoginMutation.mutateAsync({ email, password });
       if (!token) throw new Error('token missing');
-
       saveAccessToken(token);
-
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-    } catch (err: unknown) {
-      console.error(err);
+    } catch (e) {
+      console.log(e);
       setErrorMessage('이메일 또는 비밀번호가 잘못되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.');
+    } finally {
+      stopLoading();
     }
-  };
+  }
 
   return (
-    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex justify-center gap-[200px] overflow-hidden">
+    <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex flex-col md:flex-row items-center md:items-start justify-center gap-[200px] overflow-hidden px-0 md:px-4">
       <img
         src={pixel_texture}
-        alt="pixel texture background"
-        className="absolute bottom-0 left-0 w-full h-[70%] object-cover z-0 opacity-70"
-      />
-
-      {/* 구름 & 별 장식 */}
-      <img
-        src={cloud}
-        alt="cloud"
-        className="absolute top-35 left-0 w-[200px] z-10"
+        alt=""
+        className="hidden md:block absolute bottom-0 left-0 w-full h-[100%] object-cover z-0 opacity-70"
       />
       <img
-        src={cloud_down}
-        alt="cloud down"
-        className="absolute bottom-30 right-20 w-[250px] z-20"
-      />
-      <img
-        src={star}
-        alt="star"
-        className="absolute top-15 left-130 w-[100px] z-10"
-      />
-      <img
-        src={star}
-        alt="star"
-        className="absolute top-50 right-80 w-[100px] z-20"
+        src={responsiveBG}
+        alt=""
+        className="block md:hidden absolute inset-0 w-full h-full object-cover z-0"
       />
 
       {/* 배너 */}
-      <div className="relative flex justify-center items-center">
+      <div className="hidden md:flex relative justify-center items-center self-center">
         <div className="z-20 text-[#373f41]">
-          <img src={main} alt="main" className='w-[200px] mb-[10px]' />
-          <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">개발자의 꿈,<br />지금 TakeIT과 시작해보세요</p>
+          <img src={main} alt="main" className="w-[200px] mb-[10px]" />
+          <p className="text-xl text-[#6378EB] font-[NeoDunggeunmo]">
+            개발자의 꿈,<br />지금 TakeIT과 시작해보세요
+          </p>
         </div>
       </div>
 
       {/* 로그인 박스 */}
-      <div className="relative max-w-[400px] my-6 z-10 p-[60px_70px] bg-white flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] border border-[#E0E0E0] rounded-[30px]">
+      <div className="relative w-full max-w-[450px]
+                      md:w-full md:max-w-[400px]
+                      max-md:-mx-4
+                      mb-25 mt-80 md:my-15
+                      translate-y-8 md:translate-y-0
+                      p-10 md:p-[60px_70px]
+                      bg-white rounded-[40px] md:rounded-[30px]
+                      flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] 
+                      border border-[#E0E0E0] min-h-[calc(100vh-200px)]">
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
         <h2 className="mt-1 mb-1 text-xl font-semibold">Login</h2>
 
@@ -159,7 +152,7 @@ function Login() {
               placeholder=" "
               className={`w-full px-3 pt-4 pb-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6378eb]/20 ${emailError ? 'border-red-500' : 'border-gray-400'}`}
             />
-            {emailError && <p className='text-sm text-red-500 mt-1'>{emailError}</p>}
+            {emailError && <p className="text-sm text-red-500 mt-1">{emailError}</p>}
           </div>
 
           <div className="relative mb-6">
@@ -179,11 +172,11 @@ function Login() {
             />
             {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>}
           </div>
-                  {errorMessage && (
-          <div className="text-sm text-red-500 whitespace-pre-line text-center">
-            {errorMessage}
-          </div>
-        )}
+          {errorMessage && (
+            <div className="text-sm text-red-500 whitespace-pre-line text-center">
+              {errorMessage}
+            </div>
+          )}
         </form>
 
         <button
@@ -229,3 +222,4 @@ function Login() {
   );
 }
 export default Login;
+ 

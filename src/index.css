@@ -3,20 +3,32 @@
 
 @font-face {
   font-family: 'NeoDunggeunmo';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.3/NeoDunggeunmo.woff')
-    format('woff');
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.3/NeoDunggeunmo.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Pretendard-Regular';
-  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
-    format('woff');
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
 }
+button{
+  cursor: pointer;
+}
 @custom-variant dark (&:is(.dark *));
+
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -129,7 +141,29 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth snap-y snap-mandatory;
+  }
+}
+
+/* 3D 카드용 공통 스타일 */
+.card-3d {
+  transform-style: preserve-3d;      /* 내부 요소도 3D로 회전 */
+  perspective: 1000px;               /* 원근감 */
+}
+
+.card-face {
+  @apply absolute inset-0 flex items-center justify-center backface-hidden;
+  backface-visibility: hidden;       /* 뒤집힌 면 숨김 */
+}
+
+.card-face--back {
+  transform: rotateY(180deg);
 }
