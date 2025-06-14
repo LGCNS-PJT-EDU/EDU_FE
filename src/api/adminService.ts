@@ -41,11 +41,14 @@ export interface User {
 export interface PageableReq {
   page: number;
   size: number;
+}
+
+export interface UserReq extends PageableReq {
   nickname?: string;
   email?: string;
 }
 
-export const fetchUserList = async (request: PageableReq): Promise<PageableData<User>> => {
+export const fetchUserList = async (request: UserReq): Promise<PageableData<User>> => {
     const params = new URLSearchParams();
     params.append('page', request.page.toString());
     params.append('size', request.size.toString());
@@ -71,7 +74,11 @@ export interface Subject {
   assignmentCount: number;
 }
 
-export const fetchSubjectList = async (request: PageableReq): Promise<PageableData<Subject>> => {
+export interface SubjectReq extends PageableReq {
+  subNm?: string;
+}
+
+export const fetchSubjectList = async (request: SubjectReq): Promise<PageableData<Subject>> => {
   //   const res = await api.post<ApiResp<PageableData<Subject>>>('/api/subjects', request);
   //   return res.data.data;
   return {
@@ -104,7 +111,12 @@ export interface Content {
   subId: number;
 }
 
-export const fetchContentList = async (request: PageableReq): Promise<PageableData<Content>> => {
+export interface ContentReq extends PageableReq {
+  contentTitle?: string;
+  contentType?: string;
+}
+
+export const fetchContentList = async (request: ContentReq): Promise<PageableData<Content>> => {
   //   const res = await api.post<ApiResp<PageableData<Content>>>('/api/contents', request);
   //   return res.data.data;
   return {
@@ -134,7 +146,12 @@ export interface Question {
   questionType: string;
 }
 
-export const fetchQuestionList = async (request: PageableReq): Promise<PageableData<Question>> => {
+export interface QuestionReq extends PageableReq {
+  question?: string;
+  questionType?: string;
+}
+
+export const fetchQuestionList = async (request: QuestionReq): Promise<PageableData<Question>> => {
   window.location.replace('/admin/not-authorized');
   //   const res = await api.post<ApiResp<PageableData<Question>>>('/api/questions', request);
   //   return res.data.data;

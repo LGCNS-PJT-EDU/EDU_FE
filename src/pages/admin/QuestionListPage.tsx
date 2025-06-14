@@ -37,15 +37,18 @@ const columns: ColumnDef<QuestionWithId>[] = [
 export default function QuestionListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const pageIndex = Number(searchParams.get('page')) || 1;
+  const page = Number(searchParams.get('page')) || 1;
+  const question = searchParams.get('question') || '';
+  const questionType = searchParams.get('questionType') || '';
 
   const query = useQuery({
-    queryKey: ['questions', { ...searchParams }],
+    queryKey: ['admin-questions', { page, question, questionType }],
     queryFn: async () => {
       const data = await fetchQuestionList({
-        pageSize: 10,
-        pageIndex: pageIndex - 1,
-        ...searchParams,
+        page: page - 1,
+        size: 10,
+        question,
+        questionType,
       });
       return {
         ...data,
@@ -107,7 +110,7 @@ export default function QuestionListPage() {
       />
       <AdminDataTable table={table} columns={columns} query={query} />
       <AdminPagination
-        pageIndex={pageIndex}
+        pageIndex={page}
         totalPages={query.data?.totalPages || 0}
         setPage={setPage}
       />
