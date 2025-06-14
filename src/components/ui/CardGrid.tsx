@@ -94,7 +94,7 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, onButton1Click }) => {
                   </div>
 
                   {/* 모바일 카드 */}
-                  <div className="sm:hidden w-full bg-white rounded-2xl shadow-md px-4 py-3 flex gap-3 items-center">
+                  <div className="sm:hidden w-full bg-white border-1 px-4 py-3 flex gap-3 items-center">
                     {/* 썸네일 또는 아이콘 */}
                     <div className="w-16 h-16 rounded-md overflow-hidden bg-gray-200 shrink-0">
                       {youtubeThumbnail ? (
