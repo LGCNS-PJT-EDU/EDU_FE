@@ -121,11 +121,13 @@ export default function UserListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number(searchParams.get('page')) || 1;
+  const nickname = searchParams.get('nickname') || '';
+  const email = searchParams.get('email') || '';
 
   const query = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
-      return await fetchUserList({ page: page - 1, size: 10 });
+      return await fetchUserList({ page: page - 1, size: 10, nickname, email });
     },
   });
 

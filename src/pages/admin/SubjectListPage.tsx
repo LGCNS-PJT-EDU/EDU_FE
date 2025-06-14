@@ -11,6 +11,7 @@ import { fetchSubjectList, Subject } from '@/api/adminService';
 import AdminPagination from './AdminPagination';
 import AdminDataTable from './AdminDataTable';
 import AdminDataFilter from './AdminDataFilter';
+import { queryClient } from '@/App';
 
 const columns: ColumnDef<Subject>[] = [
   {
@@ -39,24 +40,23 @@ const columns: ColumnDef<Subject>[] = [
     cell: ({ row }) => <div>{row.getValue('baseSubOrder')}</div>,
   },
   {
-    accessorKey: 'trackId',
-    header: '트랙 ID',
-    cell: ({ row }) => <div>{row.getValue('trackId')}</div>,
+    accessorKey: 'assignmentCount',
+    header: '수강 인원',
+    cell: ({ row }) => <div>{row.getValue('assignmentCount')}명</div>,
   },
 ];
 
 export default function SubjectListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const pageIndex = Number(searchParams.get('page')) || 1;
+  const page = Number(searchParams.get('page')) || 1;
 
   const query = useQuery({
-    queryKey: ['subjects', { ...searchParams }],
+    queryKey: ['admin-subjects'],
     queryFn: async () => {
       const data = await fetchSubjectList({
-        pageSize: 10,
-        pageIndex: pageIndex - 1,
-        ...searchParams,
+        page: page - 1,
+        size: 10,
       });
       return {
         ...data,
@@ -87,6 +87,7 @@ export default function SubjectListPage() {
       data.subNm ? prev.set('subNm', data.subNm) : prev.delete('subNm');
       data.subType ? prev.set('subType', data.subType) : prev.delete('subType');
       prev.set('page', '1');
+      queryClient.invalidateQueries({ queryKey: ['admin-subjects'] });
       return prev;
     });
   };
@@ -96,6 +97,7 @@ export default function SubjectListPage() {
       prev.delete('subNm');
       prev.delete('subType');
       prev.set('page', '1');
+      queryClient.invalidateQueries({ queryKey: ['admin-subjects'] });
       return prev;
     });
   };
@@ -109,16 +111,12 @@ export default function SubjectListPage() {
           {
             name: 'subNm',
             label: '과목명',
-          },
-          {
-            name: 'subType',
-            label: '과목 유형',
-          },
+          }
         ]}
       />
       <AdminDataTable table={table} columns={columns} query={query} />
       <AdminPagination
-        pageIndex={pageIndex}
+        pageIndex={page}
         totalPages={query.data?.totalPages || 0}
         setPage={setPage}
       />
