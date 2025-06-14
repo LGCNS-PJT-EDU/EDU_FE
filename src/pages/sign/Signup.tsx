@@ -218,7 +218,7 @@ function Signup() {
                 className="w-full py-3 bg-[#6378EB] text-white rounded-xl font-semibold hover:bg-[#3fa9b8] transition"
                 onClick={handleSignup}
               >
-                Join In
+                회원가입
               </button>
             </motion.div>
           )}

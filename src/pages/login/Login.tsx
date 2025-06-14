@@ -127,7 +127,7 @@ function Login() {
                       flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] 
                       border border-[#E0E0E0] min-h-[calc(100vh-200px)]">
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
-        <h2 className="mt-1 mb-1 text-xl font-semibold">Login</h2>
+        <h2 className="mt-1 mb-1 text-xl font-semibold">로그인</h2>
 
         <form
           className="flex flex-col"
