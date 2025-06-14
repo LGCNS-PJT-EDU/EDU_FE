@@ -10,7 +10,7 @@ interface LoginParams {
 interface LoginResponse {
   accessToken   : string;
   privacyStatus : boolean;
-}
+} 
 
 export const useLoginMutation = () =>
   useMutation<LoginResponse, Error, LoginParams>({
