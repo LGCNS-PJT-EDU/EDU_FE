@@ -7,10 +7,11 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import BaseAdminPage from './BaseAdminPage';
-import { fetchUserList, User } from '@/api/adminService';
+import { fetchUserList, LoginType, PriceLevel, StudyTime, User } from '@/api/adminService';
 import AdminPagination from './AdminPagination';
 import AdminDataTable from './AdminDataTable';
 import AdminDataFilter from './AdminDataFilter';
+import { Badge } from '@/components/ui/badge';
 
 const columns: ColumnDef<User>[] = [
   {
@@ -31,17 +32,68 @@ const columns: ColumnDef<User>[] = [
   {
     accessorKey: 'loginType',
     header: '로그인 타입',
-    cell: ({ row }) => <div>{row.getValue('loginType')}</div>,
+    cell: ({ row }) => {
+      const loginType = row.getValue('loginType') as LoginType;
+      const getLoginTypeColor = (loginType: LoginType) => {
+        switch (loginType) {
+          case 'LOCAL':
+            return 'bg-[#6378eb]';
+          case 'KAKAO':
+            return 'bg-[#FEE500] text-[#000000]';
+          case 'NAVER':
+            return 'bg-[#03c75a]';
+          case 'GOOGLE':
+            return 'bg-[#000000]';
+        }
+      };
+      return <Badge className={`${getLoginTypeColor(loginType)}`}>{loginType}</Badge>;
+    },
   },
   {
     accessorKey: 'lectureAmount',
-    header: '강의 수',
-    cell: ({ row }) => <div>{row.getValue('lectureAmount')}</div>,
+    header: '1일 학습 가능 시간',
+    cell: ({ row }) => {
+      const lectureAmount = row.getValue('lectureAmount') as StudyTime;
+      const getLectureAmountLabel = (lectureAmount: StudyTime) => {
+        switch (lectureAmount) {
+          case 'HOUR_1':
+            return '1시간 이하';
+          case 'HOUR_3':
+            return '1시간 이상 3시간 이하';
+          case 'HOUR_5':
+            return '3시간 이상 5시간 이하';
+          case 'HOUR_10':
+            return '5시간 이상 10시간 이하';
+          case 'OVER_10':
+            return '10시간 이상';
+        }
+      };
+      return <Badge variant="outline">{getLectureAmountLabel(lectureAmount)}</Badge>;
+    },
   },
   {
     accessorKey: 'priceLevel',
-    header: '가격 수준',
-    cell: ({ row }) => <div>{row.getValue('priceLevel')}</div>,
+    header: '예산',
+    cell: ({ row }) => {
+      const priceLevel = row.getValue('priceLevel') as PriceLevel;
+      const getPriceLevelLabel = (priceLevel: PriceLevel) => {
+        switch (priceLevel) {
+          case 'FREE':
+            return '무료';
+          case 'UNDER_50K':
+            return '5만원 이하';
+          case 'BETWEEN_50K_100K':
+            return '5만원 이상 10만원 이하';
+          case 'BETWEEN_100K_200K':
+            return '10만원 이상 20만원 이하';
+          case 'BETWEEN_200K_500K':
+            return '20만원 이상 50만원 이하';
+          case 'OVER_500K':
+            return '50만원 이상';
+        }
+      };
+      return <Badge variant="outline">{getPriceLevelLabel(priceLevel)}</Badge>;
+    },
   },
   {
     accessorKey: 'isActive',
@@ -55,7 +107,7 @@ const columns: ColumnDef<User>[] = [
   {
     accessorKey: 'likeBooks',
     header: '책 선호 여부',
-    cell: ({ row }) => <div>{row.getValue('likeBooks') ? '좋아요' : '싫어요'}</div>,
+    cell: ({ row }) => <div>{row.getValue('likeBooks') ? '예' : '아니오'}</div>,
   },
   {
     accessorKey: 'PrivacyStatus',
@@ -99,10 +151,20 @@ export default function UserListPage() {
     });
   };
 
+  const handleReset = () => {
+    setSearchParams((prev) => {
+      prev.delete('nickname');
+      prev.delete('email');
+      prev.set('page', '1');
+      return prev;
+    });
+  };
+
   return (
     <BaseAdminPage title="사용자 관리">
       <AdminDataFilter
         onSubmit={handleSubmit}
+        onReset={handleReset}
         items={[
           {
             name: 'nickname',

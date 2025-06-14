@@ -22,6 +22,8 @@ import UserListPage from '@/pages/admin/UserListPage';
 import QuestionListPage from '@/pages/admin/QuestionListPage';
 import SubjectListPage from '@/pages/admin/SubjectListPage';
 import ContentListPage from '@/pages/admin/ContentsListPage';
+import AdminNotAuthorizedPage from '@/pages/admin/AdminNotAuthorizedPage';
+import AdminNotFoundPage from '@/pages/admin/AdminNotFoundPage';
 
 const router = createBrowserRouter([
   {
@@ -61,8 +63,11 @@ const router = createBrowserRouter([
       { path: 'subjects', element: <SubjectListPage /> },
       { path: 'questions', element: <QuestionListPage /> },
       { path: 'contents', element: <ContentListPage /> },
+      { path: 'not-found', element: <AdminNotFoundPage /> },
+      { path: '*', element: <Navigate to="/admin/not-found" /> },
     ],
   },
+  { path: '/admin/not-authorized', element: <AdminNotAuthorizedPage /> },
 ]);
 
 export default router;
