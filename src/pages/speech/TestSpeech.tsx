@@ -4,6 +4,7 @@ import { submitInterviewAnswers } from '@/api/interviewService';
 import QuestionSpeechCard from '@/components/speech/QuestionSpeechCard';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ConfirmModal from '@/components/modal/ConfirmModal';
+import blackMic from '@/asset/img/speech/blackMic.png';
 
 interface InterviewQuestion {
   interviewId: number;
@@ -13,29 +14,34 @@ interface InterviewQuestion {
   nth: number;
 }
 
+const NAV_HEIGHT_PX = 72;
+
 const TestSpeech: React.FC = () => {
   const [questions, setQuestions] = useState<InterviewQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nth, setNth] = useState<number | null>(null);
   const [subjectIds, setSubjectIds] = useState<number[]>([]);
   const [answers, setAnswers] = useState<{ [interviewId: number]: string }>({});
+
   const [showConfirm, setShowConfirm] = useState(false);
+  const [firstRecordingDone, setFirstRecordingDone] = useState(false); // 1번 문제 녹음 완료 여부
+
   const navigate = useNavigate();
-
   const location = useLocation();
-  const subjectIdsFromState = (location.state as { subjectIds: number[] })?.subjectIds ?? [];
+  const subjectIdsFromState =
+    (location.state as { subjectIds: number[] })?.subjectIds ?? [];
 
+  /* 질문 목록 조회 */
   useEffect(() => {
     async function fetchQuestions() {
       try {
-        const res = await api.get<{ data: InterviewQuestion[] }>('/api/interview/list', {
-          params: { subjectIds: subjectIdsFromState },
-        });
+        const res = await api.get<{ data: InterviewQuestion[] }>(
+          '/api/interview/list',
+          { params: { subjectIds: subjectIdsFromState } },
+        );
 
         setQuestions(res.data.data);
-        if (res.data.data.length > 0) {
-          setNth(res.data.data[0].nth);
-        }
+        if (res.data.data.length > 0) setNth(res.data.data[0].nth);
       } catch (error) {
         console.error('질문 목록 불러오기 실패:', error);
       }
@@ -48,38 +54,30 @@ const TestSpeech: React.FC = () => {
   }, [subjectIdsFromState]);
 
   const handleNext = () => {
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
-    }
+    if (currentIndex < questions.length - 1) setCurrentIndex((p) => p + 1);
   };
-
   const handlePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prev) => prev - 1);
-    }
+    if (currentIndex > 0) setCurrentIndex((p) => p - 1);
   };
 
-  const handleSubmit = () => {
-    setShowConfirm(true);
-  };
+  /* 제출 */
+  const handleSubmitClick = () => setShowConfirm(true);
 
   const handleConfirmSubmit = async () => {
     if (!nth) return;
 
     const payload = Object.entries(answers).map(([interviewId, userReply]) => {
-      const question = questions.find((q) => q.interviewId === Number(interviewId));
+      const q = questions.find((qq) => qq.interviewId === Number(interviewId));
       return {
         interviewId: Number(interviewId),
-        interviewContent: question?.interviewContent || '',
+        interviewContent: q?.interviewContent ?? '',
         userReply,
       };
     });
 
     try {
-      const feedback = await submitInterviewAnswers({ answers: payload, nth });
-      navigate(`/speechfeedback?nth=${nth}`, {
-        replace: true,
-      });
+      await submitInterviewAnswers({ answers: payload, nth });
+      navigate(`/speechfeedback?nth=${nth}`, { replace: true });
     } catch (e) {
       console.error('제출 실패:', e);
       alert('제출 실패');
@@ -88,31 +86,41 @@ const TestSpeech: React.FC = () => {
     }
   };
 
+  /* 렌더링 */
   const currentQuestion = questions[currentIndex];
 
   return (
-    <div className="min-h-screen bg-blue-50 py-10 px-2">
+    <div
+      className="min-h-screen bg-blue-50 py-10 px-2"
+      style={{ paddingTop: NAV_HEIGHT_PX }} /* nav 높이만큼 내리기 */
+    >
       <div className="w-full max-w-4xl mx-auto px-1">
         {/* 헤더 */}
-        <div className="flex justify-between items-center mb-4">
+        <header className="flex justify-between items-center mb-4">
           {currentQuestion && (
             <h2 className="text-xl font-semibold text-gray-800">
               {currentQuestion.subjectName}
             </h2>
           )}
-
           <span className="text-base font-semibold text-cyan-700 bg-cyan-100 px-2 py-1 rounded-md shadow-sm">
-            {questions.length > 0 ? `문제 ${currentIndex + 1} / ${questions.length}` : ''}
+            {questions.length > 0
+              ? `문제 ${currentIndex + 1} / ${questions.length}`
+              : ''}
           </span>
-        </div>
+        </header>
 
         {/* 질문 카드 */}
         {currentQuestion && (
           <QuestionSpeechCard
+            key={currentQuestion.interviewId}
             question={currentQuestion}
-            onTranscriptComplete={(interviewId, text) =>
-              setAnswers((prev) => ({ ...prev, [interviewId]: text }))
-            }
+            onTranscriptComplete={(interviewId, text, isFinal) => {
+              setAnswers((prev) => ({ ...prev, [interviewId]: text }));
+              /* 1번 문제 녹음 완료 → 제출 버튼 활성화 */
+              if (isFinal && interviewId === questions[0]?.interviewId) {
+                setFirstRecordingDone(true);
+              }
+            }}
           />
         )}
 
@@ -121,18 +129,18 @@ const TestSpeech: React.FC = () => {
           <button
             onClick={handlePrev}
             disabled={currentIndex === 0}
-            className="px-5 py-2 rounded-md border font-semibold text-sm transition-colors 
-              disabled:opacity-40 disabled:cursor-not-allowed
-              bg-white text-cyan-600 border-cyan-400 hover:bg-cyan-50"
+            className="px-5 py-2 rounded-md border font-semibold text-sm transition-colors
+                       disabled:opacity-40 disabled:cursor-not-allowed
+                       bg-white text-cyan-600 border-cyan-400 hover:bg-cyan-50"
           >
             ⬅ 이전
           </button>
           <button
             onClick={handleNext}
             disabled={currentIndex === questions.length - 1}
-            className="px-5 py-2 rounded-md border font-semibold text-sm transition-colors 
-              disabled:opacity-40 disabled:cursor-not-allowed
-              bg-white text-cyan-600 border-cyan-400 hover:bg-cyan-50"
+            className="px-5 py-2 rounded-md border font-semibold text-sm transition-colors
+                       disabled:opacity-40 disabled:cursor-not-allowed
+                       bg-white text-cyan-600 border-cyan-400 hover:bg-cyan-50"
           >
             다음 ➡
           </button>
@@ -141,10 +149,12 @@ const TestSpeech: React.FC = () => {
         {/* 제출 버튼 */}
         <div className="mt-6 flex justify-center">
           <button
-            onClick={handleSubmit}
-            className="px-6 py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700"
+            onClick={handleSubmitClick}
+            disabled={!firstRecordingDone}
+            className="px-6 py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700
+                       disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            면접 제출하기
+            {firstRecordingDone ? '면접 제출하기' : '녹음 완료 후 제출 가능'}
           </button>
         </div>
 
@@ -152,7 +162,7 @@ const TestSpeech: React.FC = () => {
         {showConfirm && (
           <ConfirmModal
             title="정말 제출하시겠습니까?"
-            message="진짜 제출?"
+            message="제출 후 AI 피드백 생성까지 약 1분 소요됩니다."
             confirmText="제출"
             onConfirm={handleConfirmSubmit}
             onClose={() => setShowConfirm(false)}
