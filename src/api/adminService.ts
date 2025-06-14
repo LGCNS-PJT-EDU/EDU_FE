@@ -166,7 +166,7 @@ export interface Question {
 }
 
 export const fetchQuestionList = async (request: PageableReq): Promise<PageableData<Question>> => {
-  window.location.href = '/admin/not-authorized';
+  window.location.replace('/admin/not-authorized');
   //   const res = await api.post<ApiResp<PageableData<Question>>>('/api/questions', request);
   //   return res.data.data;
   return {
