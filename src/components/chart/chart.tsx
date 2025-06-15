@@ -29,7 +29,7 @@ export default function RadarChart({
 }: Props) {
   const { data, options } = useMemo(() => {
     const filledColor = color.replace('1)', '0.3)');
-    const textColor = color.replace('1)', '1)'); // 원래 컬러 그대로 사용
+    const textColor = color.replace('1)', '1)'); 
 
     return {
       data: {
@@ -53,10 +53,10 @@ export default function RadarChart({
         maintainAspectRatio: false,
         layout: {
           padding: {
-            top: 0,
-            bottom: 0,
-            left: 50,
-            right: 50,
+            top: 20,
+            bottom: 20,
+            left: 40,
+            right: 30,
           },
         },
         plugins: {
@@ -68,7 +68,7 @@ export default function RadarChart({
               color: textColor,
               font: { size: 14 },
               boxWidth: 20,
-              padding: 30,
+              padding: 20,
             },
           },
           tooltip: {
@@ -134,7 +134,7 @@ export default function RadarChart({
   }, [labels, values, label, color]);
 
   return (
-    <div className="w-full max-w-[700px] h-[490px] mx-auto flex justify-center items-center">
+    <div className="w-full max-w-[800px] h-[490px] mx-auto flex justify-center items-center">
       <Radar data={data} options={options as any} />
     </div>
   );
