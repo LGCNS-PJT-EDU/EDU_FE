@@ -7,7 +7,6 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { useEffect, useRef } from 'react';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 interface Props {
@@ -60,10 +59,15 @@ export default function BarChart({ pre, post, final }: Props) {
     <div className="space-y-4 mt-15">
       <Bar data={data} options={options} />
       {final && (
-        <div className="w-full mx-auto rounded-lg bg-[#F6F5F8] p-4 text-sm text-gray-700">
-          <strong className="text-[#6378EB]">종합 평가&nbsp;:</strong> {final}
+        <div className="w-full mx-auto rounded-lg bg-[#EEF3FF] p-5 text-base text-gray-800 shadow-sm">
+          <p className="text-center">
+            <strong className="text-[#6378EB] font-semibold">종합 평가:</strong> {final}
+          </p>
         </div>
       )}
+        <p className="text-xs text-gray-400 my-4">
+    ※ 본 결과는 AI 기반 진단 분석에 따라 제공됩니다.
+  </p>
     </div>
   );
 }
