@@ -40,16 +40,11 @@ export default function Report() {
   const postTotal = postNormalized?.total || 0;
   const postScores = postNormalized?.chapters || [];
 
-  const tabTitles = ['사전 평가'];
-  if (postExists) {
-    tabTitles.push('사후 평가', '사전/사후평가 비교');
-  }
-
-  useEffect(() => {
-    if (!postExists && tab > 0) {
-      setTab(0);
-    }
-  }, [postExists, tab]);
+const tabList = [
+  { title: '사전 평가', disabled: false },
+  { title: '사후 평가', disabled: !postExists },
+  { title: '사전/사후평가 비교', disabled: !postExists },
+];
 
   return (
     <div className="w-full max-w-[1000px] mx-auto px-4 py-10 font-[pretendard] text-center">
@@ -59,18 +54,21 @@ export default function Report() {
       </p>
 
       {/* 탭 버튼 */}
-      <div className="flex justify-center gap-4 mb-6">
-        {tabTitles.map((title, i) => (
-          <button
-            key={i}
-            onClick={() => setTab(i)}
-            className={`px-4 py-2 rounded-full text-[13px] md:text-sm font-semibold transition-all ${tab === i ? 'bg-[#6C80EC] text-white' : 'bg-[#E8ECFF] text-gray-600'
-              }`}
-          >
-            {title}
-          </button>
-        ))}
-      </div>
+<div className="flex justify-center gap-4 mb-6">
+  {tabList.map((tabInfo, i) => (
+    <button
+      key={i}
+      onClick={() => !tabInfo.disabled && setTab(i)}
+      disabled={tabInfo.disabled}
+      className={`px-4 py-2 rounded-full text-[13px] md:text-sm font-semibold transition-all
+        ${tab === i ? 'bg-[#6C80EC] text-white' : 'bg-[#E8ECFF] text-gray-600'}
+        ${tabInfo.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {tabInfo.title}
+    </button>
+  ))}
+</div>
+
 
       {/* 총점 정보 */}
       <div className="inline-block bg-white border-2 rounded-xl px-6 py-4 mb-6">
@@ -87,17 +85,16 @@ export default function Report() {
       </div>
 
       {/* 차트 */}
-      <div className="rounded-xl p-0 md:p-6 max-w-[900px] w-full h-[320px] md:h-[480px] mx-auto flex items-center justify-center
-                      ">
-        {tab === 0 && (
-          <RadarChart labels={labels} values={preScores} label="Pre" color="rgba(91, 124, 255, 1)" />
-        )}
-        {tab === 1 && postExists && (
-          <RadarChart labels={labels} values={postScores} label="Post" color="rgba(255, 106, 176, 1)" />
-        )}
-        {tab === 2 && postExists && (
-          <BarChart pre={preTotal} post={postTotal} final={String(post.feedback.final ?? '')} />
-        )}
+      <div className="rounded-xl p-0 md:p-6 max-w-[900px] w-full h-[320px] md:h-[480px] mx-auto flex items-center justify-center ">
+{tab === 0 && (
+  <RadarChart labels={labels} values={preScores} label="Pre" color="rgba(91, 124, 255, 1)" />
+)}
+{tab === 1 && postExists && (
+  <RadarChart labels={labels} values={postScores} label="Post" color="rgba(255, 106, 176, 1)" />
+)}
+{tab === 2 && postExists && (
+  <BarChart pre={preTotal} post={postTotal} final={String(post.feedback.final ?? '')} />
+)}
       </div>
 
       {/* 피드백 테이블 */}
