@@ -227,17 +227,24 @@ const QuestionSpeechCard: React.FC<Props> = ({
         )}
       </div>
 
-      {/* 다운로드 버튼 */}
       {phase === 'done' && audioBlob && (
-        <div className="flex justify-center mb-4">
-          <button
-            onClick={handleDownload}
-            className="px-4 py-2 rounded-md bg-green-500 text-white text-sm font-semibold hover:bg-green-600"
-          >
-            ⬇ 녹음 파일 다운로드
-          </button>
-        </div>
-      )}
+  <>
+    {/*  녹음 재생기 */}
+    <div className="flex justify-center mb-2">
+      <audio controls src={URL.createObjectURL(audioBlob)} />
+    </div>
+
+    {/* 다운로드 버튼 */}
+    <div className="flex justify-center mb-4">
+      <button
+        onClick={handleDownload}
+        className="px-4 py-2 rounded-md bg-green-500 text-white text-sm font-semibold hover:bg-green-600"
+      >
+        ⬇ 녹음 파일 다운로드
+      </button>
+    </div>
+  </>
+)}
 
       {/* 음성 인식 결과 영역 */}
       <div className="bg-gray-100 text-sm text-gray-800 p-4 rounded-md
