@@ -111,20 +111,20 @@ const TestSpeech: React.FC = () => {
         {/* 질문 카드 */}
         {currentQuestion && (
           <QuestionSpeechCard
-            key={currentQuestion.interviewId}
-            question={currentQuestion}
-            onTranscriptComplete={(interviewId, text, isFinal) => {
-              setAnswers((prev) => ({ ...prev, [interviewId]: text }));
-              /* 1번 문제 녹음 완료 → 제출 버튼 활성화 */
-             if(isFinal){
-              setRecordingDoneMap((prev)=> ({ ...prev, [interviewId]: true }));
+  key={currentQuestion.interviewId}
+  question={currentQuestion}
+  isAnswered={!!recordingDoneMap[currentQuestion.interviewId]} // 녹음 완료 여부 
+  onTranscriptComplete={(interviewId, text, isFinal) => {
+    setAnswers((prev) => ({ ...prev, [interviewId]: text }));
+    if (isFinal) {
+      setRecordingDoneMap((prev) => ({ ...prev, [interviewId]: true }));
+      if (interviewId === questions[0]?.interviewId) {
+        setFirstRecordingDone(true);
+      }
+    }
+  }}
+/>
 
-              if(interviewId === currentQuestion.interviewId) {
-                setFirstRecordingDone(true);
-              }
-             }
-            }}
-          />
         )}
 
         {/* 이전/다음 버튼 */}
