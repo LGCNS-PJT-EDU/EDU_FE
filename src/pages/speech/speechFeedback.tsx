@@ -46,44 +46,55 @@ const SpeechFeedbackPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 space-y-10">
-      <h1 className="text-2xl font-bold text-center text-gray-800 mb-8">
-        🧠 AI 면접 피드백 결과 ({nth}회차)
-      </h1>
-
+    <div className="max-w-4xl mx-auto px-4 py-12 space-y-10">
+      <div className="flex items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 mr-3">AI 면접 피드백 결과</h1>
+        <span className="w-10 h-8 bg-indigo-100 text-[#6378eb] font-bold text-[10px] rounded-md flex items-center justify-center shadow-inner">
+          {nth}회차
+        </span>
+      </div>
       {data.map((item, index) => (
         <section
           key={index}
-          className="bg-white rounded-xl border border-gray-200 shadow p-6 space-y-4"
+          className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 space-y-6"
         >
-          <h2 className="font-bold text-gray-700">Q. {item.interviewContent}</h2>
-
-          <div className="text-sm text-gray-800">
-            <strong>🗣 나의 답변:</strong>
-            <p className="mt-1 bg-gray-50 p-2 rounded text-gray-600">{item.userReply || '없음'}</p>
+          {/* 질문 */}
+          <div>
+            <p className="text-lg font-semibold text-gray-900">Q. {item.interviewContent}</p>
           </div>
 
-          <div className="text-sm text-gray-800">
-            <strong>📋 피드백:</strong>
-            <p className="mt-1 bg-blue-50 p-2 rounded text-gray-700">
+          {/* 나의 답변 */}
+          <div>
+            <h3 className="text-sm text-gray-500 font-semibold mb-1">나의 답변</h3>
+            <div className="bg-gray-50 border border-gray-200 text-sm text-gray-800 rounded-md px-4 py-3 whitespace-pre-line">
+              {item.userReply || '없음'}
+            </div>
+          </div>
+
+          {/* 피드백 */}
+          <div>
+            <h3 className="text-sm text-gray-500 font-semibold mb-1">피드백</h3>
+            <div className="bg-blue-50 border border-blue-200 text-sm text-gray-800 rounded-md px-4 py-3 whitespace-pre-line">
               {item.aiFeedback || '피드백 없음'}
-            </p>
+            </div>
           </div>
 
-          <div className="text-sm text-gray-800">
-            <strong>💡 모범 답안:</strong>
-            <p className="mt-1 bg-yellow-50 p-2 rounded text-gray-700">
+          {/* 모범 답안 */}
+          <div>
+            <h3 className="text-sm text-gray-500 font-semibold mb-1">모범 답안</h3>
+            <div className="bg-yellow-50 border border-yellow-200 text-sm text-gray-800 rounded-md px-4 py-3 whitespace-pre-line">
               {item.interviewAnswer || '없음'}
-            </p>
+            </div>
           </div>
 
-          <div className="text-sm text-gray-800">
-            <strong>🧩 추천 키워드:</strong>
-            <p className="mt-1 bg-green-50 p-2 rounded text-gray-700">
+          {/* 추천 키워드 */}
+          <div>
+            <h3 className="text-sm text-gray-500 font-semibold mb-1">추천 키워드</h3>
+            <div className="bg-green-50 border border-green-200 text-sm text-gray-800 rounded-md px-4 py-3">
               {item.recommend_keywords?.length
                 ? item.recommend_keywords.join(', ')
                 : '추천 키워드 없음'}
-            </p>
+            </div>
           </div>
         </section>
       ))}
