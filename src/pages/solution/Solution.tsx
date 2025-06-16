@@ -17,14 +17,18 @@ const Solution: React.FC = () => {
 
   /* 모든 문제를 한 번에 가져옴 */
   const {
-    data: rawList = [],
+    data,
     isLoading,
     isError,
-  } = useQuery<SolutionResDto[], Error>({
+  } = useQuery({
     queryKey: ['solutions', subjectId],
     queryFn: () => fetchSolutions(subjectId),
     enabled: subjectId > 0,
   });
+
+  // 구조 분해
+  const rawList = data?.solutions ?? [];
+  const correctCnt = data?.correctCnt ?? 0;
 
   /* 레벨 → 라벨/색상 매핑 */
   const levelMap: Record<
@@ -121,7 +125,7 @@ const Solution: React.FC = () => {
       <div className="flex justify-between items-center mb-4 animate-fade-slide-in">
         {/* 과목명 */}
         <div className="flex items-center gap-3 py-4">
-          <div className="w-10 h-8 bg-indigo-100 text-[#6378eb] font-semibold text-[10px] rounded-md flex items-center justify-center shadow-inner">
+          <div className="w-10 h-8 bg-indigo-100 text-[#6378eb] font-bold text-[10px] rounded-md flex items-center justify-center shadow-inner">
             과목명
           </div>
           <h1 className="text-2xl font-bold text-gray-800">{subjectName}</h1>
@@ -189,7 +193,14 @@ const Solution: React.FC = () => {
 
 
       {/* 총 문항 수 (빈 목록이면 0) */}
-      <h2 className="text-xl font-semibold mb-4">총 {list.length}문항</h2>
+      <div className="flex items-center gap-3 mb-4">
+        <span className="bg-indigo-100 text-[#6378EB] text-sm font-semibold px-3 py-1 rounded-[7px]">
+          맞은 개수 {correctCnt}문항
+        </span>
+        <span className="text-gray-600 text-sm">
+          전체 {list.length}문항
+        </span>
+      </div>
 
       {/* 에러 상황에 보여주는 화면 */}
       {

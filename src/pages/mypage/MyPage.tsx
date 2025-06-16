@@ -10,7 +10,7 @@ import { fetchRoadmap } from '@/api/roadmapService';
 import { fetchSubjectDetail, SubjectDetail } from '@/hooks/useSubjectDetail';
 import { FeedbackItem, fetchUserFeedback } from '@/hooks/useReport';
 import { useInterviewHistory } from '@/hooks/useInterviewHistory';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface FeedbackItemWithSubjectId extends FeedbackItem {
   subjectId: number;
@@ -27,7 +27,7 @@ interface ReportCard {
 function MyPage() {
   const logout = useLogout();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+
   const [activeTab, setActiveTab] = useState<'favorite' | 'report' | 'speechFeedback'>('favorite');
   const { data: progressData } = useProgress();
   const percent = Math.min(100, Math.round(progressData?.percent || 0));
@@ -49,9 +49,10 @@ function MyPage() {
   });
 
   const cardList = subjectDetailsResults
-    .filter(
-      (r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
-        r.status === 'success' && !!r.data?.recommendContents?.length && r.data.preSubmitCount > 0
+    .filter((r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
+      r.status === 'success' &&
+      !!r.data?.recommendContents?.length &&
+      r.data.preSubmitCount > 0
     )
     .flatMap((r) =>
       r.data.recommendContents!.map((content) => ({
@@ -64,19 +65,17 @@ function MyPage() {
       }))
     );
 
-  // subjectId 포함시켜서 반환
   const feedbackResults = useQueries({
     queries: subjectIds.map((subjectId) => ({
       queryKey: ['userFeedback', subjectId],
       queryFn: async () => {
         const data = await fetchUserFeedback(subjectId);
-        return { data, subjectId }; // subjectId 포함
+        return { data, subjectId };
       },
       enabled: !!subjectId,
     })),
   });
 
-  // 사전 평가만 완료한 subjectId
   const evaluatedSubjectIds = subjectDetailsResults
     .filter(
       (r): r is UseQueryResult<SubjectDetail, Error> & { data: SubjectDetail } =>
@@ -84,7 +83,6 @@ function MyPage() {
     )
     .map((r) => r.data.subjectId);
 
-  // 정확한 subjectId 매핑을 기반으로 피드백 리스트 생성
   const feedbackDataList: FeedbackItemWithSubjectId[] = [];
 
   feedbackResults.forEach((r) => {
@@ -92,7 +90,7 @@ function MyPage() {
       const { data, subjectId } = r.data;
       const enriched = data.map((fb) => ({
         ...fb,
-        subjectId, // 평탄화된 필드
+        subjectId,
       }));
 
       feedbackDataList.push(...enriched);
@@ -115,7 +113,7 @@ function MyPage() {
           title: `${fb.subject}`,
           detailUrl: `/report?subject=${fb.subject}&date=${fb.date}`,
           button1: '리포트 보러가기',
-          subtitle: `제출일: ${fb.date}`,
+          subtitle: `제출일: ${fb.date.split('T')[0]}`,
           subjectId,
         });
       }
@@ -123,8 +121,7 @@ function MyPage() {
 
   const reportCards = Array.from(reportCardsMap.values());
 
-  //중복제거
-  const uniqueNthMap = new Map<number, (typeof speechData)[0]>();
+  const uniqueNthMap = new Map<number, typeof speechData[0]>();
 
   speechData.forEach((item) => {
     if (!uniqueNthMap.has(item.nth)) {
@@ -132,7 +129,6 @@ function MyPage() {
     }
   });
 
-  // 중복 제거된 speechCards 생성
   const speechCards = Array.from(uniqueNthMap.values()).map((item) => ({
     reply_id: item.reply_id,
     nth: item.nth,
@@ -157,9 +153,7 @@ function MyPage() {
           <div className="mb-4 text-[20px] font-medium">
             {progressData?.nickname}님, 오늘도 학습을 진행해볼까요?
             <br className="block sm:hidden" />
-            <span className="block sm:inline font-bold mt-1 sm:mt-0 text-left w-full">
-              {percent}%
-            </span>
+            <span className="block sm:inline font-bold mt-1 sm:mt-0 text-left w-full md:ml-1">{percent}%</span>
           </div>
           <div className="w-full max-w-md flex items-center gap-2 pr-2">
             <div className="w-full h-6 border-2 border-[#59C5CD] px-[3px] py-[3px] box-border">
@@ -171,70 +165,72 @@ function MyPage() {
           </div>
         </div>
 
-        {/* 탭뷰 */}
         <div className="flex mb-6 border-b border-gray-200">
           <button
             onClick={() => setActiveTab('favorite')}
-            className={`mr-4 pb-2 border-b-2 ${
-              activeTab === 'favorite'
-                ? 'border-[#6378EB] text-[#6378EB] font-bold'
-                : 'border-transparent text-gray-500'
-            }`}
+            className={`mr-4 pb-2 border-b-2 ${activeTab === 'favorite'
+              ? 'border-[#6378EB] text-[#6378EB] font-bold'
+              : 'border-transparent text-gray-500'
+              }`}
           >
             추천 콘텐츠
           </button>
           <button
             onClick={() => setActiveTab('report')}
-            className={`mr-4 pb-2 border-b-2 ${
-              activeTab === 'report'
-                ? 'border-[#6378EB] text-[#6378EB] font-bold'
-                : 'border-transparent text-gray-500'
-            }`}
+            className={`mr-4 pb-2 border-b-2 ${activeTab === 'report'
+              ? 'border-[#6378EB] text-[#6378EB] font-bold'
+              : 'border-transparent text-gray-500'
+              }`}
           >
             평가 리포트
           </button>
           <button
             onClick={() => setActiveTab('speechFeedback')}
-            className={`pb-2 border-b-2 ${
-              activeTab === 'speechFeedback'
-                ? 'border-[#6378EB] text-[#6378EB] font-bold'
-                : 'border-transparent text-gray-500'
-            }`}
+            className={`pb-2 border-b-2 ${activeTab === 'speechFeedback'
+              ? 'border-[#6378EB] text-[#6378EB] font-bold'
+              : 'border-transparent text-gray-500'
+              }`}
           >
             인터뷰 리포트
           </button>
         </div>
 
-        {/* 콘텐츠 */}
-
-        {activeTab === 'favorite' ? (
-          <CardGrid
-            cards={cardList}
-            onButton1Click={(card) => window.open(card.detailUrl, '_blank')}
-          />
-        ) : activeTab === 'report' ? (
-          <CardGrid
-            cards={reportCards}
-            onButton1Click={(card) => {
-              navigate(`/solution?subjectId=${card.subjectId}`);
-            }}
-          />
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {speechCards.length === 0 ? (
-              <p className="text-gray-500">면접 기록이 없습니다.</p>
-            ) : (
-              speechCards.map((item) => <ReportCard key={item.reply_id} item={item} />)
-            )}
-          </div>
-        )}
+        {
+          activeTab === 'favorite' ? (
+            <CardGrid
+              cards={cardList}
+              onButton1Click={(card) => window.open(card.detailUrl, '_blank')}
+            />
+          ) : activeTab === 'report' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {reportCards.map((card) => (
+                <ReportCard
+                  key={card.subjectId}
+                  title={card.title}
+                  subtitle={card.subtitle}
+                  detailUrl={card.detailUrl}
+                  buttonLabel={card.button1}
+                />
+              ))}
+            </div>
+          ) : activeTab === 'speechFeedback' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {speechCards.map((item) => (
+                <ReportCard
+                  key={item.reply_id}
+                  title={`${item.nth}번째 리포트`}
+                  subtitle="진단 결과를 확인해보세요."
+                  detailUrl={`/speechfeedback?nth=${item.nth}`}
+                  buttonLabel="리포트 보기"
+                />
+              ))}
+            </div>
+          ) : null
+        }
       </div>
 
-      {/* 푸터 */}
       <div className="mt-auto w-full max-w-md mx-auto py-4 text-center">
-        <button onClick={logout} className="mr-2">
-          로그아웃
-        </button>
+        <button onClick={logout} className="mr-2">로그아웃</button>
         <span className="mx-2">|</span>
         <button className="ml-2">회원탈퇴</button>
       </div>
