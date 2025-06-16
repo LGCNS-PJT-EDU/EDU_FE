@@ -73,10 +73,11 @@ api.interceptors.response.use(
     try {
       const r = await api.post('/api/user/refresh');
       const newAccess = r.data?.data?.accessToken ?? r.headers['authorization']?.split(' ')[1];
+      const privacyStatus = r.data?.data?.privacyStatus;
 
       if (!newAccess) throw new Error('refresh failed');
 
-      useAuthStore.getState().setLogin(newAccess);
+      useAuthStore.getState().setLogin(newAccess, privacyStatus);
       api.defaults.headers.common.Authorization = `Bearer ${newAccess}`;
       resolveQueue(newAccess);
 
