@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelectSpeech } from '@/hooks/useSelectSpeech';
 import { getPrivacyStatus, useAuthStore } from '@/store/authGlobal';
-import axios from 'axios';
+import api from '@/api/axios';
 import AgreeModal from '@/components/modal/AgreeModal';
 import ConfirmModal from '@/components/modal/ConfirmModal';
 
@@ -26,7 +26,7 @@ export default function Selectspeech() {
 
   const handleAgree = async () => {
     try {
-      await axios.post('/api/interview/privacy');
+      await api.post('/api/interview/privacy');
       useAuthStore.getState().setPrivacyStatus(true);
       setShowPrivacyModal(false);
     } catch (err) {
