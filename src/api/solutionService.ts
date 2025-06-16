@@ -22,6 +22,9 @@ interface ApiWrapper<T> {
 }
 
 export async function fetchSolutions(subjectId: number): Promise<SolutionResDto[]> {
-  const res = await api.get<ApiWrapper<SolutionResDto[]>>(`/api/solution?subjectId=${subjectId}`);
-  return res.data.data;
+  const res = await api.get<ApiWrapper<{ correctCnt: number; solutions: SolutionResDto[] }>>(
+    `/api/solution?subjectId=${subjectId}`
+  );
+
+  return Array.isArray(res.data.data?.solutions) ? res.data.data.solutions : [];
 }
