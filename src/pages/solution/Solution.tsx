@@ -195,7 +195,7 @@ const Solution: React.FC = () => {
       {/* 총 문항 수 (빈 목록이면 0) */}
       <div className="flex items-center gap-3 mb-4">
         <span className="bg-indigo-100 text-[#6378EB] text-sm font-semibold px-3 py-1 rounded-[7px]">
-          정답 {correctCnt}문항
+          맞은 개수 {correctCnt}문항
         </span>
         <span className="text-gray-600 text-sm">
           전체 {list.length}문항
