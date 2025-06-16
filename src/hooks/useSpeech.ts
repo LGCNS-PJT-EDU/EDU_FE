@@ -16,7 +16,6 @@ export const useSpeech = () => {
   const resetAudioBlob = () => setAudioBlob(null);
 
   const startListening = async () => {
-    console.log('startListening 호출됨');
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -25,7 +24,6 @@ export const useSpeech = () => {
     }
 
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    console.log('startListening 마이크 스트림');
 
     const mediaRecorder = new MediaRecorder(stream);
     mediaRecorderRef.current = mediaRecorder;
@@ -54,21 +52,20 @@ export const useSpeech = () => {
       setTranscript((prev) => prev + ' ' + result);
     };
 
-    recognition.onend = () => {
-      console.log('자동 재시작 제거됨');
-    };
+    // recognition.onend = () => {
+    //   console.log('자동 재시작 제거');
+    // };
 
-    recognition.onerror = (event: any) => {
-      console.error('recognition.onerror 무시됨', event.error);
+    // recognition.onerror = (event: any) => {
+    //   console.error('recognition.onerror 무시', event.error);
 
-    };
+    // };
 
     setListening(true);
     recognition.start();
   };
 
   const stopRecording = () => {
-    console.log('stopRecording 호출됨');
     setListening(false);
 
     if (recognitionRef.current) {

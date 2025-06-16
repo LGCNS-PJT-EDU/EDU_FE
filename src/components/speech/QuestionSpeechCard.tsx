@@ -11,6 +11,10 @@ interface Props {
     nth: number;
   };
   isAnswered: boolean;
+  /* onTranscriptComplete
+     - text: 실시간/최종 텍스트
+     - isFinal: 이번 질문 녹음이 최종 종료되었을 때 true
+  */
   onTranscriptComplete: (
     interviewId: number,
     text: string,
@@ -18,15 +22,17 @@ interface Props {
   ) => void;
 }
 
+/* 상수 */
 const PREP_COUNTDOWN_SEC = 15;
 const MAX_RECORD_SEC = 60;
-const CARD_RATIO = 1.618;
+const CARD_RATIO = 1.618; // 가로:세로 (약 800 x 495)
 
 const QuestionSpeechCard: React.FC<Props> = ({
   question,
   onTranscriptComplete,
   isAnswered,
 }) => {
+   /* 음성 훅 */
   const {
     transcript,
     listening,
@@ -42,11 +48,17 @@ const QuestionSpeechCard: React.FC<Props> = ({
   type Phase = 'reading' | 'preparing' | 'recording' | 'done';
 
   const [phase, setPhase] = useState<Phase>('reading');
+  const phaseRef = useRef<Phase>('reading'); // 최신 phase 값
   const [prepCountdown, setPrepCountdown] = useState(PREP_COUNTDOWN_SEC);
   const [recordSeconds, setRecordSeconds] = useState(0);
   const [localTranscript, setLocalTranscript] = useState('');
 
   const recordTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+
+  useEffect(() => {
+    phaseRef.current = phase;
+  }, [phase]);
 
   useEffect(() => {
     if (isAnswered) {
@@ -55,10 +67,11 @@ const QuestionSpeechCard: React.FC<Props> = ({
       clearTimeout(recordTimeoutRef.current as NodeJS.Timeout);
       return;
     }
-
+  /* TTS 질문 읽기 */
     setPhase('reading');
     const timer = setTimeout(() => {
       speakWithCallback(question.interviewContent, () => {
+         /* 질문 읽기 종료 → 준비 단계 진입 */
         setPhase('preparing');
         startPrepCountdown();
       });
@@ -70,13 +83,25 @@ const QuestionSpeechCard: React.FC<Props> = ({
     };
   }, [question.interviewId, isAnswered]);
 
+    /* --------------------------------------------------
+     1) 준비 카운트다운
+     2) 준비 중에도 사용자가 검정 마이크 누르면 바로 startRecordingAdd commentMore actions
+  -------------------------------------------------- */
   const startPrepCountdown = () => {
     setPrepCountdown(PREP_COUNTDOWN_SEC);
+
     const id = setInterval(() => {
       setPrepCountdown((p) => {
         if (p <= 1) {
           clearInterval(id);
-          beginRecording();
+
+          // 최신 상태 기준으로 녹음 여부 판단
+          if (phaseRef.current !== 'recording') {
+            beginRecording();
+          } else {
+            console.log('[startPrepCountdown] 이미 녹음 중이라 자동 녹음 생략');
+          }
+
           return 0;
         }
         return p - 1;
@@ -84,6 +109,7 @@ const QuestionSpeechCard: React.FC<Props> = ({
     }, 1000);
   };
 
+    /* 녹음 시작 */
   const beginRecording = () => {
     resetTranscript();
     resetAudioBlob();
@@ -92,11 +118,13 @@ const QuestionSpeechCard: React.FC<Props> = ({
     setPhase('recording');
     startListening();
 
+    /* 60초 자동 종료 타이머 */
     recordTimeoutRef.current = setTimeout(() => {
       handleStopRecording();
     }, MAX_RECORD_SEC * 1000);
   };
 
+    /* 녹음 진행 타이머 */
   useEffect(() => {
     if (phase !== 'recording') return;
     const interval = setInterval(() => {
@@ -112,22 +140,26 @@ const QuestionSpeechCard: React.FC<Props> = ({
     }
   }, [transcript]);
 
+   /* 녹음 종료 */
   const handleStopRecording = () => {
-    if (phase !== 'recording') return;
     stopRecording();
     clearTimeout(recordTimeoutRef.current as NodeJS.Timeout);
     setPhase('done');
     onTranscriptComplete(question.interviewId, transcript, true);
   };
 
+   /* 마이크 버튼 클릭 */
   const handleMicClick = () => {
     if (phase === 'preparing') {
+        /* 준비 중 → 조기 시작 */
       beginRecording();
     } else if (phase === 'recording') {
+       /* 녹음 중 → 중단 */
       handleStopRecording();
     }
   };
 
+   /* 다운로드 */
   const handleDownload = () => {
     if (!audioBlob) return;
     const url = URL.createObjectURL(audioBlob);
@@ -150,10 +182,12 @@ const QuestionSpeechCard: React.FC<Props> = ({
         aspectRatio: `${CARD_RATIO} / 1`,
       }}
     >
+        {/* 질문 텍스트 */}
       <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-2 md:mb-4">
         Q. {question.interviewContent}
       </h3>
 
+      {/* 마이크 버튼 */}
       <div className="flex justify-center mb-4">
         <button
           onClick={handleMicClick}
@@ -167,7 +201,7 @@ const QuestionSpeechCard: React.FC<Props> = ({
           />
         </button>
       </div>
-
+         {/* 상태 & 타이머 */}
       <div className="text-center mt-2 mb-4">
         {phase === 'reading' && <p className="text-sm text-gray-500">문제 출력 중…</p>}
         {phase === 'preparing' && (
@@ -187,6 +221,7 @@ const QuestionSpeechCard: React.FC<Props> = ({
         )}
       </div>
 
+        {/*다운로드 버튼 */}
       {phase === 'done' && audioBlob && (
         <>
           <div className="flex justify-center mb-2">
@@ -204,6 +239,7 @@ const QuestionSpeechCard: React.FC<Props> = ({
         </>
       )}
 
+      {/* 음성 인식 결과 영역 */}
       <div className="bg-gray-100 text-sm text-gray-800 p-4 rounded-md min-h-[60px] h-[60px] overflow-y-auto">
         {localTranscript || <span className="text-gray-400">음성 인식 결과가 여기에 표시됩니다.</span>}
       </div>
