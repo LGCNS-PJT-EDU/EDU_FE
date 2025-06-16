@@ -50,9 +50,10 @@ export default function ConfirmModal({
         <h3 className="mb-2 text-center text-lg md:text-xl font-semibold">{title}</h3>
 
         {/* 본문 메시지 */}
-        <p className="mb-6 text-center text-gray-600 whitespace-pre-wrap text-sm md:text-base">
-          {message}
-        </p>
+        <div
+          className="mb-6 text-center text-gray-600 whitespace-pre-wrap text-sm md:text-base"
+          dangerouslySetInnerHTML={{ __html: message }}
+        />
 
         {/* 확인 버튼 */}
         <button
