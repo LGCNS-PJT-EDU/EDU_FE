@@ -3,28 +3,34 @@ import api from '@/api/axios';
 export interface SolutionResDto {
   isPre: boolean;
   nth: number;
-  subNm: string; // 과목명
-  examContent: string; // 문제 텍스트
+  subNm: string;
+  examContent: string;
   option1: string;
   option2: string;
   option3: string;
   option4: string;
-  examAnswer: number; // 정답 값 (1~4)
-  userAnswer: number; // 사용자 답 (1~4)
-  solution: string; // 해설
-  examLevel: string; // 문제 레벨
+  examAnswer: number;
+  userAnswer: number;
+  solution: string;
+  examLevel: string;
 }
 
-interface ApiWrapper<T> {
+interface ApiWrapper {
   stateCode: number;
   message: string;
-  data: T;
+  data: {
+    correctCnt: number;
+    solutions: SolutionResDto[];
+  };
 }
+export async function fetchSolutions(subjectId: number): Promise<{
+  correctCnt: number;
+  solutions: SolutionResDto[];
+}> {
+  const res = await api.get<ApiWrapper>(`/api/solution?subjectId=${subjectId}`);
 
-export async function fetchSolutions(subjectId: number): Promise<SolutionResDto[]> {
-  const res = await api.get<ApiWrapper<{ correctCnt: number; solutions: SolutionResDto[] }>>(
-    `/api/solution?subjectId=${subjectId}`
-  );
-
-  return Array.isArray(res.data.data?.solutions) ? res.data.data.solutions : [];
+  return {
+    correctCnt: res.data.data?.correctCnt ?? 0,
+    solutions: Array.isArray(res.data.data?.solutions) ? res.data.data.solutions : [],
+  };
 }
