@@ -1,11 +1,9 @@
 import { SlArrowLeft, SlArrowRight } from 'react-icons/sl';
-import blue_star from '@/asset/img/diagnosis/blue_star.png';
-import gold_star from '@/asset/img/diagnosis/gold_star.png';
 import smallRabbit from '@/asset/img/diagnosis/smallRabbit.png';
 import Isolation from '@/asset/img/diagnosis/Isolation_Mode.png';
 import startBtn from '@/asset/img/diagnosis/startBtn.png';
 import pixelTexture from '@/asset/img/common/pixel_texture.png';
-import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png';
+import responsiveBG from '@/asset/img/diagnosis/mobile.png';
 import { Options } from '../ui/option';
 import { useState } from 'react';
 import ConfirmModal from '../modal/ConfirmModal';
@@ -165,7 +163,7 @@ export default function TestTemplate({
               disabled={isLoadingQuestions}
               className="z-20 cursor-pointer font-semibold text-black"
             >
-              <img src={startBtn} alt="startBtn" className="w-[320px] h-[50px]" />
+              <img src={startBtn} alt="startBtn" className="md:w-[320px] md:h-[50px] w-full h-[40px]" />
             </button>
           </div>
         </div>
