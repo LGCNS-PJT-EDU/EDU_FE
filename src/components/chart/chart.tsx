@@ -9,7 +9,6 @@ import {
 } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
 import 'chart.js/auto';
-
 import { useMemo } from 'react';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -27,9 +26,11 @@ export default function RadarChart({
   label = 'score',
   color = 'rgba(91,124,255,1)',
 }: Props) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+
   const { data, options } = useMemo(() => {
     const filledColor = color.replace('1)', '0.3)');
-    const textColor = color.replace('1)', '1)'); 
+    const textColor = color.replace('1)', '1)');
 
     return {
       data: {
@@ -52,23 +53,20 @@ export default function RadarChart({
         responsive: true,
         maintainAspectRatio: false,
         layout: {
-          padding: {
-            top: 20,
-            bottom: 20,
-            left: 40,
-            right: 30,
-          },
+          padding: isMobile
+            ? { top: 0, bottom: 0, left: 10, right: 20 }
+            : { top: 10, bottom: 30, left: 15, right: 15 },
         },
         plugins: {
           legend: {
-            display: true,
+            display: !isMobile,
             position: 'top',
             align: 'center',
             labels: {
               color: textColor,
               font: { size: 14 },
               boxWidth: 20,
-              padding: 20,
+              padding: 10,
             },
           },
           tooltip: {
@@ -99,10 +97,10 @@ export default function RadarChart({
               callback: function (label: string, index: number) {
                 const score = values[index];
                 const breakSymbols = ['&', '·'];
-
                 let breakIndex = -1;
 
-                // 모든 기호 위치 수집
+                const isMobile = window.innerWidth < 480;
+
                 const symbolIndexes = [];
                 for (const symbol of breakSymbols) {
                   let i = label.indexOf(symbol);
@@ -112,15 +110,18 @@ export default function RadarChart({
                   }
                 }
 
-                // 두 번째 기호가 있다면 해당 위치 기준으로 줄바꿈
                 if (symbolIndexes.length >= 2) {
                   const sorted = symbolIndexes.sort((a, b) => a - b);
                   breakIndex = sorted[1];
                 }
 
+                if (isMobile && label.length > 10 && breakIndex === -1) {
+                  breakIndex = Math.floor(label.length / 2);
+                }
+
                 if (breakIndex !== -1) {
-                  const line1 = label.slice(0, breakIndex + 1).trim(); // 기호 포함
-                  const line2 = label.slice(breakIndex + 1).trim(); // 나머지
+                  const line1 = label.slice(0, breakIndex + 1).trim();
+                  const line2 = label.slice(breakIndex + 1).trim();
                   return [line1, line2, `${score}점`];
                 }
 
@@ -131,10 +132,10 @@ export default function RadarChart({
         },
       },
     };
-  }, [labels, values, label, color]);
+  }, [labels, values, label, color, isMobile]);
 
   return (
-    <div className="w-full max-w-[800px] h-[490px] mx-auto flex justify-center items-center">
+    <div className="w-full max-w-[800px] h-[60vh] sm:h-[480px] mx-auto flex justify-center items-center">
       <Radar data={data} options={options as any} />
     </div>
   );

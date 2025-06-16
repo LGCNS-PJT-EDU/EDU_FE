@@ -146,7 +146,7 @@ export default function SubjectModal({ subject, onClose }: SubjectModalProps) {
           <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
             <span>{subject.subjectName}</span>
           </h2>
-          <button onClick={onClose} className="absolute top-5 right-5 text-gray-300 hover:text-gray-500 transition text-[22px]" aria-label="닫기">
+          <button onClick={onClose} className="absolute top-5 right-5 text-gray-300 hover:text-gray-500 transition text-[22px] border-none outline-none bg-transparent p-0">
             &times;
           </button>
         </div>
