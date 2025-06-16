@@ -25,6 +25,7 @@ const TestSpeech: React.FC = () => {
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [firstRecordingDone, setFirstRecordingDone] = useState(false); // 1번 문제 녹음 완료 여부
+  const [recordingDoneMap, setRecordingDoneMap] = useState<{ [interviewId: number]: boolean }>({});
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -110,16 +111,20 @@ const TestSpeech: React.FC = () => {
         {/* 질문 카드 */}
         {currentQuestion && (
           <QuestionSpeechCard
-            key={currentQuestion.interviewId}
-            question={currentQuestion}
-            onTranscriptComplete={(interviewId, text, isFinal) => {
-              setAnswers((prev) => ({ ...prev, [interviewId]: text }));
-              /* 1번 문제 녹음 완료 → 제출 버튼 활성화 */
-              if (isFinal && interviewId === questions[0]?.interviewId) {
-                setFirstRecordingDone(true);
-              }
-            }}
-          />
+  key={currentQuestion.interviewId}
+  question={currentQuestion}
+  isAnswered={!!recordingDoneMap[currentQuestion.interviewId]} // 녹음 완료 여부 
+  onTranscriptComplete={(interviewId, text, isFinal) => {
+    setAnswers((prev) => ({ ...prev, [interviewId]: text }));
+    if (isFinal) {
+      setRecordingDoneMap((prev) => ({ ...prev, [interviewId]: true }));
+      if (interviewId === questions[0]?.interviewId) {
+        setFirstRecordingDone(true);
+      }
+    }
+  }}
+/>
+
         )}
 
         {/* 이전/다음 버튼 */}
@@ -134,14 +139,18 @@ const TestSpeech: React.FC = () => {
             ⬅ 이전
           </button>
           <button
-            onClick={handleNext}
-            disabled={currentIndex === questions.length - 1}
-            className="px-5 py-2 rounded-md border font-semibold text-sm transition-colors
-                       disabled:opacity-40 disabled:cursor-not-allowed
-                       bg-white text-cyan-600 border-cyan-400 hover:bg-cyan-50"
-          >
-            다음 ➡
-          </button>
+          onClick={handleNext}
+          disabled={
+            currentIndex === questions.length - 1 ||
+            !recordingDoneMap[questions[currentIndex]?.interviewId] // 녹음 안 끝났으면 비활성화
+          }
+          className="px-5 py-2 rounded-md border font-semibold text-sm transition-colors
+                    disabled:opacity-40 disabled:cursor-not-allowed
+                    bg-white text-cyan-600 border-cyan-400 hover:bg-cyan-50"
+        >
+          다음 ➡
+            </button>
+
         </div>
 
         {/* 제출 버튼 */}
