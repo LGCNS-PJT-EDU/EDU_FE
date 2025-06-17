@@ -111,7 +111,7 @@ function MyPage() {
       ) {
         reportCardsMap.set(subjectId, {
           title: `${fb.subject}`,
-          detailUrl: `/report?subject=${fb.subject}&date=${fb.date}`,
+          detailUrl: `/report?subjectId=${subjectId}`,
           button1: '리포트 보러가기',
           subtitle: `제출일: ${fb.date.split('T')[0]}`,
           subjectId,
