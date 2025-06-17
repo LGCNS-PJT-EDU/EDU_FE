@@ -37,6 +37,7 @@ export default function Roadmap() {
   } = useRoadmapQuery({
     enabled: !Boolean(roadmapFromState),
     refetchOnMount: 'always',
+    skipCache: true,
   });
 
   /* Zustand 상태 */

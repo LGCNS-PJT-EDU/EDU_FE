@@ -17,10 +17,12 @@ export default function DefaultRoadmap() {
 
   const { data, isLoading, isError } = useDefaultRoadmapQuery(roadmapType);
   const setInitial = useRoadmapStore((s) => s.setInitial);
+  const setCurrentOrder = useRoadmapStore((s) => s.setCurrentOrder);
 
   useEffect(() => {
     if (data?.subjects) setInitial(data.subjects);
-  }, [data, setInitial]);
+    setCurrentOrder(0);
+  }, [data, setInitial, setCurrentOrder]);
 
   const isLoggedIn = useIsLoggedIn();
   const navigate = useNavigate();
@@ -38,6 +40,7 @@ export default function DefaultRoadmap() {
   } = useMutation<ApiResp<null>, Error, 'FE' | 'BE'>({
     mutationFn: assignDefaultRoadmap,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey:['roadmap'] })
       showSnackbar('기본 로드맵이 성공적으로 할당되었습니다!');
       navigate('/roadmap');
     },
