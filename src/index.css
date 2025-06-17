@@ -190,3 +190,12 @@ button {
 .card-face--back {
   transform: rotateY(180deg);
 }
+
+@keyframes wiggle {
+  0%, 100% { transform: translateX(-2px) rotate(-2deg);}
+  50%      { transform: translateX(2px)  rotate(2deg);}
+}
+
+.wiggle {
+  animation: wiggle 0.3s ease-in-out infinite;
+}
