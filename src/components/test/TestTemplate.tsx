@@ -45,22 +45,22 @@ export interface AssesmentProps {
 /* ===== intro 카피 ===== */
 export const introCopy = {
   diagnosis_fe: {
-    time:        '⏱ 진단 소요시간 5분, 9문제',
+    time:        '⏱ 진단 소요시간 3분, 9문제',
     headline:    '먼저 관심 분야를 선택해 주세요!',
     submitLabel: '시작하기',
   },
   diagnosis_be: {
-    time:        '⏱ 진단 소요시간 5분, 8문제',
+    time:        '⏱ 진단 소요시간 3분, 8문제',
     headline:    '먼저 관심 분야를 선택해 주세요!',
     submitLabel: '시작하기',
   },
   pre: {
-    time:        '⏱ 약 5분, 10문제',
+    time:        '⏱ 평가 소요시간 5분, 10문제',
     headline:    '학습 전 실력을 측정해볼까요?',
     submitLabel: '제출',
   },
   post: {
-    time:        '⏱ 약 5분, 15문제',
+    time:        '⏱ 평가 소요시간 5분, 15문제',
     headline:    '학습 후 실력이 얼마나 향상됐을까요?',
     submitLabel: '제출',
   },
@@ -71,8 +71,8 @@ const FRONTEND_ID = 1;
 const BACKEND_ID  = 2;
 
 /* ===== diagnosis 모드 질문 수 상수 ===== */
-const FE_TOTAL   = 9;   // *** 4차 수정
-const BE_TOTAL   = 8;   // *** 4차 수정
+const FE_TOTAL   = 9;
+const BE_TOTAL   = 8;
 
 export default function TestTemplate({
   kind,
@@ -96,10 +96,10 @@ export default function TestTemplate({
   onConfirmNote?: () => void;
   onCloseConfirm?:() => void;
 }) {
-  /* ---------- FE / BE 선택 상태 ---------- */
+  /* FE / BE 선택 상태 */
   const [selectedTrack, setSelectedTrack] = useState<'FE' | 'BE' | null>(null);
 
-  /* ---------- 카피 결정 ---------- */
+  /* 카피 결정 */
   const derivedSubjectId =
     subjectId ??
     (selectedTrack === 'FE'
@@ -122,7 +122,7 @@ export default function TestTemplate({
   const totalCountDisplayed =
     kind === 'diagnosis' ? totalCount - 1 : totalCount;
 
-  /* ---------- 4차 수정: 답변 카운트 계산 ---------- */
+  /* 답변 카운트 계산 */
   const rawAnsweredCount      = Object.keys(answers).length;
   const displayedAnsweredCount =
     kind === 'diagnosis'
@@ -131,7 +131,7 @@ export default function TestTemplate({
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  /* ---------- intro → 문제 시작 ---------- */
+  /* intro → 문제 시작 */
   const handleIntroStart = () => {
     if (!selectedTrack) return;
     choose(selectedTrack);                 // FE/BE 선택 저장 (1번 문항)
@@ -139,7 +139,7 @@ export default function TestTemplate({
     setHasStarted(true);
   };
 
-  /* ---------- (1) 제출 완료 모달 ---------- */
+  /* 제출 완료 모달 */
   if (showConfirm && onConfirmNote && onCloseConfirm) {
     return (
       <ConfirmModal
@@ -152,20 +152,27 @@ export default function TestTemplate({
     );
   }
 
-  /* ---------- (2) 메인 컨텐츠 ---------- */
+  /* 메인 컨텐츠 */
   const pageContent = !hasStarted ? (
-    /* ============ A. 시작 화면 ============ */
+    /* 시작 화면 */
     <div className="flex h-[calc(100vh-70px)] w-full flex-col items-center justify-center gap-8 px-8 py-8">
       <div className="flex w-full max-w-[800px] flex-col gap-6 lg:flex-row">
 
         {/* 진행 통계 */}
         <div className="flex flex-row gap-6 lg:flex-col">
-          {/* --- 4차 수정: 선택 전 '-', FE 9, BE 8 --- */
-          /* introTotalCount 계산 */}
           {(() => {
-            let introTotal: number | string = '-';
-            if (selectedTrack === 'FE') introTotal = FE_TOTAL;
-            if (selectedTrack === 'BE') introTotal = BE_TOTAL;
+            let introTotal: number | string;
+
+            /* pre / post → 실제 총 문항 수로 표시 */
+            if (kind !== 'diagnosis') {
+              introTotal = totalCountDisplayed;
+            } else {
+              /* diagnosis → FE/BE 선택 여부에 따라 표시 */
+              if (selectedTrack === 'FE') introTotal = FE_TOTAL;      // 9
+              else if (selectedTrack === 'BE') introTotal = BE_TOTAL; // 8
+              else introTotal = '-';                                  // 미선택
+            }
+
             return (
               <>
                 <StatCard title="전체 질문 개수" value={introTotal} />
@@ -185,7 +192,7 @@ export default function TestTemplate({
             <p className="text-sm text-gray-600">{time}</p>
             <h2 className="mt-4 text-xl font-bold">{headline}</h2>
 
-            {/* ---------- diagnosis FE / BE 선택 텍스트 ---------- */}
+            {/* diagnosis FE / BE 선택 텍스트 */}
             {kind === 'diagnosis' ? (
               <div className="mt-6 flex flex-col gap-2 text-sm">
                 {(['FE', 'BE'] as const).map((track) => (
@@ -251,14 +258,14 @@ export default function TestTemplate({
       </div>
     </div>
   ) : (
-    /* ============ B. 문제 풀이 화면 ============ */
+    /* 문제 풀이 화면 */
     <div className="flex h-[calc(100vh-70px)] w-full flex-col items-center justify-center gap-8 px-8 py-8">
       <div className="flex w-full max-w-[800px] flex-col gap-6 lg:flex-row">
 
         {/* 진행 통계 */}
         <div className="flex flex-row gap-6 lg:flex-col">
           <StatCard title="전체 질문 개수" value={totalCountDisplayed} />
-          {/* --- 4차 수정: displayedAnsweredCount 사용 */}
+          {/* displayedAnsweredCount 사용 */}
           <StatCard
             title="현재 응답 개수"
             value={displayedAnsweredCount}
@@ -337,7 +344,7 @@ export default function TestTemplate({
     </div>
   );
 
-  /* ---------- (3) 픽셀 배경 & 최종 렌더 ---------- */
+  /* 픽셀 배경 & 최종 렌더 */
   return (
     <div className="relative flex h-[calc(100vh-70px)] flex-col items-center justify-center overflow-hidden px-0 font-[pretendard] md:flex-row md:items-start md:gap-[200px] md:px-4">
       {/* 배경: 데스크탑 */}
@@ -358,7 +365,7 @@ export default function TestTemplate({
   );
 }
 
-/* ===== 진행 통계 카드 ===== */
+/* 진행 통계 카드 */
 const StatCard = ({ title, value, bgColor = '#ffffff' }: StatCardProps) => (
   <div
     className="w-[220px] rounded-xl border-2 border-[#e7eff5] bg-white/70 px-5 py-4"
