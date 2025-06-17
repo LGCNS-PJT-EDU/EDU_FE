@@ -8,19 +8,25 @@ import nodeCurrentImg from '@/asset/img/roadmap/subject/currentNode.png';
 import nodeTodoImg from '@/asset/img/roadmap/subject/todoNode.png';
 import arrow from '@/asset/img/common/pixel_arrow.png';
 
-const NODE_SIZE = 36;
-const LABEL_OFFSET = 8;
-
 interface Props {
   index: number;
   x: number;
   y: number;
   showLabel: boolean;
   nodeStatus: 'done' | 'current' | 'todo';
+  wiggle?: boolean;     /* --- 흔들림 애니메이션 --- */
+  size: number;
 }
 
-export default function RoadmapNode({ index, x, y, showLabel, nodeStatus }: Props) {
-  /* Zustand */
+export default function RoadmapNode({
+  index,
+  x,
+  y,
+  showLabel,
+  nodeStatus,
+  wiggle = false,
+  size,
+}: Props) {
   const node = useRoadmapStore((s) => s.nodes[index]);
   const rawOrder = useRoadmapStore((s) => s.currentOrder);
   const currentOrder = rawOrder ?? 0;
@@ -29,15 +35,12 @@ export default function RoadmapNode({ index, x, y, showLabel, nodeStatus }: Prop
   const editing = useRoadmapStore((s) => s.editing);
   const openModal = useRoadmapStore((s) => s.openModal);
 
-  /* Snackbar */
   const showSnackbar = useSnackbarStore((s) => s.showSnackbar);
 
-  /* 아이콘 선택 */
   const iconSrc =
     nodeStatus === 'done' ? nodeDoneImg : nodeStatus === 'current' ? nodeCurrentImg : nodeTodoImg;
   const isCurrent = nodeStatus === 'current';
 
-  /* Drag & Drop */
   const [, drop] = useDrop({
     accept: 'NODE',
     drop: (item: any) => {
@@ -73,10 +76,18 @@ export default function RoadmapNode({ index, x, y, showLabel, nodeStatus }: Prop
       <div
         ref={iconRef}
         style={{ left: x, top: y }}
-        className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+        /* --- 흔들림 index.css 적용: animate-wiggle 대신 wiggle 클래스 --- */
+        className={`
+          absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer
+          ${wiggle ? 'wiggle' : ''}
+        `}
         onClick={() => !editing && openModal(index)}
       >
-        <img src={iconSrc} alt="" className="w-7 h-7" style={{ opacity: isDragging ? 0.5 : 1 }} />
+        <img
+          src={iconSrc}
+          alt=""
+          style={{ width: size, height: size, opacity: isDragging ? 0.5 : 1 }}
+        />
 
         {editing && (
           <button
@@ -90,6 +101,7 @@ export default function RoadmapNode({ index, x, y, showLabel, nodeStatus }: Prop
           </button>
         )}
       </div>
+
       {isCurrent && (
         <img
           style={{ left: x, top: y - 55 }}
@@ -102,8 +114,8 @@ export default function RoadmapNode({ index, x, y, showLabel, nodeStatus }: Prop
       {/* 라벨 */}
       {showLabel && node && (
         <p
-          style={{ left: x, top: y + NODE_SIZE / 2 + LABEL_OFFSET }}
-          className="absolute -translate-x-1/2 w-35 text-center text-l font-bold break-words bg-white px-1"
+          style={{ left: x, top: y + size / 2 + 8 }}
+          className="absolute -translate-x-1/2 w-25 text-center text-l font-bold break-words bg-white px-1"
         >
           {node.label}
         </p>

@@ -33,7 +33,7 @@ export const fetchDefaultRoadmap = (roadmap: 'FE' | 'BE') =>
 
 export const assignDefaultRoadmap = (type: 'FE' | 'BE'): Promise<ApiResp<null>> =>
   api
-    .post<ApiResp<null>>('/api/roadmap/default', null, { params: { roadmap: type } })
+    .post<ApiResp<null>>('/api/roadmap/default/assign', null, { params: { roadmap: type } })
     .then((res) => res.data);
 
 // 타입이 필요할 경우 여기서 export

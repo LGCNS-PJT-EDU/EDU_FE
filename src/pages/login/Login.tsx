@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useLoginMutation } from '@/hooks/useMutation';
-import axios from '@/api/axios';
 
 import google from '@/asset/img/login/btn_google.svg';
 import kakao from '@/asset/img/login/btn_kakao.svg';

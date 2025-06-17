@@ -97,7 +97,7 @@ export default function TestTemplate({
   onCloseConfirm?:() => void;
 }) {
   /* ---------- FE / BE 선택 상태 ---------- */
-  const [selectedTrack, setSelectedTrack] = useState<'FE' | 'BE' | null>(null);
+  const [selectedTrack, setSelectedTrack] = useState<'FE' | 'BE' | null>('FE');
 
   /* ---------- 카피 결정 ---------- */
   const derivedSubjectId =

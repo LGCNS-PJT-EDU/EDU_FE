@@ -61,46 +61,68 @@ export default function DefaultRoadmap() {
   if (isError || !data) return <p className="text-center mt-10">로드맵 로딩 실패</p>;
 
   return (
-    <section className="relative py-10">
-      <h1 className="text-2xl font-bold text-center mb-8">
-        {type === 'FE' ? '프론트엔드' : '백엔드'} 기본 로드맵
-      </h1>
+    <section
+      className="relative"
+      style={{
+        minHeight: 'calc(100vh - 72px)',
+        height: 'calc(100vh - 72px)',
+        overflow: 'hidden',
+      }}
+    >
+      <div className="flex flex-col h-full">
+        {/* 상단 타이틀 */}
+        <h1 className="text-2xl font-bold text-center mb-6 pt-10">
+          {type === 'FE' ? '프론트엔드' : '백엔드'} 기본 로드맵
+        </h1>
+        
+        {/* 로드맵 그래프 (스크롤 영역) */}
+        <div className="flex-1 min-h-0">
+          <div
+            className="h-full custom-scroll"
+            style={{             
+              height: '100%',
+              width: '100%',
+              overflowY: 'auto',
+              overflowX: 'hidden',  
+            }}
+          >
+            <RoadmapTemplate />
+          </div>
+        </div>
+        {/* 선택 버튼 */}
+        <button
+          className="block mx-auto mt-10 mb-8 bg-primary-500 hover:bg-primary-600
+                    text-white bg-[#6378EB] font-semibold py-3 px-6 rounded-lg"
+          onClick={handleChooseClick}
+        >
+          이 로드맵 선택하기
+        </button>
+        
+        {/* 로그인 유도 모달 */}
+        {loginModalOpen && (
+          <ConfirmModal
+            onClose={() => setLoginModalOpen(false)}
+            title="로그인이 필요합니다!"
+            message={`개인화 로드맵 저장 및 과목 상세 조회는\n로그인 후 이용하실 수 있어요.`}
+            confirmText="로그인 하러가기"
+            onConfirm={() => navigate('/login')}
+          />
+        )}
 
-      <RoadmapTemplate />
-
-      {/* 선택 버튼 */}
-      <button
-        className="block mx-auto mt-12 bg-primary-500 hover:bg-primary-600
-                   text-white bg-[#6378EB] font-semibold py-3 px-6 rounded-lg"
-        onClick={handleChooseClick}
-      >
-        이 로드맵 선택하기
-      </button>
-
-      {/* 로그인 유도 모달 */}
-      {loginModalOpen && (
-        <ConfirmModal
-          onClose={() => setLoginModalOpen(false)}
-          title="로그인이 필요합니다!"
-          message={`개인화 로드맵 저장 및 과목 상세 조회는\n로그인 후 이용하실 수 있어요.`}
-          confirmText="로그인 하러가기"
-          onConfirm={() => navigate('/login')}
-        />
-      )}
-
-      {/* 로드맵 선택 확인 모달 */}
-      {selectModalOpen && (
-        <ConfirmModal
-          onClose={() => setSelectModalOpen(false)}
-          title="나의 로드맵으로 선택하시겠어요?"
-          message="기존 로드맵이 있다면 학습 이력이 모두 삭제됩니다."
-          confirmText="확인"
-          onConfirm={() => {
-            setSelectModalOpen(false);
-            assign(roadmapType as 'FE' | 'BE');
-          }}
-        />
-      )}
+        {/* 로드맵 선택 확인 모달 */}
+        {selectModalOpen && (
+          <ConfirmModal
+            onClose={() => setSelectModalOpen(false)}
+            title="나의 로드맵으로 선택하시겠어요?"
+            message="기존 로드맵이 있다면 학습 이력이 모두 삭제됩니다."
+            confirmText="확인"
+            onConfirm={() => {
+              setSelectModalOpen(false);
+              assign(roadmapType as 'FE' | 'BE');
+            }}
+          />
+        )}
+      </div>
     </section>
   );
 }

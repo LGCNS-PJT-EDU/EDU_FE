@@ -28,7 +28,6 @@ const Solution: React.FC = () => {
 
   // 구조 분해
   const rawList = data?.solutions ?? [];
-  const correctCnt = data?.correctCnt ?? 0;
 
   /* 레벨 → 라벨/색상 매핑 */
   const levelMap: Record<
@@ -107,6 +106,9 @@ const Solution: React.FC = () => {
       next[i] = !next[i];
       return next;
     });
+  const correctCount = React.useMemo(() => {
+    return list.filter((q) => q.userAnswer === q.examAnswer).length;
+  }, [list]);
 
   /* 안내 카드용 상태 */
   const navigate = useNavigate();
@@ -192,10 +194,10 @@ const Solution: React.FC = () => {
       </div>
 
 
-      {/* 총 문항 수 (빈 목록이면 0) */}
+      {/* 총 문항 수 */}
       <div className="flex items-center gap-3 mb-4">
         <span className="bg-indigo-100 text-[#6378EB] text-sm font-semibold px-3 py-1 rounded-[7px]">
-          맞은 개수 {correctCnt}문항
+          맞은 {correctCount}개 문항
         </span>
         <span className="text-gray-600 text-sm">
           전체 {list.length}문항
