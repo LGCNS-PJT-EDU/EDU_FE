@@ -20,7 +20,7 @@ const MOB_GAP_Y = 160;
 const MOB_MAX_COLS = 4;
 const MOB_MIN_COLS = 2;
 
-/* --- 수정: 패딩 / 여백 값 분리 --- */
+/* 패딩 / 여백 값 분리 */
 const LEFT_MARGIN_MOB = 16;
 const RIGHT_MARGIN_MOB = 12;
 
@@ -44,7 +44,7 @@ function splitIntoRows(total: number, maxCols: number, minCols: number) {
   return arr;
 }
 
-/* --- 수정: 100vw 안에 ‘여백 포함’으로 맞추는 scale --- */
+/* 100vw 안에 ‘여백 포함’으로 맞추는 scale */
 function useFitScale(designWidth: number, left: number, right: number) {
   const [scale, setScale] = useState(1);
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function RoadmapTemplate() {
   const MAX_COLS = isMobile ? MOB_MAX_COLS : DESK_MAX_COLS;
   const MIN_COLS = isMobile ? MOB_MIN_COLS : DESK_MIN_COLS;
 
-  /* --- 수정: 모바일 여백 값 적용 --- */
+  /* 모바일 여백 값 적용 */
   const LEFT_MARGIN = isMobile ? LEFT_MARGIN_MOB : 0;
   const RIGHT_MARGIN = isMobile ? RIGHT_MARGIN_MOB : 0;
 
@@ -122,10 +122,10 @@ export default function RoadmapTemplate() {
       SKELETON_Y + (rows - 1) * GAP_Y + NODE_SIZE / 2,
     ) + STROKE;
 
-  /* --- 수정: scale 계산 --- */
+  /* scale 계산 */
   const scale = useFitScale(contentWidth, LEFT_MARGIN, RIGHT_MARGIN);
   const scaledWidth = contentWidth * scale;
-  const wrapperWidth = scaledWidth + RIGHT_MARGIN; // 스크롤바가 바로 옆에 오도록
+  const wrapperWidth = scaledWidth + RIGHT_MARGIN;
 
   return (
     <div

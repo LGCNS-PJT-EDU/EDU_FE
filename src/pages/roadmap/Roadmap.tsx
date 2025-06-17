@@ -14,6 +14,8 @@ import useRoadmapEdit from '@/hooks/useRoadmapEdit';
 import { useRoadmapQuery } from '@/hooks/useRoadmapQuery';
 import axios from 'axios';
 import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
+// --- 수정: fetchRoadmap import (취소시 사용) ---
+import { fetchRoadmap } from '@/api/roadmapService';
 
 export default function Roadmap() {
   /* 로딩 스토어 */
@@ -44,6 +46,7 @@ export default function Roadmap() {
   const toggleEditing = useRoadmapStore((s) => s.toggleEditing);
   const editing = useRoadmapStore((s) => s.editing);
   const { save, saving } = useRoadmapEdit();
+  const setInitial = useRoadmapStore((s) => s.setInitial); // --- 수정: setInitial 사용 (취소용) ---
   const selected = useRoadmapStore((s) => s.selected);
   const modalOpen = useRoadmapStore((s) => s.modalOpen);
   const closeModal = useRoadmapStore((s) => s.closeModal);
@@ -51,6 +54,9 @@ export default function Roadmap() {
 
   /* 로컬 모달 상태 */
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+
+  // --- 수정: 취소 로딩 상태 ---
+  const [rollbackLoading, setRollbackLoading] = useState(false);
 
   /* 진입 시 로드맵 주입 */
   console.log('[Roadmap.tsx] ▶️ fromState:', roadmapFromState, '  /  userRoadmap:', userRoadmap);
@@ -91,6 +97,27 @@ export default function Roadmap() {
     startLoading('로드맵 불러오는 중…');
     return () => stopLoading();
   }, [loadingUser, startLoading, stopLoading]);
+
+  /* 라우트 이동 시(언마운트 포함) 수정모드 자동 해제 */
+  useEffect(() => {
+    return () => {
+      if (useRoadmapStore.getState().editing) {
+        useRoadmapStore.getState().toggleEditing();
+      }
+    };
+  }, []);
+
+  /* 수정: 취소 버튼 핸들러 */
+  const handleCancel = async () => {
+    setRollbackLoading(true);
+    try {
+      const latest = await fetchRoadmap(uuid ?? 'takeit');
+      setInitial(latest.subjects);
+      if (editing) toggleEditing();
+    } finally {
+      setRollbackLoading(false);
+    }
+  };
 
   if (loadingUser && !roadmap) {
     return <div style={{ height: '100vh' }} />;
@@ -156,15 +183,26 @@ export default function Roadmap() {
               </span>
             </div>
           </div>
-          {/* 수정/저장 버튼 (PC: auto, 모바일: 10%) */}
-          <div className="w-auto mt-auto md:self-end mb-8 md:mb-3 mr-3 flex-shrink-0">
+          {/* 수정/저장/취소 버튼 (PC: auto, 모바일: 10%) */}
+          <div className="w-auto mt-auto md:self-end mb-8 md:mb-3 mr-3 flex-shrink-0 flex gap-2">
             {editing ? (
-              <button
-                className="w-full md:w-[90px] h-[38px] md:h-[40px] px-4 text-sm text-white bg-[#6378EB] rounded-md font-medium select-none font-[NeoDunggeunmo]"
-                onClick={() => save()}
-              >
-                {saving ? '저장 중…' : '저장하기'}
-              </button>
+              <>
+                <button
+                  className="w-full md:w-[90px] h-[38px] md:h-[40px] px-4 text-sm text-white bg-gray-400 rounded-md font-medium select-none font-[NeoDunggeunmo]"
+                  onClick={handleCancel}
+                  disabled={rollbackLoading}
+                >
+                  취소
+                </button>
+                <button
+                  className="w-full md:w-[90px] h-[38px] md:h-[40px] px-4 text-sm text-white bg-[#6378EB] rounded-md font-medium select-none font-[NeoDunggeunmo]"
+                  onClick={() => save()}
+                  disabled={saving}
+                >
+                  {saving ? '저장 중…' : '완료'}
+                </button>
+                {/* 수정: 취소 버튼 추가 */}
+              </>
             ) : (
               <button
                 className="w-full md:w-[90px] h-[38px] md:h-[40px] px-4 text-sm text-white bg-[#6378EB] rounded-md font-medium select-none font-[NeoDunggeunmo]"
@@ -179,11 +217,11 @@ export default function Roadmap() {
         <div className="flex-1 min-h-0 md:ml-5 mb-10">
           <div
             className="h-full custom-scroll"
-            style={{             
+            style={{
               height: '100%',
               width: '100%',
               overflowY: 'auto',
-              overflowX: 'hidden',  
+              overflowX: 'hidden',
             }}
           >
             <RoadmapTemplate />
@@ -212,5 +250,4 @@ export default function Roadmap() {
       </div>
     </section>
   );
-
 }
