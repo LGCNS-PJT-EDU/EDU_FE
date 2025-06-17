@@ -69,7 +69,7 @@ export default function Selectspeech() {
     <div className="max-w-4xl mx-auto px-6 pt-5 pb-10 font-[pretendard]">
       {/* 안내 배너 */}
       <div className="text-sm text-[#779AF4] px-2 py-2 bg-blue-100 border border-blue-200 rounded-md p-3s mb-5">
-        * 면접 볼 과목을 선택해주세요! <br/>*선택한 과목은 파란색으로 표시되며, 사후평가를 완료한 과목은 기본 선택 상태입니다.
+        * 면접 볼 과목을 선택해주세요! <br/>* 선택한 과목은 파란색으로 표시되며, 사후평가를 완료한 과목은 기본 선택 상태입니다.
       </div>
 
       {/* 탭 */}
