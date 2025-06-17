@@ -68,8 +68,8 @@ export default function Selectspeech() {
   return (
     <div className="max-w-4xl mx-auto px-6 pt-5 pb-10 font-[pretendard]">
       {/* 안내 배너 */}
-      <div className="text-sm text-[#779AF4] bg-blue-100 border border-blue-200 rounded-md p-3s mb-5">
-        면접 볼 과목을 선택해주세요! <br/> 선택한 과목은 파란색으로 표시되며, 사후평가를 완료한 과목은 기본 선택 상태입니다.
+      <div className="text-sm text-[#779AF4] px-2 py-2 bg-blue-100 border border-blue-200 rounded-md p-3s mb-5">
+        * 면접 볼 과목을 선택해주세요! <br/>*선택한 과목은 파란색으로 표시되며, 사후평가를 완료한 과목은 기본 선택 상태입니다.
       </div>
 
       {/* 탭 */}
@@ -147,7 +147,7 @@ export default function Selectspeech() {
         <ConfirmModal
           title="Takeit 면접을 시작합니다."
           message={
-            '시작 버튼을 누르시면 문제가 음성으로 출력되고<br/>15초 뒤 자동으로 음성 녹음이 시작됩니다.<br/>문제는 다섯 문제가 출제되며 한 문제 이상 응답 후 제출이 가능합니다.'
+            '시작 버튼을 누르시면 문제가 음성으로 출력되고<br/>15초 뒤 자동으로 음성 녹음이 시작됩니다.<br/>문제는 다섯 문제가 출제되며 한 문제 이상<br/> 응답 후 제출이 가능합니다.'
           }
           confirmText="시작"
           onClose={() => setShowStartModal(false)}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface RecommendationContent {
   title: string;
@@ -23,9 +23,28 @@ const RecommendationCard: React.FC<RecommendationContent> = ({
   comment,
 }) => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const thumbnail = getYoutubeThumbnail(url);
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
 
-  // 공통 카드 스타일
+  useEffect(() => {
+    const youtubeThumb = getYoutubeThumbnail(url);
+    if (youtubeThumb) {
+      setThumbnail(youtubeThumb);
+    } else {
+      const fetchMicrolinkThumbnail = async () => {
+        try {
+          const res = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`);
+          const data = await res.json();
+          setThumbnail(data?.data?.image?.url ?? null);
+        } catch (error) {
+          console.error('Microlink API error:', error);
+          setThumbnail(null);
+        }
+      };
+
+      fetchMicrolinkThumbnail();
+    }
+  }, [url]);
+
   const cardClass = 'w-full bg-white rounded-xl border p-4 shadow transition-all duration-300';
 
   return (
@@ -59,7 +78,9 @@ const RecommendationCard: React.FC<RecommendationContent> = ({
               )}
             </div>
 
-            <p className="text-sm text-gray-500">{platform} · {type}</p>
+            <p className="text-sm text-gray-500">
+              {platform} · {type}
+            </p>
             {comment && (
               <button
                 onClick={() => setIsDetailOpen(true)}
