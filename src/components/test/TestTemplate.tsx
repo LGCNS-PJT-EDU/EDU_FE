@@ -316,7 +316,7 @@ export default function TestTemplate({
                       : currentIdx === 0) && 'cursor-not-allowed opacity-40'
                   }`}
               >
-                <SlArrowLeft className="h-4 w-4" /> 이전 문제로
+                <SlArrowLeft className="h-4 w-4" /> 이전
               </button>
 
               {currentIdx < totalCount - 1 ? (
@@ -328,7 +328,7 @@ export default function TestTemplate({
                     ${!answers[questions[currentIdx].diagnosisId] && 'cursor-not-allowed opacity-40'}
                   `}
                 >
-                  다음 문제로 <SlArrowRight className="h-4 w-4" />
+                  다음<SlArrowRight className="h-4 w-4" />
                 </button>
               ) : (
                 <button

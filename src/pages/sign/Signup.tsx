@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import pixel_texture from '@/asset/img/common/pixel_texture.png';
+import pixel_texture from "@/asset/img/common/pixel_texture.png"
 import main from '@/asset/img/common/main.png';
 import { useCheckEmailMutation, useSignupMutation } from '@/hooks/useMutation';
-import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png';
+import responsiveBG from '@/asset/img/common/resposive_pixel_texture.png' 
 import SignupTermsModal from '@/components/modal/SignupTermsModal';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -45,7 +45,7 @@ function Signup() {
       setIsEmailAvailable(isAvailable);
       alert(isAvailable ? '사용 가능한 이메일입니다.' : '이미 사용 중인 이메일입니다.');
     } catch {
-      alert('중복 확인을 다시 해주세요!');
+      alert('중복 확인을 다시 해주세요!')
     }
   };
 
@@ -79,8 +79,8 @@ function Signup() {
     navigate('/login');
   };
 
-  const canShowPwSection = isEmailAvailable;
-  const canShowJoinButton = canShowPwSection && pwValid && pwMatch && agreed;
+  const canShowPwSection   = isEmailAvailable;
+  const canShowJoinButton  = canShowPwSection && pwValid && pwMatch && agreed;
 
   return (
     <div className="relative h-[calc(100vh-70px)] font-[pretendard] flex flex-col md:flex-row items-center md:items-start justify-center gap-[200px] overflow-hidden px-0 md:px-4">
@@ -88,11 +88,6 @@ function Signup() {
         src={pixel_texture}
         alt=""
         className="hidden md:block absolute bottom-0 left-0 w-full h-[100%] object-cover z-0 opacity-70"
-      />
-      <img
-        src={responsiveBG}
-        alt=""
-        className="block md:hidden absolute inset-0 w-full h-full object-cover z-0"
       />
 
       {/* 배너 */}
@@ -106,19 +101,19 @@ function Signup() {
           </p>
         </div>
       </div>
-
+      
       {/* 회원가입 박스 */}
-      <div
-        className="relative w-full max-w-[450px]
+      <div className="relative w-full max-w-[450px]
                       md:w-full md:max-w-[400px]
+
                       max-md:-mx-4
-                      mb-25 mt-80 md:my-15
-                      translate-y-8 md:translate-y-0
-                      p-10 md:p-[60px_40px]
-                      bg-white rounded-[40px] md:rounded-[30px]
-                      flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] 
-                      border border-[#E0E0E0] min-h-[calc(100vh-200px)]"
-      >
+                      mb-0 md:my-12
+                      md:translate-y-0
+                      px-8 md:p-[40px_40px]
+                      bg-white md:rounded-[30px]
+                      flex flex-col gap-2 md:shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] 
+                      md:border md:border-[#E0E0E0] min-h-[calc(100vh-200px)]"
+        >
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
         <h2 className="mt-2 mb-3 text-xl font-semibold">회원가입</h2>
 
@@ -149,13 +144,13 @@ function Signup() {
               onClick={handleCheckEmail}
               disabled={!isValidEmail(email)}
               className="px-3 py-2 text-sm rounded-lg
-                         bg-[#6378EB] text-white disabled:bg-gray-300"
+                         bg-[#7f94f2] hover:bg-[#6378eb] transition text-white disabled:bg-gray-300"
             >
               중복확인
             </button>
           </div>
           {isEmailAvailable !== null && (
-            <p className={`text-sm mt-1 ${isEmailAvailable ? 'text-green-600' : 'text-red-500'}`}>
+            <p className={`text-[13px] ${isEmailAvailable ? 'text-green-600' : 'text-red-500'}`}>
               {isEmailAvailable ? '사용 가능한 이메일입니다.' : '이미 사용 중인 이메일입니다.'}
             </p>
           )}
@@ -165,7 +160,7 @@ function Signup() {
             <motion.div
               key="pw-section"
               initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              animate={{ y: 0,  opacity: 1 }}
               exit={{ y: 30, opacity: 0 }}
               transition={{ duration: 0.25 }}
               className="flex flex-col gap-2"
@@ -179,12 +174,12 @@ function Signup() {
                 className="border border-[#ccc] px-4 py-2 rounded-lg text-sm"
               />
               {!password && (
-                <p className="ml-3 text-xs text-[#999] mt-2">
+                <p className="ml-1 text-[10px] text-[#999]">
                   8~15자 / 영문, 숫자, 특수문자 모두 포함
                 </p>
               )}
               {password && (
-                <p className={`text-sm mt-1 ${pwValid ? 'text-green-600' : 'text-red-500'}`}>
+                <p className={`text-[13px] ${pwValid ? 'text-green-600' : 'text-red-500'}`}>
                   {pwValid
                     ? '사용 가능한 비밀번호입니다.'
                     : '8~15자 / 영문, 숫자, 특수문자 모두 포함'}
@@ -199,7 +194,7 @@ function Signup() {
                 className="border border-[#ccc] px-4 py-2 rounded-lg text-sm"
               />
               {pwMatch !== null && (
-                <p className={`text-sm mt-1 ${pwMatch ? 'text-green-600' : 'text-red-500'}`}>
+                <p className={`text-[13px] ${pwMatch ? 'text-green-600' : 'text-red-500'}`}>
                   {pwMatch ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'}
                 </p>
               )}
@@ -212,12 +207,12 @@ function Signup() {
             <motion.div
               key="join-btn"
               initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              animate={{ y: 0,  opacity: 1 }}
               exit={{ y: 30, opacity: 0 }}
               transition={{ duration: 0.25 }}
             >
               <button
-                className="w-full py-3 bg-[#6378EB] text-white rounded-xl font-semibold hover:bg-[#3fa9b8] transition"
+                className="w-full py-3 text-white rounded-xl font-semibold bg-[#7f94f2] hover:bg-[#6378eb] transition"
                 onClick={handleSignup}
               >
                 회원가입
@@ -225,7 +220,9 @@ function Signup() {
             </motion.div>
           )}
         </AnimatePresence>
-        {!agreed && <SignupTermsModal onAgree={() => setAgreed(true)} />}
+        {!agreed && (
+          <SignupTermsModal onAgree={() => setAgreed(true)} />
+        )}
       </div>
     </div>
   );
