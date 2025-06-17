@@ -199,3 +199,24 @@ button {
 .wiggle {
   animation: wiggle 0.3s ease-in-out infinite;
 }
+
+@keyframes waveY {
+  0%, 100% { transform: translateY(0); }
+  15%      { transform: translateY(-3px); }
+  30%      { transform: translateY(4px); }
+  45%      { transform: translateY(-2px); }
+  60%      { transform: translateY(1px); }
+  75%      { transform: translateY(-1px); }
+  90%      { transform: translateY(0.5px); }
+}
+.wave-y {
+  animation: waveY 1.5s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+.blink {
+  animation: blink 0.9s step-end infinite;
+}
