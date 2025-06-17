@@ -24,6 +24,8 @@ export default function SignupTermsModal({ onAgree }: Props) {
       <div
         className="
           w-full h-full
+          
+          justify-center
           rounded-[40px] md:rounded-[30px]          /* 회원가입 박스 radius */
           bg-white
           p-8 md:p-[40px_50px]                     /* 동일 padding */
@@ -42,7 +44,7 @@ export default function SignupTermsModal({ onAgree }: Props) {
             onClick={() => setOpenRec(!openRec)}
           >
             <span>Takeit 서비스 이용 안내</span>
-            <span>{openRec ? '▲' : '▼'}</span>
+            <span className='text-[#59595a]'>{openRec ? '▲' : '▼'}</span>
           </button>
           <AnimatePresence initial={false}>
             {openRec && (
@@ -81,7 +83,7 @@ export default function SignupTermsModal({ onAgree }: Props) {
             onClick={() => setOpenPol(!openPol)}
           >
             <span>개인정보 수집 안내</span>
-            <span>{openPol ? '▲' : '▼'}</span>
+            <span className='text-[#59595a]'>{openPol ? '▲' : '▼'}</span>
           </button>
           <AnimatePresence initial={false}>
             {openPol && (
@@ -148,7 +150,7 @@ export default function SignupTermsModal({ onAgree }: Props) {
               className="w-full mt-2"
             >
               <Button
-                className="w-full"
+                className="w-full text-[15px]"
                 style={{ backgroundColor: '#6378EB', color: '#fff' }}
                 onClick={onAgree}
               >
