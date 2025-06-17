@@ -123,15 +123,24 @@ function Login() {
       {/* 로그인 박스 */}
       <div
         className="relative w-full max-w-[450px]
-                      md:w-full md:max-w-[400px]
-                      max-md:-mx-4
-                      mb-25 mt-80 md:my-15
-                      translate-y-8 md:translate-y-0
-                      p-10 md:p-[60px_70px]
-                      bg-white rounded-[40px] md:rounded-[30px]
-                      flex flex-col gap-5 shadow-[ -4px_0_10px_rgba(0,0,0,0.05)] 
-                      border border-[#E0E0E0] min-h-[calc(100vh-200px)]"
+             md:w-full md:max-w-[400px]
+
+             max-md:absolute max-md:bottom-0 max-md:left-0 max-md:right-0
+             max-md:mx-auto
+
+             max-md:max-h-[100vh] max-md:overflow-y-auto
+
+             max-md:my-0 max-md:translate-y-0
+             md:my-13 md:translate-y-0
+
+             py-9 px-12 md:p-[40px_50px]
+             bg-white rounded-t-[30px] max-md:rounded-b-none md:rounded-[30px]
+
+             flex flex-col md:gap-5 gap-3
+             shadow-[ -4px_0_10px_rgba(0,0,0,0.05)]
+             border border-[#E0E0E0]"
       >
+
         <p className="text-sm">안녕하세요! TakeIT에 오신 것을 환영합니다.</p>
         <h2 className="mt-1 mb-1 text-xl font-semibold">로그인</h2>
 
@@ -141,7 +150,7 @@ function Login() {
             if (e.key === 'Enter') handleLogin();
           }}
         >
-          <div className="relative mb-6">
+          <div className="relative mb-3 md:mb-6">
             <label
               htmlFor="email"
               className="absolute top-[-8px] left-[14px] bg-white px-[6px] text-xs text-gray-600 z-10"
@@ -154,7 +163,7 @@ function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder=" "
-              className={`w-full px-3 pt-4 pb-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6378eb]/20 ${emailError ? 'border-red-500' : 'border-gray-400'}`}
+              className={`w-full px-3 pt-3 md:pt-4 pb-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6378eb]/20 ${emailError ? 'border-red-500' : 'border-gray-400'}`}
             />
             {emailError && <p className="text-sm text-red-500 mt-1">{emailError}</p>}
           </div>
@@ -172,7 +181,7 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder=" "
-              className={`w-full px-3 pt-4 pb-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6378eb]/20 ${passwordError ? 'border-red-500' : 'border-gray-400'}`}
+              className={`w-full px-3 pt-3 md:pt-4 pb-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6378eb]/20 ${passwordError ? 'border-red-500' : 'border-gray-400'}`}
             />
             {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>}
           </div>
