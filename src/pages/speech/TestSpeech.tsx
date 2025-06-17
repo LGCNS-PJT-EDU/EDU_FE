@@ -4,7 +4,6 @@ import { submitInterviewAnswers } from '@/api/interviewService';
 import QuestionSpeechCard from '@/components/speech/QuestionSpeechCard';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ConfirmModal from '@/components/modal/ConfirmModal';
-import blackMic from '@/asset/img/speech/blackMic.png';
 
 interface InterviewQuestion {
   interviewId: number;
@@ -22,24 +21,22 @@ const TestSpeech: React.FC = () => {
   const [nth, setNth] = useState<number | null>(null);
   const [subjectIds, setSubjectIds] = useState<number[]>([]);
   const [answers, setAnswers] = useState<{ [interviewId: number]: string }>({});
-
   const [showConfirm, setShowConfirm] = useState(false);
-  const [firstRecordingDone, setFirstRecordingDone] = useState(false); // 1번 문제 녹음 완료 여부
+  const [firstRecordingDone, setFirstRecordingDone] = useState(false);
   const [recordingDoneMap, setRecordingDoneMap] = useState<{ [interviewId: number]: boolean }>({});
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+  const [timeLeft, setTimeLeft] = useState(0);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const subjectIdsFromState =
-    (location.state as { subjectIds: number[] })?.subjectIds ?? [];
+  const subjectIdsFromState = (location.state as { subjectIds: number[] })?.subjectIds ?? [];
 
-  /* 질문 목록 조회 */
   useEffect(() => {
     async function fetchQuestions() {
       try {
-        const res = await api.get<{ data: InterviewQuestion[] }>(
-          '/api/interview/list',
-          { params: { subjectIds: subjectIdsFromState } },
-        );
+        const res = await api.get<{ data: InterviewQuestion[] }>('/api/interview/list', {
+          params: { subjectIds: subjectIdsFromState },
+        });
 
         setQuestions(res.data.data);
         if (res.data.data.length > 0) setNth(res.data.data[0].nth);
@@ -57,18 +54,18 @@ const TestSpeech: React.FC = () => {
   const handleNext = () => {
     if (currentIndex < questions.length - 1) setCurrentIndex((p) => p + 1);
   };
+
   const handlePrev = () => {
     if (currentIndex > 0) setCurrentIndex((p) => p - 1);
   };
 
-  /* 제출 */
   const handleSubmitClick = () => setShowConfirm(true);
 
   const handleConfirmSubmit = async () => {
     if (!nth) return;
 
     const payload = Object.entries(answers).map(([interviewId, userReply]) => {
-      const q = questions.find((qq) => qq.interviewId === Number(interviewId));
+      const q = questions.find((qq) => qq?.interviewId === Number(interviewId));
       return {
         interviewId: Number(interviewId),
         interviewContent: q?.interviewContent ?? '',
@@ -87,85 +84,85 @@ const TestSpeech: React.FC = () => {
     }
   };
 
-  /* 렌더링 */
+  const handleMicClick = () => {
+    if (timer) clearInterval(timer);
+    setTimeLeft(5);
+    const newTimer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(newTimer);
+          setTimer(null);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    setTimer(newTimer);
+  };
+
   const currentQuestion = questions[currentIndex];
 
   return (
-    <div
-      className="min-h-screen bg-blue-50 py-10 px-2"
-      style={{ paddingTop: NAV_HEIGHT_PX }} /* nav 높이만큼 내리기 */
-    >
-      <div className="w-full max-w-4xl mx-auto px-1">
-        {/* 헤더 */}
-        <header className="flex justify-between items-center mb-4">
-          {currentQuestion && (
-            <h2 className="text-xl font-semibold text-gray-800">{currentQuestion.subjectName}</h2>
-          )}
-          <span className="text-base font-semibold text-cyan-700 bg-cyan-100 px-2 py-1 rounded-md shadow-sm">
-            {questions.length > 0
-              ? `문제 ${currentIndex + 1} / ${questions.length}`
-              : ''}
-          </span>
-        </header>
-
-        {/* 질문 카드 */}
+    <div className="py-10 px-4" style={{ paddingTop: NAV_HEIGHT_PX }}>
+      <div className="max-w-xl mx-auto bg-white border border-[#dbe2ef] rounded-2xl p-6 font-[Pretendard]">
         {currentQuestion && (
-          <QuestionSpeechCard
-  key={currentQuestion.interviewId}
-  question={currentQuestion}
-  isAnswered={!!recordingDoneMap[currentQuestion.interviewId]} // 녹음 완료 여부 
-  onTranscriptComplete={(interviewId, text, isFinal) => {
-    setAnswers((prev) => ({ ...prev, [interviewId]: text }));
-    if (isFinal) {
-      setRecordingDoneMap((prev) => ({ ...prev, [interviewId]: true }));
-      if (interviewId === questions[0]?.interviewId) {
-        setFirstRecordingDone(true);
-      }
-    }
-  }}
-/>
+          <>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-bold text-[#1f2d40] flex items-center">
+                <span className="text-[13px] mr-2 font-semibold bg-indigo-100 text-[#6378eb] rounded-md flex items-center justify-center shadow-inner px-2 py-2">과목명</span>
+                {currentQuestion.subjectName}</h2>
+              <span className="text-[13px] font-semibold bg-indigo-100 text-[#6378eb] rounded-md flex items-center justify-center shadow-inner px-2 py-2">
+                문제 {currentIndex + 1} / {questions.length}
+              </span>
+            </div>
 
+            <QuestionSpeechCard
+              key={currentQuestion.interviewId}
+              question={currentQuestion}
+              isAnswered={!!recordingDoneMap[currentQuestion.interviewId]}
+              onTranscriptComplete={(interviewId, text, isFinal) => {
+                setAnswers((prev) => ({ ...prev, [interviewId]: text }));
+                if (isFinal) {
+                  setRecordingDoneMap((prev) => ({ ...prev, [interviewId]: true }));
+                  if (interviewId === questions[0]?.interviewId) {
+                    setFirstRecordingDone(true);
+                  }
+                }
+              }}
+            />
+
+            <div className="mt-6 flex justify-between">
+              <button
+                onClick={handlePrev}
+                disabled={currentIndex === 0}
+                className="flex items-center gap-1 rounded-[8px] bg-[#D7DBFF] px-6 py-3 text-[#6378EB]"
+              >
+                ⬅ 이전
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={
+                  currentIndex === questions.length - 1 ||
+                  !recordingDoneMap[questions[currentIndex]?.interviewId]
+                }
+                className="pflex items-center gap-1 rounded-[8px] bg-[#6378EB] px-6 py-3 text-white"
+              >
+                다음 ➡
+              </button>
+            </div>
+
+            <div className="mt-6">
+              <button
+                onClick={handleSubmitClick}
+                disabled={!firstRecordingDone}
+                className="w-full py-3 bg-[#779AF4] text-white rounded-md hover:bg-[#6378EB] transition"
+              >
+                {firstRecordingDone ? '면접 제출하기' : '녹음 완료 후 제출 가능'}
+              </button>
+            </div>
+          </>
         )}
 
-        {/* 이전/다음 버튼 */}
-        <div className="mt-6 flex justify-between">
-          <button
-            onClick={handlePrev}
-            disabled={currentIndex === 0}
-            className="px-5 py-2 rounded-md border font-semibold text-sm transition-colors
-                       disabled:opacity-40 disabled:cursor-not-allowed
-                       bg-white text-cyan-600 border-cyan-400 hover:bg-cyan-50"
-          >
-            ⬅ 이전
-          </button>
-          <button
-          onClick={handleNext}
-          disabled={
-            currentIndex === questions.length - 1 ||
-            !recordingDoneMap[questions[currentIndex]?.interviewId] // 녹음 안 끝났으면 비활성화
-          }
-          className="px-5 py-2 rounded-md border font-semibold text-sm transition-colors
-                    disabled:opacity-40 disabled:cursor-not-allowed
-                    bg-white text-cyan-600 border-cyan-400 hover:bg-cyan-50"
-        >
-          다음 ➡
-            </button>
-
-        </div>
-
-        {/* 제출 버튼 */}
-        <div className="mt-6 flex justify-center">
-          <button
-            onClick={handleSubmitClick}
-            disabled={!firstRecordingDone}
-            className="px-6 py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700
-                       disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {firstRecordingDone ? '면접 제출하기' : '녹음 완료 후 제출 가능'}
-          </button>
-        </div>
-
-        {/* 제출 확인 모달 */}
         {showConfirm && (
           <ConfirmModal
             title="정말 제출하시겠습니까?"
