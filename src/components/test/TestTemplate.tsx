@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { SlArrowLeft, SlArrowRight } from 'react-icons/sl';
 import smallRabbit    from '@/asset/img/diagnosis/smallRabbit.png';
 import Isolation      from '@/asset/img/diagnosis/Isolation_Mode.png';
@@ -5,7 +6,7 @@ import startBtn       from '@/asset/img/diagnosis/startBtn.png';
 import pixelTexture   from '@/asset/img/common/pixel_texture.png';
 import responsiveBG   from '@/asset/img/diagnosis/mobile.png';
 import { Options }    from '../ui/option';
-import { useState }   from 'react';
+import { useEffect, useState }   from 'react';
 import ConfirmModal   from '../modal/ConfirmModal';
 
 /* ===== 타입 정의 ===== */
@@ -98,6 +99,17 @@ export default function TestTemplate({
 }) {
   /* FE / BE 선택 상태 */
   const [selectedTrack, setSelectedTrack] = useState<'FE' | 'BE' | null>(null);
+  
+  /* wave 번갈아서 하기 */
+  const [activeWave, setActiveWave] = useState<'FE' | 'BE'>('FE');
+    useEffect(() => {
+      if (selectedTrack === null) {
+        const timer = setInterval(() => {
+          setActiveWave((prev) => (prev === 'FE' ? 'BE' : 'FE'));
+        }, 1200);
+        return () => clearInterval(timer);
+      }
+    }, [selectedTrack]);
 
   /* 카피 결정 */
   const derivedSubjectId =
@@ -168,9 +180,9 @@ export default function TestTemplate({
               introTotal = totalCountDisplayed;
             } else {
               /* diagnosis → FE/BE 선택 여부에 따라 표시 */
-              if (selectedTrack === 'FE') introTotal = FE_TOTAL;      // 9
-              else if (selectedTrack === 'BE') introTotal = BE_TOTAL; // 8
-              else introTotal = '-';                                  // 미선택
+              if (selectedTrack === 'FE') introTotal = FE_TOTAL;
+              else if (selectedTrack === 'BE') introTotal = BE_TOTAL;
+              else introTotal = '-';
             }
 
             return (
@@ -194,32 +206,32 @@ export default function TestTemplate({
 
             {/* diagnosis FE / BE 선택 텍스트 */}
             {kind === 'diagnosis' ? (
-              <div className="mt-6 flex flex-col gap-2 text-sm">
-                {(['FE', 'BE'] as const).map((track) => (
-                  <p
-                    key={track}
-                    onClick={() => setSelectedTrack(track)}
-                    className={`
-                      flex items-center gap-2 cursor-pointer
-                      ${selectedTrack === track
-                        ? 'font-semibold text-[#6378EB]'
-                        : 'text-[#4A4A4A]'}
-                    `}
-                  >
-                    {/* 선택된 항목만 이미지 표시 */}
-                    {selectedTrack === track && (
-                      <>
-                        <img src={Isolation} alt="arrow" className="w-[15px]" />
-                        <img
-                          src={smallRabbit}
-                          alt="rabbit"
-                          className="w-[25px]"
-                        />
-                      </>
-                    )}
-                    {track === 'FE' ? '프론트엔드' : '백엔드'}
-                  </p>
-                ))}
+              <div className="mt-6 flex flex-col gap-3 text-m">
+                {(['FE', 'BE'] as const).map((track) => {
+                  const isSel    = selectedTrack === track;
+                  const noSelYet = selectedTrack === null;
+                  const waveClass = noSelYet && activeWave === track ? 'wave-y' : '';
+                  return (
+                    <p
+                      key={track}
+                      onClick={() => setSelectedTrack(track)}
+                      className={`
+                        flex items-center gap-2 cursor-pointer
+                        ${isSel ? 'font-semibold text-[#6378EB]' : 'text-[#4A4A4A]'}
+                        ${waveClass}
+                      `}
+                    >
+                      {isSel && (
+                        <>
+                          <img src={Isolation} alt="arrow" className="w-[15px]" />
+                          <img src={smallRabbit} alt="rabbit" className="w-[25px]" />
+                        </>
+                      )}
+                      {!isSel && '▶ '}
+                      {track === 'FE' ? '프론트엔드' : '백엔드'}
+                    </p>
+                  );
+                })}
               </div>
             ) : (
               /* pre / post 안내 */
@@ -265,7 +277,6 @@ export default function TestTemplate({
         {/* 진행 통계 */}
         <div className="flex flex-row gap-6 lg:flex-col">
           <StatCard title="전체 질문 개수" value={totalCountDisplayed} />
-          {/* displayedAnsweredCount 사용 */}
           <StatCard
             title="현재 응답 개수"
             value={displayedAnsweredCount}
