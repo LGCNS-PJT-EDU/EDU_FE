@@ -9,7 +9,7 @@ interface FeedbackData {
   userReply: string;
   aiFeedback: string;
   interviewAnswer: string;
-  recommend_keywords: string[];
+  keyword: string;
 }
 
 const SpeechFeedbackPage: React.FC = () => {
@@ -91,9 +91,7 @@ const SpeechFeedbackPage: React.FC = () => {
           <div>
             <h3 className="text-sm text-gray-500 font-semibold mb-1">추천 키워드</h3>
             <div className="bg-green-50 border border-green-200 text-sm text-gray-800 rounded-md px-4 py-3">
-              {item.recommend_keywords?.length
-                ? item.recommend_keywords.join(', ')
-                : '추천 키워드 없음'}
+              {item.keyword?.length ? item.keyword : '추천 키워드 없음'}
             </div>
           </div>
         </section>
