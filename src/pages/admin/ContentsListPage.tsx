@@ -38,24 +38,9 @@ const columns: ColumnDef<ContentWithId>[] = [
     cell: ({ row }) => <div>{row.getValue('contentPlatform')}</div>,
   },
   {
-    accessorKey: 'contentDuration',
-    header: '소요 시간',
-    cell: ({ row }) => <div>{row.getValue('contentDuration')}</div>,
-  },
-  {
-    accessorKey: 'contentLevel',
-    header: '난이도',
-    cell: ({ row }) => <div>{row.getValue('contentLevel')}</div>,
-  },
-  {
-    accessorKey: 'contentPrice',
-    header: '가격',
-    cell: ({ row }) => <div>{row.getValue('contentPrice')}</div>,
-  },
-  {
-    accessorKey: 'subId',
-    header: '과목 ID',
-    cell: ({ row }) => <div>{row.getValue('subId')}</div>,
+    accessorKey: 'subName',
+    header: '과목명',
+    cell: ({ row }) => <div>{row.getValue('subName')}</div>,
   },
 ];
 
@@ -63,17 +48,18 @@ export default function ContentsListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number(searchParams.get('page')) || 1;
-  const contentTitle = searchParams.get('contentTitle') || '';
-  const contentType = searchParams.get('contentType') || '';
+  const title = searchParams.get('title') || '';
+  const subName = searchParams.get('subName') || '';
 
   const query = useQuery({
-    queryKey: contentTitle || contentType ? ['admin-contents', { page, contentTitle, contentType }] : ['admin-contents-without-filter'],
+    queryKey: title || subName ? ['admin-contents', { page, title, subName }] : ['admin-contents-without-filter'],
+    staleTime: 1000 * 60 * 5,
     queryFn: async () => {
       const data = await fetchContentList({
         page: page - 1,
         size: 10,
-        contentTitle,
-        contentType,
+        title,
+        subName,
       });
       return {
         ...data,
@@ -99,10 +85,10 @@ export default function ContentsListPage() {
     });
   };
 
-  const handleSubmit = (data: { contentTitle: string; contentType: string }) => {
+  const handleSubmit = (data: { title: string; subName: string }) => {
     setSearchParams((prev) => {
-      data.contentTitle ? prev.set('contentTitle', data.contentTitle) : prev.delete('contentTitle');
-      data.contentType ? prev.set('contentType', data.contentType) : prev.delete('contentType');
+      data.title ? prev.set('title', data.title) : prev.delete('title');
+      data.subName ? prev.set('subName', data.subName) : prev.delete('subName');
       prev.set('page', '1');
       return prev;
     });
@@ -110,8 +96,8 @@ export default function ContentsListPage() {
 
   const handleReset = () => {
     setSearchParams((prev) => {
-      prev.delete('contentTitle');
-      prev.delete('contentType');
+      prev.delete('title');
+      prev.delete('subName');
       prev.set('page', '1');
       return prev;
     });
@@ -124,12 +110,12 @@ export default function ContentsListPage() {
         onReset={handleReset}
         items={[
           {
-            name: 'contentTitle',
+            name: 'title',
             label: '제목',
           },
           {
-            name: 'contentType',
-            label: '유형',
+            name: 'subName',
+            label: '과목명',
           },
         ]}
       />
