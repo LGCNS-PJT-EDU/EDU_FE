@@ -4,36 +4,39 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import BaseAdminPage from './BaseAdminPage';
-import { fetchRecommendFailLogs, RecommendFailLog } from '@/api/adminService';
+import {
+  fetchRecommendFailLogs,
+  RecommendFailLog,
+  retryRecommendFailLog,
+} from '@/api/adminService';
 import AdminPagination from './AdminPagination';
 import AdminDataTable from './AdminDataTable';
 import AdminDataFilter from './AdminDataFilter';
-
-const columns: ColumnDef<RecommendFailLog>[] = [
-  {
-    accessorKey: 'id',
-    header: 'ID',
-    cell: ({ row }) => <div>{row.getValue('id')!.toString()}</div>,
-  },
-  { accessorKey: 'email', header: '이메일', cell: ({ row }) => <div>{row.getValue('email')}</div> },
-  { accessorKey: 'nickname', header: '닉네임', cell: ({ row }) => <div>{row.getValue('nickname')}</div> },
-  { accessorKey: 'subjectId', header: '과목 ID', cell: ({ row }) => <div>{row.getValue('subjectId')}</div> },
-  { accessorKey: 'errorCode', header: '오류 코드', cell: ({ row }) => <div>{row.getValue('errorCode')}</div> },
-  { accessorKey: 'errorMessage', header: '오류 메시지', cell: ({ row }) => <div>{row.getValue('errorMessage')}</div> },
-  { accessorKey: 'retry', header: '재시도 여부', cell: ({ row }) => <div>{row.getValue('retry') ? 'Y' : 'N'}</div> },
-  { accessorKey: 'createdDt', header: '생성일', cell: ({ row }) => <div>{row.getValue('createdDt')}</div> },
-];
+import { Button } from '@/components/ui/button';
 
 export default function RecommendFailLogsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
 
   const page = Number(searchParams.get('page')) || 1;
   const nickname = searchParams.get('nickname') || '';
   const email = searchParams.get('email') || '';
   const errorCode = searchParams.get('errorCode') || '';
+
+  const retryMutation = useMutation({
+    mutationFn: (id: number) => retryRecommendFailLog(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (q) =>
+          q.queryKey[0] === 'admin-recommend-fail-logs' ||
+          q.queryKey[0] === 'admin-recommend-fail-logs-without-filter',
+      });
+    },
+  });
 
   const query = useQuery({
     queryKey:
@@ -52,6 +55,36 @@ export default function RecommendFailLogsPage() {
       return data;
     },
   });
+
+  const columns: ColumnDef<RecommendFailLog>[] = useMemo(
+    () => [
+      { accessorKey: 'id', header: 'ID', cell: ({ row }) => <div>{row.getValue('id')}</div> },
+      { accessorKey: 'email', header: '이메일', cell: ({ row }) => <div>{row.getValue('email')}</div> },
+      { accessorKey: 'nickname', header: '닉네임', cell: ({ row }) => <div>{row.getValue('nickname')}</div> },
+      { accessorKey: 'subjectId', header: '과목 ID', cell: ({ row }) => <div>{row.getValue('subjectId')}</div> },
+      { accessorKey: 'errorCode', header: '오류 코드', cell: ({ row }) => <div>{row.getValue('errorCode')}</div> },
+      { accessorKey: 'errorMessage', header: '오류 메시지', cell: ({ row }) => <div>{row.getValue('errorMessage')}</div> },
+      { accessorKey: 'retry', header: '재시도 여부', cell: ({ row }) => <div>{row.getValue('retry') ? 'Y' : 'N'}</div> },
+      {
+        accessorKey: 'createdDt',
+        header: '생성일',
+        cell: ({ row }) => <div>{(row.getValue('createdDt') as string).split('.')[0]}</div>,
+      },
+      {
+        id: 'actions',
+        header: '재시도',
+        cell: ({ row }) => (
+          <Button
+            disabled={retryMutation.isPending}
+            onClick={() => retryMutation.mutate(row.original.id)}
+          >
+            재시도
+          </Button>
+        ),
+      },
+    ],
+    [retryMutation]
+  );
 
   const table = useReactTable({
     data: query.data?.content || [],
@@ -88,7 +121,7 @@ export default function RecommendFailLogsPage() {
   };
 
   return (
-    <BaseAdminPage title="추천 실패 로그">
+    <BaseAdminPage title="추천 컨텐츠 실패 로그">
       <AdminDataFilter
         onSubmit={handleSubmit}
         onReset={handleReset}

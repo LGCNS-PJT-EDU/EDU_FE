@@ -20,7 +20,7 @@ const NavItem = ({ path, label, icon }: { path: string; label: string; icon: Rea
 
 export default function AdminNav() {
   return (
-    <div className="min-w-[200px] h-screen bg-[#F2F9FB] px-[20px] py-[40px] border-r-[1px] border-[#D0E9EC]">
+    <div className="min-w-[230px] h-screen bg-[#F2F9FB] px-[20px] py-[40px] border-r-[1px] border-[#D0E9EC]">
       <h1 className="text-2xl font-bold mb-[20px] text-[#6378EB]">TakeIt Admin</h1>
       <div className="flex flex-col gap-[4px]">
         <NavItem path="/admin/dashboard" label="대시보드" icon={<Home />} />
@@ -29,7 +29,7 @@ export default function AdminNav() {
         <NavItem path="/admin/questions" label="문제 관리 (에러)" icon={<FileQuestion />} />
         <NavItem path="/admin/contents" label="추천 컨텐츠 관리" icon={<Lightbulb />} />
         <NavItem path="/admin/fail-logs/feedback" label="피드백 실패 로그" icon={<AlertCircle />} />
-        <NavItem path="/admin/fail-logs/recommend" label="추천 실패 로그" icon={<AlertCircle />} />
+        <NavItem path="/admin/fail-logs/recommend" label="추천 컨텐츠 실패 로그" icon={<AlertCircle />} />
       </div>
     </div>
   );

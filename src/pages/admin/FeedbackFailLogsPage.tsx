@@ -4,34 +4,39 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import BaseAdminPage from './BaseAdminPage';
-import { fetchFeedbackFailLogs, FeedbackFailLog } from '@/api/adminService';
+import {
+  fetchFeedbackFailLogs,
+  FeedbackFailLog,
+  retryFeedbackFailLog,
+} from '@/api/adminService';
 import AdminPagination from './AdminPagination';
 import AdminDataTable from './AdminDataTable';
 import AdminDataFilter from './AdminDataFilter';
-
-const columns: ColumnDef<FeedbackFailLog>[] = [
-  { accessorKey: 'id', header: 'ID', cell: ({ row }) => <div>{row.getValue('id')}</div> },
-  { accessorKey: 'email', header: '이메일', cell: ({ row }) => <div>{row.getValue('email')}</div> },
-  { accessorKey: 'nickname', header: '닉네임', cell: ({ row }) => <div>{row.getValue('nickname')}</div> },
-  { accessorKey: 'subjectId', header: '과목 ID', cell: ({ row }) => <div>{row.getValue('subjectId')}</div> },
-  { accessorKey: 'type', header: '구분', cell: ({ row }) => <div>{row.getValue('type')}</div> },
-  { accessorKey: 'nth', header: '회차', cell: ({ row }) => <div>{row.getValue('nth')}</div> },
-  { accessorKey: 'errorCode', header: '오류 코드', cell: ({ row }) => <div>{row.getValue('errorCode')}</div> },
-  { accessorKey: 'errorMessage', header: '오류 메시지', cell: ({ row }) => <div>{row.getValue('errorMessage')}</div> },
-  { accessorKey: 'retry', header: '재시도 여부', cell: ({ row }) => <div>{row.getValue('retry') ? 'Y' : 'N'}</div> },
-  { accessorKey: 'createdDt', header: '생성일', cell: ({ row }) => <div>{row.getValue('createdDt')}</div> },
-];
+import { Button } from '@/components/ui/button';
 
 export default function FeedbackFailLogsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
 
   const page = Number(searchParams.get('page')) || 1;
   const nickname = searchParams.get('nickname') || '';
   const email = searchParams.get('email') || '';
   const errorCode = searchParams.get('errorCode') || '';
+
+  const retryMutation = useMutation({
+    mutationFn: (id: number) => retryFeedbackFailLog(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (q) =>
+          q.queryKey[0] === 'admin-feedback-fail-logs' ||
+          q.queryKey[0] === 'admin-feedback-fail-logs-without-filter',
+      });
+    },
+  });
 
   const query = useQuery({
     queryKey:
@@ -50,6 +55,39 @@ export default function FeedbackFailLogsPage() {
       return data;
     },
   });
+
+  const columns: ColumnDef<FeedbackFailLog>[] = useMemo(
+    () => [
+      { accessorKey: 'id', header: 'ID', cell: ({ row }) => <div>{row.getValue('id')}</div> },
+      { accessorKey: 'email', header: '이메일', cell: ({ row }) => <div>{row.getValue('email')}</div> },
+      { accessorKey: 'nickname', header: '닉네임', cell: ({ row }) => <div>{row.getValue('nickname')}</div> },
+      { accessorKey: 'subjectId', header: '과목 ID', cell: ({ row }) => <div>{row.getValue('subjectId')}</div> },
+      { accessorKey: 'type', header: '구분', cell: ({ row }) => <div>{row.getValue('type')}</div> },
+      { accessorKey: 'nth', header: '회차', cell: ({ row }) => <div>{row.getValue('nth')}</div> },
+      { accessorKey: 'errorCode', header: '오류 코드', cell: ({ row }) => <div>{row.getValue('errorCode')}</div> },
+      { accessorKey: 'errorMessage', header: '오류 메시지', cell: ({ row }) => <div>{row.getValue('errorMessage')}</div> },
+      { accessorKey: 'retry', header: '재시도 여부', cell: ({ row }) => <div>{row.getValue('retry') ? 'Y' : 'N'}</div> },
+      {
+        accessorKey: 'createdDt',
+        header: '생성일',
+        cell: ({ row }) => <div>{(row.getValue('createdDt') as string).split('.')[0]}</div>,
+      },
+
+      {
+        id: 'actions',
+        header: '재시도',
+        cell: ({ row }) => (
+          <Button
+            disabled={retryMutation.isPending}
+            onClick={() => retryMutation.mutate(row.original.id)}
+          >
+            재시도
+          </Button>
+        ),
+      },
+    ],
+    [retryMutation]
+  );
 
   const table = useReactTable({
     data: query.data?.content || [],

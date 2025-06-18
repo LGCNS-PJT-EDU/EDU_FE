@@ -234,3 +234,11 @@ export const fetchRecommendFailLogs = async (
     totalElements: page.totalElements,
   };
 };
+
+export const retryFeedbackFailLog = async (id: number): Promise<void> => {
+  await api.post<ApiResp<null>>(`/api/admin/fail-logs/feedback/${id}/retry`);
+};
+
+export const retryRecommendFailLog = async (id: number): Promise<void> => {
+  await api.post<ApiResp<null>>(`/api/admin/fail-logs/recommend/${id}/retry`);
+};
