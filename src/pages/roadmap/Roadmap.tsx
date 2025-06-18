@@ -14,8 +14,24 @@ import useRoadmapEdit from '@/hooks/useRoadmapEdit';
 import { useRoadmapQuery } from '@/hooks/useRoadmapQuery';
 import axios from 'axios';
 import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
-// --- 수정: fetchRoadmap import (취소시 사용) ---
+// fetchRoadmap import (취소시 사용) ---
 import { fetchRoadmap } from '@/api/roadmapService';
+
+function ArcadeEmbed() {
+  return (
+    <div style={{ position: 'relative', paddingBottom: 'calc(45.27777777777778% + 41px)', height: 0, width: '100%' }}>
+      <iframe
+        src="https://demo.arcade.software/zJyCHA0V2UEEc3IjGgfP?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
+        title="학습 로드맵에서 과목 완료 처리하기"
+        frameBorder="0"
+        loading="lazy"
+        allowFullScreen
+        allow="clipboard-write"
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', colorScheme: 'light' }}
+      />
+    </div>
+  );
+}
 
 export default function Roadmap() {
   /* 로딩 스토어 */
@@ -213,6 +229,12 @@ export default function Roadmap() {
             )}
           </div>
         </div>
+
+        {/* --- Arcade Embed 영상 가이드 --- */}
+        <div className="max-w-[718px] mx-auto w-full mb-8">
+          <ArcadeEmbed />
+        </div>
+
         {/* 로드맵 그래프 (스크롤 영역) */}
         <div className="flex-1 min-h-0 md:ml-5 mb-10">
           <div
