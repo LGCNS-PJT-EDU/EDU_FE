@@ -24,6 +24,8 @@ import SubjectListPage from '@/pages/admin/SubjectListPage';
 import ContentListPage from '@/pages/admin/ContentsListPage';
 import AdminNotAuthorizedPage from '@/pages/admin/AdminNotAuthorizedPage';
 import AdminNotFoundPage from '@/pages/admin/AdminNotFoundPage';
+import FeedbackFailLogsPage from '@/pages/admin/FeedbackFailLogsPage';
+import RecommendFailLogsPage from '@/pages/admin/RecommendFailLogsPage';
 
 const router = createBrowserRouter([
   {
@@ -65,6 +67,8 @@ const router = createBrowserRouter([
       { path: 'contents', element: <ContentListPage /> },
       { path: 'not-found', element: <AdminNotFoundPage /> },
       { path: '*', element: <Navigate to="/admin/not-found" /> },
+      { path: 'fail-logs/feedback', element: <FeedbackFailLogsPage /> },
+      { path: 'fail-logs/recommend', element: <RecommendFailLogsPage /> },
     ],
   },
   { path: '/admin/not-authorized', element: <AdminNotAuthorizedPage /> },

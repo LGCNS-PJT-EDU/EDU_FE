@@ -10,7 +10,7 @@ import { ColumnDef, Table as TanstackTable, flexRender } from '@tanstack/react-t
 import { UseQueryResult } from '@tanstack/react-query';
 import { PageableData } from '@/api/adminService';
 
-export default function AdminDataTable<RowDataType extends { id: string }>({
+export default function AdminDataTable<RowDataType extends { id: string | number }>({
   table,
   columns,
   query,

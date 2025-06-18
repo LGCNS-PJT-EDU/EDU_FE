@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../ui/button';
-import { Book, FileQuestion, Home, Lightbulb, Users } from 'lucide-react';
+import { Book, FileQuestion, Home, Lightbulb, Users, AlertCircle } from 'lucide-react';
 
 const NavItem = ({ path, label, icon }: { path: string; label: string; icon: React.ReactNode }) => {
   const pathname = useLocation().pathname;
@@ -28,6 +28,8 @@ export default function AdminNav() {
         <NavItem path="/admin/subjects" label="과목 관리" icon={<Book />} />
         <NavItem path="/admin/questions" label="문제 관리 (에러)" icon={<FileQuestion />} />
         <NavItem path="/admin/contents" label="추천 컨텐츠 관리" icon={<Lightbulb />} />
+        <NavItem path="/admin/fail-logs/feedback" label="피드백 실패 로그" icon={<AlertCircle />} />
+        <NavItem path="/admin/fail-logs/recommend" label="추천 실패 로그" icon={<AlertCircle />} />
       </div>
     </div>
   );

@@ -169,3 +169,68 @@ export const fetchQuestionList = async (request: QuestionReq): Promise<PageableD
     totalElements: 10,
   };
 };
+
+export interface FailLogReq extends PageableReq {
+  nickname?: string;
+  email?: string;
+  errorCode?: string;
+  sort?: string;
+}
+
+export interface FeedbackFailLog {
+  id: number;
+  email: string;
+  nickname: string;
+  subjectId: number;
+  type: string;
+  nth: number;
+  errorCode: string;
+  errorMessage: string;
+  retry: boolean;
+  createdDt: string;
+}
+
+export interface RecommendFailLog {
+  id: number;
+  email: string;
+  nickname: string;
+  subjectId: number;
+  errorCode: string;
+  errorMessage: string;
+  retry: boolean;
+  createdDt: string;
+}
+
+export const fetchFeedbackFailLogs = async (
+  request: FailLogReq
+): Promise<PageableData<FeedbackFailLog>> => {
+  const res = await api.get<ApiResp<{
+    content: FeedbackFailLog[];
+    page: { size: number; number: number; totalElements: number; totalPages: number };
+  }>>('/api/admin/fail-logs/feedback', { params: request });
+
+  const { content, page } = res.data.data;
+  return {
+    content,
+    pageable: { pageNumber: page.number, pageSize: page.size },
+    totalPages: page.totalPages,
+    totalElements: page.totalElements,
+  };
+};
+
+export const fetchRecommendFailLogs = async (
+  request: FailLogReq
+): Promise<PageableData<RecommendFailLog>> => {
+  const res = await api.get<ApiResp<{
+    content: RecommendFailLog[];
+    page: { size: number; number: number; totalElements: number; totalPages: number };
+  }>>('/api/admin/fail-logs/recommend', { params: request });
+
+  const { content, page } = res.data.data;
+  return {
+    content,
+    pageable: { pageNumber: page.number, pageSize: page.size },
+    totalPages: page.totalPages,
+    totalElements: page.totalElements,
+  };
+};
