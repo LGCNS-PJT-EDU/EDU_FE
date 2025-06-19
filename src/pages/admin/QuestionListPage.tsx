@@ -7,60 +7,59 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import BaseAdminPage from './BaseAdminPage';
-import { fetchQuestionList, Question } from '@/api/adminService';
+import { fetchExamList, Exam } from '@/api/adminService';
 import AdminPagination from './AdminPagination';
 import AdminDataTable from './AdminDataTable';
 import AdminDataFilter from './AdminDataFilter';
 
-interface QuestionWithId extends Question {
-  id: string;
-}
+type ExamRow = Omit<Exam, 'id'> & { id: string };
 
-const columns: ColumnDef<QuestionWithId>[] = [
+const columns: ColumnDef<ExamRow>[] = [
   {
-    accessorKey: 'questionId',
-    header: '질문 ID',
-    cell: ({ row }) => <div>{row.getValue('questionId')}</div>,
+    accessorKey: 'id',
+    header: '문제 ID',
+    cell: ({ row }) => <div>{row.getValue('id')}</div>,
   },
   {
-    accessorKey: 'question',
-    header: '질문',
-    cell: ({ row }) => <div>{row.getValue('question')}</div>,
+    accessorKey: 'examContent',
+    header: '문제 내용',
+    cell: ({ row }) => <div>{row.getValue('examContent')}</div>,
   },
   {
-    accessorKey: 'questionType',
-    header: '질문 유형',
-    cell: ({ row }) => <div>{row.getValue('questionType')}</div>,
+    accessorKey: 'subName',
+    header: '과목명',
+    cell: ({ row }) => <div>{row.getValue('subName')}</div>,
   },
 ];
 
-export default function QuestionListPage() {
+export default function ExamListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number(searchParams.get('page')) || 1;
-  const question = searchParams.get('question') || '';
-  const questionType = searchParams.get('questionType') || '';
+  const examContent = searchParams.get('examContent') || '';
+  const subName = searchParams.get('subName') || '';
 
   const query = useQuery({
-    queryKey: ['admin-questions', { page, question, questionType }],
+    queryKey: ['admin-exams', { page, examContent, subName }],
+    staleTime: 1000 * 60 * 5,
     queryFn: async () => {
-      const data = await fetchQuestionList({
+      const data = await fetchExamList({
         page: page - 1,
         size: 10,
-        question,
-        questionType,
+        examContent,
+        subName,
       });
       return {
         ...data,
-        content: data.content.map((question) => ({
-          ...question,
-          id: question.questionId.toString(),
+        content: data.content.map((Exam) => ({
+          ...Exam,
+          id: Exam.id.toString(),
         })),
       };
     },
   });
 
-  const table = useReactTable({
+  const table = useReactTable<ExamRow>({
     data: query.data?.content || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -74,10 +73,10 @@ export default function QuestionListPage() {
     });
   };
 
-  const handleSubmit = (data: { question: string; questionType: string }) => {
+  const handleSubmit = (data: { examContent: string; subName: string }) => {
     setSearchParams((prev) => {
-      data.question ? prev.set('question', data.question) : prev.delete('question');
-      data.questionType ? prev.set('questionType', data.questionType) : prev.delete('questionType');
+      data.examContent ? prev.set('examContent', data.examContent) : prev.delete('examContent');
+      data.subName ? prev.set('subName', data.subName) : prev.delete('subName');
       prev.set('page', '1');
       return prev;
     });
@@ -85,26 +84,26 @@ export default function QuestionListPage() {
 
   const handleReset = () => {
     setSearchParams((prev) => {
-      prev.delete('question');
-      prev.delete('questionType');
+      prev.delete('examContent');
+      prev.delete('subName');
       prev.set('page', '1');
       return prev;
     });
   };
   
   return (
-    <BaseAdminPage title="질문 관리">
+    <BaseAdminPage title="문제 관리">
       <AdminDataFilter
         onSubmit={handleSubmit}
         onReset={handleReset}
         items={[
           {
-            name: 'question',
+            name: 'examContent',
             label: '질문',
           },
           {
-            name: 'questionType',
-            label: '질문 유형',
+            name: 'subName',
+            label: '과목명',
           },
         ]}
       />
