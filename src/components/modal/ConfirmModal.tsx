@@ -12,6 +12,7 @@ interface Props extends WithImage {
   message: string;
   confirmText?: string;
   onConfirm?: () => void;
+  confirmDisabled?: boolean;
 }
 
 export default function ConfirmModal({
@@ -22,6 +23,7 @@ export default function ConfirmModal({
   message,
   confirmText = '확인',
   onConfirm,
+  confirmDisabled = false,
 }: Props) {
   const image = imgSrc ?? takeRabbit;
 
@@ -35,6 +37,7 @@ export default function ConfirmModal({
         <button
           className="absolute right-3 md:right-4 top-3 md:top-4 text-2xl text-gray-400 hover:text-gray-600"
           onClick={onClose}
+          disabled={confirmDisabled} // 제출 중이면 닫기 버튼도 막음 (선택)
         >
           &times;
         </button>
@@ -58,9 +61,14 @@ export default function ConfirmModal({
         {/* 확인 버튼 */}
         <button
           onClick={() => {
-            onConfirm?.();
+            if (!confirmDisabled) onConfirm?.();
           }}
-          className="w-full rounded-lg bg-blue-600 py-2 text-white transition hover:bg-blue-700"
+          disabled={confirmDisabled}
+          className={`w-full rounded-lg py-2 text-white transition ${
+            confirmDisabled
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700'
+          }`}
         >
           {confirmText}
         </button>

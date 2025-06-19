@@ -26,6 +26,8 @@ const TestSpeech: React.FC = () => {
   const [recordingDoneMap, setRecordingDoneMap] = useState<{ [interviewId: number]: boolean }>({});
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,6 +64,7 @@ const TestSpeech: React.FC = () => {
   const handleSubmitClick = () => setShowConfirm(true);
 
   const handleConfirmSubmit = async () => {
+    setIsSubmitting(true);
     if (!nth) return;
 
     const payload = Object.entries(answers).map(([interviewId, userReply]) => {
@@ -79,8 +82,10 @@ const TestSpeech: React.FC = () => {
     } catch (e) {
       console.error('제출 실패:', e);
       alert('제출 실패');
-    } finally {
-      setShowConfirm(false);
+    }
+    finally {
+      setIsSubmitting(false); // 1. 비활성화 해제 먼저
+      setShowConfirm(false);  // 2. 모달 닫기
     }
   };
 
@@ -167,9 +172,10 @@ const TestSpeech: React.FC = () => {
           <ConfirmModal
             title="정말 제출하시겠습니까?"
             message="제출 후 AI 피드백 생성까지 약 1분 소요됩니다."
-            confirmText="제출"
+            confirmText={isSubmitting ? '제출 중...' : '제출'}
             onConfirm={handleConfirmSubmit}
             onClose={() => setShowConfirm(false)}
+            confirmDisabled={isSubmitting}
           />
         )}
       </div>
