@@ -11,6 +11,7 @@ import { fetchSubjectDetail, SubjectDetail } from '@/hooks/useSubjectDetail';
 import { FeedbackItem, fetchUserFeedback } from '@/hooks/useReport';
 import { useInterviewHistory } from '@/hooks/useInterviewHistory';
 import { useNavigate } from 'react-router-dom';
+import MypageArcadeModal from '@/components/modal/MypageArcadeModal';
 
 interface FeedbackItemWithSubjectId extends FeedbackItem {
   subjectId: number;
@@ -39,6 +40,8 @@ function MyPage() {
   });
 
   const subjectIds = roadmap?.subjects.map((s) => s.subjectId) ?? [];
+
+  const [arcadeOpen, setArcadeOpen] = useState(false);
 
   const subjectDetailsResults = useQueries({
     queries: subjectIds.map((id) => ({
@@ -142,14 +145,15 @@ function MyPage() {
   return (
     <div className="flex flex-col min-h-screen font-[pretendard] w-full px-4 sm:px-0">
       <div className="flex-grow">
-        <div className="w-full flex justify-between items-center mb-2 mt-8">
-          <div className="flex">
-            <img src={rabbit} alt="smallRabbit" className="w-[30px] mr-2" />
-            <p className="text-[20px] font-bold">{progressData?.roadmapName}</p>
-          </div>
-        </div>
 
-        <div className="w-full mb-13">
+        {/* --- 진척도바 영역: relative, 버튼 absolute --- */}
+        <div className="relative w-full mb-13">
+          <div className="flex justify-between items-center mb-2 mt-8">
+            <div className="flex">
+              <img src={rabbit} alt="smallRabbit" className="w-[30px] mr-2" />
+              <p className="text-[20px] font-bold">{progressData?.roadmapName}</p>
+            </div>
+          </div>
           <div className="mb-4 text-[20px] font-medium">
             {progressData?.nickname}님, 오늘도 학습을 진행해볼까요?
             <br className="block sm:hidden" />
@@ -163,6 +167,15 @@ function MyPage() {
               {progressData?.completeCnt}/{progressData?.subCnt} 완료
             </span>
           </div>
+
+          {/* 설명보기 버튼 - 오른쪽 아래 absolute */}
+          <button
+            className="absolute bottom-2 right-0 md:right-8 w-full md:w-[90px] h-[38px] md:h-[40px] px-4 text-sm text-white bg-[#00BFAE] rounded-md font-medium select-none font-[NeoDunggeunmo]"
+            style={{ maxWidth: 120 }}
+            onClick={() => setArcadeOpen(true)}
+          >
+            설명보기
+          </button>
         </div>
 
         <div className="flex mb-6 border-b border-gray-200">
@@ -228,6 +241,9 @@ function MyPage() {
           ) : null
         }
       </div>
+
+      {/* --- 설명 모달 --- */}
+      <MypageArcadeModal open={arcadeOpen} onClose={() => setArcadeOpen(false)} />
 
       <div className="mt-auto w-full max-w-md mx-auto py-4 text-center">
         <button onClick={logout} className="mr-2">로그아웃</button>
