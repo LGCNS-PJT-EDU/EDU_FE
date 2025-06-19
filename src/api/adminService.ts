@@ -159,16 +159,21 @@ export const fetchExamList = async (
   request: ExamReq,
 ): Promise<PageableData<Exam>> => {
   const params = new URLSearchParams();
-  params.append('page', request.page.toString());
-  params.append('size', request.size.toString());
-  params.append('sortBy', 'id');
-  if (request.examContent)
-    params.append('examContent', request.examContent.trim());
-  if (request.subName) params.append('subName', request.subName.trim());
-  const res = await api.get<ApiResp<{ content: Exam[]; page: { size: number; number: number; totalElements: number; totalPages: number } }>>(
-    '/api/admin/exams?' + params.toString(),
-  );
+  params.append("page", request.page.toString());
+  params.append("size", request.size.toString());
+  params.append("sortBy", "id");
+  if (request.examContent) params.append("examContent", request.examContent.trim());
+  if (request.subName) params.append("subName", request.subName.trim());
+
+  const res = await api.get<
+    ApiResp<{
+      content: any[];
+      page: { size: number; number: number; totalElements: number; totalPages: number };
+    }>
+  >("/api/admin/exams?" + params.toString());
+
   const { content, page } = res.data.data;
+
   return {
     content: content.map((item: any) => ({
       ...item,
@@ -176,7 +181,7 @@ export const fetchExamList = async (
     })),
     pageable: { pageNumber: page.number, pageSize: page.size },
     totalPages: page.totalPages,
-    totalElements: page.totalElements,
+    totalElements: page.totalElements
   };
 };
 
