@@ -54,12 +54,15 @@ export default function SubjectListPage() {
   const subNm = searchParams.get('subNm') || '';
 
   const query = useQuery({
-    queryKey: subNm ? ['admin-subjects', { page, subNm }] : ['admin-subjects-without-filter'],
+    queryKey: subNm
+      ? ['admin-subjects', { page, subNm }]
+      : ['admin-subjects-without-filter'],
+    staleTime: 1000 * 60 * 5,
     queryFn: async () => {
       const data = await fetchSubjectList({
         page: page - 1,
         size: 10,
-        subNm,
+        keyword: subNm,
       });
       return {
         ...data,

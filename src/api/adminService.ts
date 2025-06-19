@@ -49,17 +49,25 @@ export interface UserReq extends PageableReq {
 }
 
 export const fetchUserList = async (request: UserReq): Promise<PageableData<User>> => {
-    const params = new URLSearchParams();
-    params.append('page', request.page.toString());
-    params.append('size', request.size.toString());
-    if (request.nickname) {
-      params.append('nickname', request.nickname.trim());
-    }
-    if (request.email) {
-      params.append('email', request.email.trim());
-    }
-    const res = await api.get<ApiResp<PageableData<User>>>('/api/admin/users?' + params.toString());
-    return res.data.data;
+  const params = new URLSearchParams();
+  params.append('page', request.page.toString());
+  params.append('size', request.size.toString());
+  if (request.nickname) {
+    params.append('nickname', request.nickname.trim());
+  }
+  if (request.email) {
+    params.append('email', request.email.trim());
+  }
+  const res = await api.get<ApiResp<{ content: User[]; page: { size: number; number: number; totalElements: number; totalPages: number } }>>(
+    '/api/admin/users?' + params.toString(),
+  );
+  const { content, page } = res.data.data;
+  return {
+    content,
+    pageable: { pageNumber: page.number, pageSize: page.size },
+    totalPages: page.totalPages,
+    totalElements: page.totalElements,
+  };
 };
 
 export type SubType = 'FE' | 'BE';
@@ -75,30 +83,29 @@ export interface Subject {
 }
 
 export interface SubjectReq extends PageableReq {
-  subNm?: string;
+  keyword?: string;
 }
 
-export const fetchSubjectList = async (request: SubjectReq): Promise<PageableData<Subject>> => {
-  //   const res = await api.post<ApiResp<PageableData<Subject>>>('/api/subjects', request);
-  //   return res.data.data;
+export const fetchSubjectList = async (
+  request: SubjectReq,
+): Promise<PageableData<Subject>> => {
+  const params = new URLSearchParams();
+  params.append('page', request.page.toString());
+  params.append('size', request.size.toString());
+  params.append('sortBy', 'id');
+  params.append('keyword', request.keyword?.trim() ?? '');
+  const res = await api.get<ApiResp<{ content: Subject[]; page: { size: number; number: number; totalElements: number; totalPages: number } }>>(
+    '/api/admin/subjects?' + params.toString(),
+  );
+  const { content, page } = res.data.data;
   return {
-    content: Array.from({ length: 10 }, (_, index) => ({
-      id: `${index + 1}`,
-      subId: index + 1,
-      subNm: `과목${index + 1}`,
-      subType: index % 2 === 0 ? 'FE' : 'BE',
-      subEssential: index % 2 === 0 ? 'Y' : 'N',
-      baseSubOrder: index + 1,
-      assignmentCount: index + 1,
-    })),
-    pageable: {
-      pageNumber: 0,
-      pageSize: 10,
-    },
-    totalPages: 3,
-    totalElements: 10,
+        content,
+    pageable: { pageNumber: page.number, pageSize: page.size },
+    totalPages: page.totalPages,
+    totalElements: page.totalElements,
   };
 };
+
 export interface Content {
   totalContentId: number;
   contentTitle: string;
@@ -112,60 +119,160 @@ export interface Content {
 }
 
 export interface ContentReq extends PageableReq {
-  contentTitle?: string;
-  contentType?: string;
+  title?: string;
+  subName?: string;
 }
 
-export const fetchContentList = async (request: ContentReq): Promise<PageableData<Content>> => {
-  //   const res = await api.post<ApiResp<PageableData<Content>>>('/api/contents', request);
-  //   return res.data.data;
+export const fetchContentList = async (
+  request: ContentReq,
+): Promise<PageableData<Content>> => {
+  const params = new URLSearchParams();
+  params.append('page', request.page.toString());
+  params.append('size', request.size.toString());
+  params.append('sortBy', 'id');
+  if (request.title) params.append('title', request.title.trim());
+  if (request.subName) params.append('subName', request.subName.trim());
+  const res = await api.get<ApiResp<{ content: Content[]; page: { size: number; number: number; totalElements: number; totalPages: number } }>>(
+    '/api/admin/contents?' + params.toString(),
+  );
+  const { content, page } = res.data.data;
   return {
-    content: Array.from({ length: 10 }, (_, index) => ({
-      totalContentId: index + 1,
-      contentTitle: `컨텐츠 제목 ${index + 1}`,
-      contentUrl: `https://example.com/content/${index + 1}`,
-      contentType: index % 3 === 0 ? '동영상' : index % 3 === 1 ? '문서' : '퀴즈',
-      contentPlatform: index % 2 === 0 ? '유튜브' : '인프런',
-      contentDuration: `${Math.floor(Math.random() * 60) + 30}분`,
-      contentLevel: index % 3 === 0 ? '초급' : index % 3 === 1 ? '중급' : '고급',
-      contentPrice: `${(index + 1) * 10000}원`,
-      subId: Math.floor(index / 3) + 1, // 3개 컨텐츠마다 다른 과목 ID 할당
-    })),
-    pageable: {
-      pageNumber: 0,
-      pageSize: 10,
-    },
-    totalPages: 3,
-    totalElements: 10,
+    content,
+    pageable: { pageNumber: page.number, pageSize: page.size },
+    totalPages: page.totalPages,
+    totalElements: page.totalElements,
   };
 };
 
-export interface Question {
-  questionId: number;
-  question: string;
-  questionType: string;
+export interface Exam {
+  id: number;
+  examContent: string;
+  subName: string;
 }
 
-export interface QuestionReq extends PageableReq {
-  question?: string;
-  questionType?: string;
+export interface ExamReq extends PageableReq {
+  examContent?: string;
+  subName?: string;
 }
 
-export const fetchQuestionList = async (request: QuestionReq): Promise<PageableData<Question>> => {
-  window.location.replace('/admin/not-authorized');
-  //   const res = await api.post<ApiResp<PageableData<Question>>>('/api/questions', request);
-  //   return res.data.data;
+export const fetchExamList = async (
+  request: ExamReq,
+): Promise<PageableData<Exam>> => {
+  const params = new URLSearchParams();
+  params.append("page", request.page.toString());
+  params.append("size", request.size.toString());
+  params.append("sortBy", "id");
+  if (request.examContent) params.append("examContent", request.examContent.trim());
+  if (request.subName) params.append("subName", request.subName.trim());
+
+  const res = await api.get<
+    ApiResp<{
+      content: any[];
+      page: { size: number; number: number; totalElements: number; totalPages: number };
+    }>
+  >("/api/admin/exams?" + params.toString());
+
+  const { content, page } = res.data.data;
+
   return {
-    content: Array.from({ length: 10 }, (_, index) => ({
-      questionId: index + 1,
-      question: `질문 ${index + 1}`,
-      questionType: index % 2 === 0 ? '객관식' : '주관식',
+    content: content.map((item: any) => ({
+      ...item,
+      id: item.examId,
     })),
-    pageable: {
-      pageNumber: 0,
-      pageSize: 10,
-    },
-    totalPages: 3,
-    totalElements: 10,
+    pageable: { pageNumber: page.number, pageSize: page.size },
+    totalPages: page.totalPages,
+    totalElements: page.totalElements
   };
+};
+
+export interface FailLogReq extends PageableReq {
+  nickname?: string;
+  email?: string;
+  errorCode?: string;
+  sort?: string;
+}
+
+export interface FeedbackFailLog {
+  id: number;
+  email: string;
+  nickname: string;
+  subjectId: number;
+  type: string;
+  nth: number;
+  errorCode: string;
+  errorMessage: string;
+  retry: boolean;
+  createdDt: string;
+}
+
+export interface RecommendFailLog {
+  id: number;
+  email: string;
+  nickname: string;
+  subjectId: number;
+  errorCode: string;
+  errorMessage: string;
+  retry: boolean;
+  createdDt: string;
+}
+
+export const fetchFeedbackFailLogs = async (
+  request: FailLogReq
+): Promise<PageableData<FeedbackFailLog>> => {
+  const res = await api.get<ApiResp<{
+    content: FeedbackFailLog[];
+    page: { size: number; number: number; totalElements: number; totalPages: number };
+  }>>('/api/admin/fail-logs/feedback', { params: request });
+
+  const { content, page } = res.data.data;
+  return {
+    content,
+    pageable: { pageNumber: page.number, pageSize: page.size },
+    totalPages: page.totalPages,
+    totalElements: page.totalElements,
+  };
+};
+
+export const fetchRecommendFailLogs = async (
+  request: FailLogReq
+): Promise<PageableData<RecommendFailLog>> => {
+  const res = await api.get<ApiResp<{
+    content: RecommendFailLog[];
+    page: { size: number; number: number; totalElements: number; totalPages: number };
+  }>>('/api/admin/fail-logs/recommend', { params: request });
+
+  const { content, page } = res.data.data;
+  return {
+    content,
+    pageable: { pageNumber: page.number, pageSize: page.size },
+    totalPages: page.totalPages,
+    totalElements: page.totalElements,
+  };
+};
+
+export const retryFeedbackFailLog = async (id: number): Promise<void> => {
+  await api.post<ApiResp<null>>(`/api/admin/fail-logs/feedback/${id}/retry`);
+};
+
+export const retryRecommendFailLog = async (id: number): Promise<void> => {
+  await api.post<ApiResp<null>>(`/api/admin/fail-logs/recommend/${id}/retry`);
+};
+
+export interface DailyCount {
+  date: string;
+  count: number;
+}
+
+export const fetchFeedbackDailyCounts = async (): Promise<DailyCount[]> => {
+  const res = await api.get<ApiResp<DailyCount[]>>(
+    '/api/admin/fail-logs/feedback/daily-counts',
+  );
+  return res.data.data ?? [];
+};
+
+export const fetchRecommendDailyCounts = async (): Promise<DailyCount[]> => {
+  const res = await api.get<ApiResp<DailyCount[]>>(
+    '/api/admin/fail-logs/recommend/daily-counts',
+  );
+  return res.data.data ?? [];
 };
