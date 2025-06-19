@@ -231,9 +231,9 @@ export default function Roadmap() {
         </div>
 
         {/* --- Arcade Embed 영상 가이드 --- */}
-        <div className="max-w-[718px] mx-auto w-full mb-8">
+        {/* <div className="max-w-[718px] mx-auto w-full mb-8">
           <ArcadeEmbed />
-        </div>
+        </div> */}
 
         {/* 로드맵 그래프 (스크롤 영역) */}
         <div className="flex-1 min-h-0 md:ml-5 mb-10">
