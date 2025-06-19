@@ -1,10 +1,13 @@
-import weakness from '@/asset/img/report/weakness.png';
+import weakness from '@/asset/img/report/weakness.png'; 
 import good from '@/asset/img/report/good.png';
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import RadarChart from '@/components/chart/chart';
 import BarChart from '@/components/chart/Barchart';
 import { useFeedback } from '@/hooks/useReport';
+import { useLoadingStore } from '@/store/useLoadingStore';
+import LoadingOverlay from '@/components/common/LoadingOverlay';
+import takeRabbit from '@/asset/img/common/takeRabbit.png';
 
 /* 백점으로 변환 */
 function normalizeScoresTo100(scores: Record<string, number>) {
@@ -21,11 +24,58 @@ export default function Report() {
   const [searchParams] = useSearchParams();
   const subjectId = searchParams.get('subjectId');
   const numericId = Number(subjectId);
-  const { data = [], isLoading, isError } = useFeedback(numericId);
+
+  const { startLoading, stopLoading } = useLoadingStore();
+  const navigate = useNavigate();
+  const [needNotice, setNeedNotice] = useState(false); 
+
+  const { data = [], isLoading, isError, error } = useFeedback(numericId);
   const [tab, setTab] = useState(0);
 
-  if (isLoading) return <p className="py-20 text-center">불러오는 중…</p>;
-  if (isError || !data.length) return <p className="py-20 text-center">데이터 없음</p>;
+  /* 피드백 Data 빈 값일 때 로딩 */
+  useEffect(() => {
+    if (isLoading) {
+      startLoading('피드백을 불러오는 중입니다…');
+    } else {
+      stopLoading();
+    }
+  }, [isLoading, startLoading, stopLoading]);
+
+  /* 20초 지나면 에러화면 */
+  useEffect(() => {
+    if (isError && (error as any)?.code === 'EMPTY_DATA') {
+      setNeedNotice(true);
+    }
+  }, [isError, error]);
+
+  /* 에러 화면 */
+  if (needNotice) {
+    return (
+      <>
+        <LoadingOverlay />
+        <div className="flex flex-col items-center justify-center min-h-[60vh] mt-[50px] md:mt-[80px] mb-10">
+          <img src={takeRabbit} alt="empty" className="h-60 w-40 object-contain mb-6" />
+          <p className="mb-6 whitespace-pre-wrap text-gray-600 text-center">
+            피드백을 불러오지 못했습니다. <br/> 잠시 후 다시 시도해 주세요.
+          </p>
+          <button
+            onClick={() => navigate('/roadmap')}
+            className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
+            로드맵으로 돌아가기
+          </button>
+        </div>
+      </>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <>
+        <LoadingOverlay />
+      </>
+    );
+  }
 
   const sorted = [...data].sort((a, b) => +new Date(a.date) - +new Date(b.date));
   const pre = sorted[0];
@@ -172,7 +222,6 @@ export default function Report() {
           </div>
         </>
       )}
-
 
       {tab !== 2 && (
         <p className="text-xs text-gray-400 mt-8">
