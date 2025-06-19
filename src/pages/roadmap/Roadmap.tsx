@@ -14,24 +14,8 @@ import useRoadmapEdit from '@/hooks/useRoadmapEdit';
 import { useRoadmapQuery } from '@/hooks/useRoadmapQuery';
 import axios from 'axios';
 import rabbit from '@/asset/img/diagnosis/smallRabbit.png';
-// fetchRoadmap import (취소시 사용) ---
 import { fetchRoadmap } from '@/api/roadmapService';
-
-function ArcadeEmbed() {
-  return (
-    <div style={{ position: 'relative', paddingBottom: 'calc(45.27777777777778% + 41px)', height: 0, width: '100%' }}>
-      <iframe
-        src="https://demo.arcade.software/zJyCHA0V2UEEc3IjGgfP?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
-        title="학습 로드맵에서 과목 완료 처리하기"
-        frameBorder="0"
-        loading="lazy"
-        allowFullScreen
-        allow="clipboard-write"
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', colorScheme: 'light' }}
-      />
-    </div>
-  );
-}
+import RoadmapArcadeModal from '@/components/modal/RoadmapArcadeModal';
 
 export default function Roadmap() {
   /* 로딩 스토어 */
@@ -41,6 +25,8 @@ export default function Roadmap() {
   const navigate = useNavigate();
   /* 정식 로드맵 있으면 있는거 가져오기 */
   const roadmapFromState = state as RoadmapPayload | undefined;
+  /* 설명 모달 상태 */
+  const [arcadeOpen, setArcadeOpen] = useState(false);
 
   /* uuid, 로그인 여부 */
   const uuid = useGuestUuidStore((s) => s.uuid);
@@ -62,7 +48,7 @@ export default function Roadmap() {
   const toggleEditing = useRoadmapStore((s) => s.toggleEditing);
   const editing = useRoadmapStore((s) => s.editing);
   const { save, saving } = useRoadmapEdit();
-  const setInitial = useRoadmapStore((s) => s.setInitial); // --- 수정: setInitial 사용 (취소용) ---
+  const setInitial = useRoadmapStore((s) => s.setInitial);
   const selected = useRoadmapStore((s) => s.selected);
   const modalOpen = useRoadmapStore((s) => s.modalOpen);
   const closeModal = useRoadmapStore((s) => s.closeModal);
@@ -71,7 +57,7 @@ export default function Roadmap() {
   /* 로컬 모달 상태 */
   const [loginModalOpen, setLoginModalOpen] = useState(false);
 
-  // --- 수정: 취소 로딩 상태 ---
+  /* 취소 로딩 상태 */
   const [rollbackLoading, setRollbackLoading] = useState(false);
 
   /* 진입 시 로드맵 주입 */
@@ -123,7 +109,7 @@ export default function Roadmap() {
     };
   }, []);
 
-  /* 수정: 취소 버튼 핸들러 */
+  /* 취소 버튼 핸들러 */
   const handleCancel = async () => {
     setRollbackLoading(true);
     try {
@@ -185,7 +171,7 @@ export default function Roadmap() {
             </div>
             <p className="mb-2 md:mb-3 text-[16px] md:text-[20px] font-medium break-keep">
               오늘도 학습을 시작해볼까요?
-              <span className="ml-2 font-bold">{percent}%</span>
+              <span className="ml-2 font-bold">{percent}% 완료</span>
             </p>
             <div className="w-full flex items-center gap-2">
               <div className="w-full h-5 md:h-6 border-2 border-[#59C5CD] p-[2px] md:p-[3px] box-border">
@@ -199,8 +185,16 @@ export default function Roadmap() {
               </span>
             </div>
           </div>
-          {/* 수정/저장/취소 버튼 (PC: auto, 모바일: 10%) */}
+          {/* 오른쪽 버튼 영역 */}
           <div className="w-auto mt-auto md:self-end mb-8 md:mb-3 mr-3 flex-shrink-0 flex gap-2">
+            {/* 설명보기 버튼 */}
+            <button
+              className="w-full md:w-[90px] h-[38px] md:h-[40px] px-4 text-sm text-white bg-[#00BFAE] rounded-md font-medium select-none font-[NeoDunggeunmo]"
+              onClick={() => setArcadeOpen(true)}
+            >
+              설명보기
+            </button>
+            {/* 수정/저장/취소 버튼 */}
             {editing ? (
               <>
                 <button
@@ -217,7 +211,6 @@ export default function Roadmap() {
                 >
                   {saving ? '저장 중…' : '완료'}
                 </button>
-                {/* 수정: 취소 버튼 추가 */}
               </>
             ) : (
               <button
@@ -229,11 +222,6 @@ export default function Roadmap() {
             )}
           </div>
         </div>
-
-        {/* --- Arcade Embed 영상 가이드 --- */}
-        {/* <div className="max-w-[718px] mx-auto w-full mb-8">
-          <ArcadeEmbed />
-        </div> */}
 
         {/* 로드맵 그래프 (스크롤 영역) */}
         <div className="flex-1 min-h-0 md:ml-5 mb-10">
@@ -269,6 +257,8 @@ export default function Roadmap() {
             onConfirm={() => navigate('/login')}
           />
         )}
+        {/* Arcade 설명 영상 모달 */}
+        <RoadmapArcadeModal open={arcadeOpen} onClose={() => setArcadeOpen(false)} />
       </div>
     </section>
   );
