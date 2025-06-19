@@ -5,6 +5,7 @@ import { getPrivacyStatus, useAuthStore } from '@/store/authGlobal';
 import api from '@/api/axios';
 import AgreeModal from '@/components/modal/AgreeModal';
 import ConfirmModal from '@/components/modal/ConfirmModal';
+import InterviewArcadeModal from '@/components/modal/InterviewArcadeModal'
 
 export default function Selectspeech() {
   /* 상태 */
@@ -18,6 +19,9 @@ export default function Selectspeech() {
 
   const navigate = useNavigate();
   const { data, isLoading, error } = useSelectSpeech();
+  
+  /* 설명 모달 상태 */
+  const [arcadeOpen, setArcadeOpen] = useState(false);
 
   /* 녹음 개인정보 동의 */
   useEffect(() => {
@@ -67,9 +71,20 @@ export default function Selectspeech() {
   /* 렌더링 */
   return (
     <div className="max-w-4xl mx-auto px-6 pt-5 pb-10 font-[pretendard]">
-      {/* 안내 배너 */}
-      <div className="text-sm text-[#779AF4] px-2 py-2 bg-blue-100 border border-blue-200 rounded-md p-3s mb-5">
-        * 면접 볼 과목을 선택해주세요! <br/>* 선택한 과목은 파란색으로 표시되며, 사후평가를 완료한 과목은 기본 선택 상태입니다.
+      {/* 안내 배너 + 설명보기 버튼 래퍼 */}
+      <div className="relative flex items-start mb-5">
+        {/* 안내 배너 - 너비 줄이고 오른쪽 여백 */}
+        <div className="text-sm text-[#779AF4] px-2 py-2 bg-blue-100 border border-blue-200 rounded-md w-full md:w-[82%]">
+          * 면접 볼 과목을 선택해주세요! <br/>
+          * 선택한 과목은 파란색으로 표시되며, 사후평가를 완료한 과목은 기본 선택 상태입니다.
+        </div>
+      {/* 설명보기 버튼 */}
+      <button
+        className="absolute bottom-0 right-0 w-full md:w-[90px] h-[38px] md:h-[40px] px-4 text-sm text-white bg-[#00BFAE] rounded-md font-medium select-none font-[NeoDunggeunmo]"
+        onClick={() => setArcadeOpen(true)}
+      >
+        설명보기
+      </button>
       </div>
 
       {/* 탭 */}
@@ -138,7 +153,10 @@ export default function Selectspeech() {
         </div>
       )}
 
-      {/* ───────── 모달들 ───────── */}
+      {/* 모달들 */}
+      {arcadeOpen && (
+        <InterviewArcadeModal open={arcadeOpen} onClose={() => setArcadeOpen(false)} />
+      )}
       {showPrivacyModal && (
         <AgreeModal onAgree={handleAgree} onClose={handlePrivacyCancel} />
       )}

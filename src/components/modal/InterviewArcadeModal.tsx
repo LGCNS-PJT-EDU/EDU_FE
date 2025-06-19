@@ -1,4 +1,3 @@
-// components/RoadmapArcadeModal.tsx
 import { useEffect, useRef } from "react";
 
 interface Props {
@@ -6,7 +5,7 @@ interface Props {
   onClose: () => void;
 }
 
-export default function RoadmapArcadeModal({ open, onClose }: Props) {
+export default function InterviewArcadeModal({ open, onClose }: Props) {
   const arcadeIframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
@@ -37,8 +36,8 @@ export default function RoadmapArcadeModal({ open, onClose }: Props) {
     >
       <iframe
         ref={arcadeIframeRef}
-        src="https://demo.arcade.software/5JF7a6HCm7spjThfJRAF?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
-        title="HTML 학습 모듈 진단 및 평가 결과 확인하기"
+        src="https://demo.arcade.software/J0nNFcryyai44iHzwWDT?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+        title="원하는 면접 과목 선택하고 인터뷰 시작하기"
         frameBorder="0"
         allowFullScreen
         allow="clipboard-write"
