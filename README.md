@@ -122,7 +122,6 @@
 | 스타일링           | Tailwind, shadcn/ui          | 유틸리티 기반 CSS 프레임워크, UI 컴포넌트 라이브러리 |
 | 상태 관리          | Redux Toolkit, Zustand       | 전역 상태 관리 라이브러리                            |
 | 데이터 통신        | React Query, Axios           | 서버 상태 관리(캐싱, 동기화) + HTTP 요청 라이브러리  |
-| API Mocking        | Mock Service Worker (MSW)    | API 요청을 가짜(Mock)로 시뮬레이션하는 툴            |
 | 시각화             | Chart.js                     | 데이터 시각화를 위한 차트 라이브러리                 |
 | 라우팅             | React Router DOM             | SPA 내 페이지 라우팅을 관리하는 라이브러리           |
 | 인증 (OAuth)       | OAuth (Google, Kakao, Naver) | 소셜 로그인 인증 구현 (직접 OAuth 연동)              |
@@ -169,11 +168,6 @@
 ![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=flat&logo=eslint&logoColor=white)
 ![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=flat&logo=prettier&logoColor=white)
 ![Husky](https://img.shields.io/badge/Husky-000000?style=flat)
-
-### 🧪 테스트
-![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=flat)
-![Playwright](https://img.shields.io/badge/Playwright-45BA63?style=flat)
-
 
 ## 📂 디렉토리 구조
 
